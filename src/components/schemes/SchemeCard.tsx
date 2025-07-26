@@ -59,10 +59,10 @@ export function SchemeCard({ title, description, eligibility, benefits, howToApp
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
              <CardFooter>
-                 <div className="w-full text-primary font-medium flex items-center justify-end">
+                 <Button variant="link" size="sm" className="w-full justify-end text-primary">
                     <span>Learn More</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
-                </div>
+                </Button>
             </CardFooter>
             </Card>
         </DialogTrigger>
