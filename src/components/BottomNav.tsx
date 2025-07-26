@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, ClipboardCheck, User } from 'lucide-react';
+import { Home, LineChart, ClipboardCheck, User, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProfileMenu } from './ProfileMenu';
 
@@ -11,6 +11,7 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/market-advisory', label: 'Market', icon: LineChart },
   { href: '/check-in', label: 'Check-in', icon: ClipboardCheck },
+  { href: '/schemes', label: 'Schemes', icon: Landmark },
 ];
 
 export function BottomNav() {
@@ -32,7 +33,7 @@ export function BottomNav() {
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
         ))}
-        <div className="flex flex-col items-center gap-1 p-2 text-muted-foreground [&_.h-8]:h-6 [&_.w-8]:w-6">
+        <div className="flex flex-col items-center gap-1 p-2 text-muted-foreground [&>div]:h-6 [&>div]:w-6">
            <ProfileMenu />
            <span className="text-xs font-medium">Profile</span>
         </div>

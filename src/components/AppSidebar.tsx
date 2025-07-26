@@ -13,6 +13,7 @@ import {
   LineChart,
   ClipboardCheck,
   Leaf,
+  Landmark,
 } from 'lucide-react';
 
 export function AppSidebar() {
@@ -22,6 +23,7 @@ export function AppSidebar() {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
     { href: '/check-in', label: 'Check-in', icon: ClipboardCheck },
+    { href: '/schemes', label: 'Schemes', icon: Landmark },
   ];
 
   return (
