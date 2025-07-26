@@ -118,17 +118,19 @@ export default function MarketAdvisoryPage() {
         )}
         {!loading && result && (
             <Card>
-                <CardContent className="p-4">
-                    <div className="flex justify-between items-center mb-4">
-                        <h4 className="font-headline text-xl">Recommendation</h4>
-                        <Badge
+                <CardHeader>
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="font-headline">Recommendation</CardTitle>
+                     <Badge
                           variant={result.recommendation === 'Sell' ? 'default' : 'secondary'}
                           className={`px-4 py-2 text-base ${result.recommendation === 'Sell' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-yellow-500 hover:bg-yellow-600 text-white'}`}
                         >
                           {result.recommendation}
                         </Badge>
-                    </div>
-                    <Separator className="my-4" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                    <Separator className="mb-4" />
                     <div>
                         <h4 className="font-headline text-lg mb-2">Reason</h4>
                         <p className="text-muted-foreground">{result.rationale}</p>
