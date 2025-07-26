@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PlusCircle } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function AddFarmCard() {
 
@@ -39,7 +40,18 @@ export function AddFarmCard() {
           </div>
            <div>
             <Label htmlFor="crop" className="mb-2 block">Current Crop</Label>
-            <Input id="crop" placeholder="e.g., Sona Masoori Rice" />
+            <Select name="crop">
+                <SelectTrigger id="crop">
+                    <SelectValue placeholder="Select a crop" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Sona Masoori Rice">Sona Masoori Rice</SelectItem>
+                    <SelectItem value="Wheat">Wheat</SelectItem>
+                    <SelectItem value="Maize">Maize</SelectItem>
+                    <SelectItem value="Sugarcane">Sugarcane</SelectItem>
+                    <SelectItem value="Cotton">Cotton</SelectItem>
+                </SelectContent>
+            </Select>
           </div>
            <div>
             <Label htmlFor="sowingDate" className="mb-2 block">Sowing Date</Label>
@@ -47,7 +59,18 @@ export function AddFarmCard() {
           </div>
            <div>
             <Label htmlFor="soilType" className="mb-2 block">Soil Type</Label>
-            <Input id="soilType" placeholder="e.g., Clay Loam" />
+             <Select name="soilType">
+                <SelectTrigger id="soilType">
+                    <SelectValue placeholder="Select soil type" />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="Alluvial">Alluvial</SelectItem>
+                    <SelectItem value="Black">Black</SelectItem>
+                    <SelectItem value="Red">Red</SelectItem>
+                    <SelectItem value="Laterite">Laterite</SelectItem>
+                    <SelectItem value="Clay Loam">Clay Loam</SelectItem>
+                </SelectContent>
+            </Select>
           </div>
         </div>
       </CardContent>
