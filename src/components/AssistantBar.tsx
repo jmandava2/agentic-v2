@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { VoiceButton } from './voice/VoiceButton';
 import { ProfileMenu } from './ProfileMenu';
 import { Button } from './ui/button';
-import { Camera, Send, X } from 'lucide-react';
+import { Camera, Send, X, Loader2 } from 'lucide-react';
 import { useCamera } from '@/hooks/use-camera';
 import { useAttachment } from '@/hooks/use-attachment';
 import { useToast } from '@/hooks/use-toast';
@@ -13,6 +13,8 @@ import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { useLanguage } from '@/hooks/use-language';
+import { assistantChat } from '@/ai/flows/assistant-chat';
+import { useRouter } from 'next/navigation';
 
 export function AssistantBar() {
   const { isCameraOpen, openCamera } = useCamera();
@@ -20,17 +22,43 @@ export function AssistantBar() {
   const { attachment, setAttachment } = useAttachment();
   const { toast } = useToast();
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const { t } = useLanguage();
+  const router = useRouter();
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!message && !attachment) return;
-    // Mock sending message
-    toast({
-      title: 'Message Sent (Mock)',
-      description: `Text: ${message || '(none)'}, Image: ${attachment ? 'Attached' : 'None'}`,
-    });
-    setMessage('');
-    setAttachment(null);
+    setLoading(true);
+    
+    try {
+      const chatResponse = await assistantChat({ query: message });
+
+      if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
+          const page = chatResponse.toolRequest.input.page;
+          toast({
+              title: 'Navigation',
+              description: `Navigating to ${page}...`,
+          });
+          router.push(`/${page}`);
+      } else {
+         toast({
+            title: 'Assistant',
+            description: chatResponse.response,
+          });
+      }
+
+    } catch (error) {
+       toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: 'Failed to get a response from the assistant.',
+      });
+      console.error('Assistant chat error:', error);
+    } finally {
+        setMessage('');
+        setAttachment(null);
+        setLoading(false);
+    }
   };
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -81,6 +109,7 @@ export function AssistantBar() {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyDown}
+            disabled={loading}
           />
 
           <VoiceButton />
@@ -89,10 +118,10 @@ export function AssistantBar() {
             variant="ghost"
             size="icon"
             onClick={handleSendMessage}
-            disabled={isListening || isCameraOpen}
+            disabled={isListening || isCameraOpen || loading || (!message && !attachment)}
             className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
           >
-            <Send className="h-4 w-4" />
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
             <span className="sr-only">{t('assistant.send')}</span>
           </Button>
 
