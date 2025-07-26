@@ -141,11 +141,13 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
                 const audioResponse = await textToSpeech({ text: chatResponse.response, language });
 
                 if (audioResponse.media && audioRef.current) {
-                audioRef.current.src = audioResponse.media;
-                audioRef.current.play();
-                audioRef.current.onended = stopListening;
+                  audioRef.current.src = audioResponse.media;
+                  audioRef.current.play();
+                  audioRef.current.onended = () => {
+                    setTimeout(() => stopListening(), 2000);
+                  };
                 } else {
-                stopListening();
+                  setTimeout(() => stopListening(), 2000);
                 }
 
             } catch (error) {
@@ -174,6 +176,9 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
     recognition.onend = () => {
       if (voiceState.isListening) {
+        // Only call stop if the recognition ended prematurely, not by user action
+        // The logic inside onresult handles the natural end of speech.
+        // We can add a check here if we want to differentiate.
         stopListening();
       }
     };
