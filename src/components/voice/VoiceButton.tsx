@@ -36,14 +36,12 @@ export function VoiceButton() {
       size="icon"
       onClick={handleToggleListening}
       className={cn(
-        'relative text-muted-foreground',
+        'relative flex-shrink-0 rounded-full bg-foreground text-background shadow-[0_0_0_2px_hsl(var(--foreground))] transition-shadow hover:bg-foreground/90 hover:shadow-[0_0_0_2px_hsl(var(--primary))] focus-visible:shadow-[0_0_0_2px_hsl(var(--primary))]',
         isListening && 'text-primary'
       )}
+       style={isListening ? { boxShadow: 'var(--glow)'} : {}}
     >
       <Mic className="h-5 w-5" />
-       {isListening && (
-        <span className="absolute top-1 right-1 z-0 h-2 w-2 rounded-full bg-primary animate-ping"></span>
-      )}
       <span className="sr-only">
         {isListening ? 'Stop listening' : 'Start voice command'}
       </span>
