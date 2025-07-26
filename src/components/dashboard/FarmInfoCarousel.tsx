@@ -25,7 +25,6 @@ const TomatoIcon = () => (
 
 const farms = [
   {
-    farmName: 'My Digital Farm',
     cropName: 'Sona Masoori Rice',
     cropIcon: <Wheat className="h-full w-full" />,
     area: '5 Acres',
@@ -67,7 +66,6 @@ const farms = [
     ],
   },
   {
-    farmName: 'Green Valley',
     cropName: 'Tomato',
     cropIcon: <TomatoIcon />,
     area: '2 Acres',

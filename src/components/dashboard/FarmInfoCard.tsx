@@ -22,7 +22,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
 
 type FarmInfoCardProps = {
-  farmName: string;
   cropName: string;
   cropIcon: React.ReactNode;
   area: string;
@@ -40,7 +39,6 @@ const InfoChip = ({ label, value }: { label: string; value: string }) => (
 );
 
 export function FarmInfoCard({
-  farmName,
   cropName,
   cropIcon,
   area,
@@ -51,14 +49,28 @@ export function FarmInfoCard({
 }: FarmInfoCardProps) {
   return (
     <Card className="relative h-full min-h-[350px] w-full overflow-hidden p-4 flex flex-col justify-between">
-       <CardHeader className="flex flex-row justify-between items-center p-0 z-10">
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent"></div>
+       <CardHeader className="relative z-10 grid grid-cols-3 gap-3 p-0">
+        <InfoChip label="Area" value={area} />
+        <InfoChip label="Mandi Price" value={mandiPrice} />
+        <InfoChip label="Est. Yield" value={yieldDate} />
+      </CardHeader>
+
+      <CardContent className="relative z-0 flex h-full flex-col items-center justify-center p-0">
+        <div className="flex h-32 w-32 items-center justify-center rounded-full bg-background/50 text-primary shadow-inner backdrop-blur-xl">
+           <div className="h-20 w-20">{cropIcon}</div>
+        </div>
+         <p className="font-headline text-2xl font-bold mt-2">{cropName}</p>
+      </CardContent>
+
+      <CardFooter className="relative z-10 flex justify-between items-center p-0">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">Suggestions</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Suggestions for {farmName}</DialogTitle>
+              <DialogTitle>Suggestions for {cropName}</DialogTitle>
               <DialogDescription>
                 AI-powered recommendations to improve your yield.
               </DialogDescription>
@@ -81,7 +93,7 @@ export function FarmInfoCard({
           </DialogTrigger>
            <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>History for {farmName}</DialogTitle>
+              <DialogTitle>History for {cropName}</DialogTitle>
               <DialogDescription>
                 Past observations and health check-ins.
               </DialogDescription>
@@ -102,21 +114,6 @@ export function FarmInfoCard({
             </ScrollArea>
           </DialogContent>
         </Dialog>
-      </CardHeader>
-
-      <CardContent className="relative z-0 flex h-full flex-col items-center justify-center p-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent"></div>
-        <div className="flex h-32 w-32 items-center justify-center rounded-full bg-background/50 text-primary shadow-inner backdrop-blur-xl">
-           <div className="h-20 w-20">{cropIcon}</div>
-        </div>
-         <p className="font-headline text-2xl font-bold mt-2">{cropName}</p>
-        <p className="text-sm text-muted-foreground">{farmName}</p>
-      </CardContent>
-
-      <CardFooter className="relative z-10 grid grid-cols-3 gap-3 p-0">
-        <InfoChip label="Area" value={area} />
-        <InfoChip label="Mandi Price" value={mandiPrice} />
-        <InfoChip label="Est. Yield" value={yieldDate} />
       </CardFooter>
     </Card>
   );
