@@ -8,14 +8,33 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import { generate } from 'genkit/generate';
+
+const PagesSchema = z.enum(['dashboard', 'market-advisory', 'schemes']);
+
+const navigateToPage = ai.defineTool(
+  {
+    name: 'navigateToPage',
+    description: 'Navigates to a specific page in the application.',
+    inputSchema: z.object({
+      page: PagesSchema.describe('The page to navigate to.'),
+    }),
+    outputSchema: z.void(),
+  },
+  async (input) => {
+    // This is a placeholder. The actual navigation is handled client-side.
+    console.log(`(Server) Navigation request to: ${input.page}`);
+  }
+);
 
 const AssistantChatInputSchema = z.object({
-  query: z.string().describe('The user\'s voice query.'),
+  query: z.string().describe("The user's voice query."),
 });
 export type AssistantChatInput = z.infer<typeof AssistantChatInputSchema>;
 
 const AssistantChatOutputSchema = z.object({
-  response: z.string().describe('The AI assistant\'s text response.'),
+  response: z.string().describe("The AI assistant's text response."),
+  toolRequest: z.optional(z.any()),
 });
 export type AssistantChatOutput = z.infer<typeof AssistantChatOutputSchema>;
 
@@ -27,14 +46,14 @@ export async function assistantChat(
 
 const prompt = ai.definePrompt({
   name: 'assistantChatPrompt',
+  tools: [navigateToPage],
+  system:
+    "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool.",
   input: { schema: AssistantChatInputSchema },
   output: { schema: AssistantChatOutputSchema },
-  prompt: `You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational.
-
-User's query: {{{query}}}
-
-Your response:`,
+  prompt: `User's query: {{{query}}}`,
 });
+
 
 const assistantChatFlow = ai.defineFlow(
   {
@@ -43,7 +62,33 @@ const assistantChatFlow = ai.defineFlow(
     outputSchema: AssistantChatOutputSchema,
   },
   async (input) => {
-    const { output } = await prompt(input);
-    return output!;
+    const response = await generate({
+      prompt: `User's query: ${input.query}`,
+      model: 'googleai/gemini-1.5-flash-latest',
+      tools: [navigateToPage],
+      system:
+        "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool.",
+      output: {
+        format: 'json',
+        schema: AssistantChatOutputSchema,
+      },
+    });
+
+    const toolRequest = response.toolRequest();
+    if (toolRequest) {
+      console.log('Tool call requested:', toolRequest.tool.name);
+      await toolRequest.tool.fn(toolRequest.input);
+      // We can optionally generate a follow-up response after the tool call.
+      // For navigation, a simple confirmation is enough.
+      return {
+        response: `Navigating to ${toolRequest.input.page}.`,
+        toolRequest: toolRequest.json,
+      };
+    }
+
+    return {
+      response: response.output()?.response || 'Sorry, I could not process that.',
+      toolRequest: undefined,
+    };
   }
 );

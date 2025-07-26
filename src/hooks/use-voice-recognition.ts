@@ -30,8 +30,8 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition();
     if (!SpeechRecognition) {
-      onNoSupport?.();
       setHasRecognitionSupport(false);
+      onNoSupport?.();
     } else {
       setHasRecognitionSupport(true);
     }
@@ -65,6 +65,9 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     setIsListening(true);
     setTranscript('Listening...');
 
+    if (recognitionRef.current) {
+        recognitionRef.current.stop();
+    }
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
@@ -73,6 +76,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
     recognition.onstart = () => {
       console.log('Voice recognition started.');
+      setIsListening(true);
     };
 
     recognition.onresult = async (event: SpeechRecognitionEvent) => {
@@ -83,6 +87,15 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       try {
         setTranscript('Thinking...');
         const chatResponse = await assistantChat({ query: capturedTranscript });
+        
+        if (chatResponse.toolRequest && chatResponse.toolRequest.name === 'navigateToPage') {
+            const page = chatResponse.toolRequest.input.page;
+            setTranscript(`Navigating to ${page}...`);
+            window.location.assign(`/${page}`);
+            // Don't play audio or stop listening immediately, let the page redirect.
+            return;
+        }
+
         console.log('Gemini response:', chatResponse.response);
         setTranscript(chatResponse.response);
 
@@ -115,7 +128,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
-       if (event.error !== 'aborted') {
+       if (event.error !== 'aborted' && event.error !== 'no-speech') {
             toast({
                 variant: 'destructive',
                 title: 'Voice Error',
@@ -126,17 +139,29 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     };
 
     recognition.onend = () => {
-       stopListening();
+       if (isListening) {
+         // This is to handle cases where recognition ends prematurely
+         stopListening();
+       }
     };
     
     recognition.start();
 
-  }, [toast, stopListening]);
+  }, [toast, stopListening, isListening]);
+
+  const handleToggleListening = () => {
+    if (isListening) {
+      stopListening();
+    } else {
+      startListening();
+    }
+  };
+
 
   return {
     isListening,
     transcript,
-    startListening,
+    startListening: handleToggleListening, // Use the toggler
     stopListening,
     hasRecognitionSupport,
   };
