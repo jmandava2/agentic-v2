@@ -16,15 +16,17 @@ import {
   Landmark,
   User,
 } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const { t } = useLanguage();
 
   const links = [
-    { href: '/dashboard', label: 'Dashboard', icon: Home },
-    { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
-    { href: '/schemes', label: 'Schemes', icon: Landmark },
-    { href: '/profile', label: 'Profile', icon: User },
+    { href: '/dashboard', label: t('sidebar.dashboard'), icon: Home },
+    { href: '/market-advisory', label: t('sidebar.market'), icon: LineChart },
+    { href: '/schemes', label: t('sidebar.schemes'), icon: Landmark },
+    { href: '/profile', label: t('sidebar.profile'), icon: User },
   ];
 
   return (
@@ -35,7 +37,7 @@ export function AppSidebar() {
             <Leaf className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-headline text-lg font-semibold">
-            Namma Krushi
+            {t('appName')}
           </span>
         </div>
       </SidebarHeader>

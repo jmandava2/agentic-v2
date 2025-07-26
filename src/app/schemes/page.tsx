@@ -1,6 +1,9 @@
 
+'use client';
+
 import { SchemeCard } from '@/components/schemes/SchemeCard';
 import { Separator } from '@/components/ui/separator';
+import { useLanguage } from '@/hooks/use-language';
 
 const allSchemes = [
   {
@@ -56,6 +59,7 @@ const allSchemes = [
 
 
 export default function SchemesPage() {
+  const { t } = useLanguage();
   const recommendedSchemes = allSchemes.filter(
     (scheme) => scheme.crop === 'Sona Masoori Rice'
   );
@@ -66,11 +70,11 @@ export default function SchemesPage() {
   return (
     <>
       <h1 className="font-headline text-3xl font-bold mb-6">
-        Government Schemes
+        {t('schemes.title')}
       </h1>
       
       <div>
-        <h2 className="font-headline text-2xl font-semibold mb-4">Recommended for You</h2>
+        <h2 className="font-headline text-2xl font-semibold mb-4">{t('schemes.recommended')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recommendedSchemes.map((scheme, index) => (
             <SchemeCard key={index} {...scheme} />
@@ -81,7 +85,7 @@ export default function SchemesPage() {
       <Separator className="my-8" />
 
       <div>
-        <h2 className="font-headline text-2xl font-semibold mb-4">All Other Schemes</h2>
+        <h2 className="font-headline text-2xl font-semibold mb-4">{t('schemes.other')}</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {otherSchemes.map((scheme, index) => (
             <SchemeCard key={index} {...scheme} />

@@ -12,6 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
+import { useLanguage } from '@/hooks/use-language';
 
 export function AssistantBar() {
   const { isCameraOpen, openCamera } = useCamera();
@@ -19,6 +20,7 @@ export function AssistantBar() {
   const { attachment, setAttachment } = useAttachment();
   const { toast } = useToast();
   const [message, setMessage] = useState('');
+  const { t } = useLanguage();
 
   const handleSendMessage = () => {
     if (!message && !attachment) return;
@@ -69,12 +71,12 @@ export function AssistantBar() {
               className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
             >
               <Camera className="h-4 w-4" />
-              <span className="sr-only">Upload Image</span>
+              <span className="sr-only">{t('assistant.upload')}</span>
             </Button>
           )}
 
           <Input
-            placeholder="Ask anything"
+            placeholder={t('assistant.placeholder')}
             className="flex-grow border-0 bg-transparent shadow-none focus-visible:ring-0 truncate"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -91,7 +93,7 @@ export function AssistantBar() {
             className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
           >
             <Send className="h-4 w-4" />
-            <span className="sr-only">Send Message</span>
+            <span className="sr-only">{t('assistant.send')}</span>
           </Button>
 
           <div className="hidden flex-shrink-0 md:block">

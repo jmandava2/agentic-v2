@@ -10,6 +10,7 @@ import { MarketChart } from '@/components/market-advisory/MarketChart';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useLanguage } from '@/hooks/use-language';
 
 const mockAnalysisData = {
   produce: 'Sona Masoori Rice',
@@ -49,6 +50,7 @@ export default function MarketAdvisoryPage() {
   const { toast } = useToast();
   const [timeRange, setTimeRange] = useState('daily');
   const [chartData, setChartData] = useState(generateChartData(timeRange));
+  const { t } = useLanguage();
 
   useEffect(() => {
     setChartData(generateChartData(timeRange));
@@ -68,20 +70,20 @@ export default function MarketAdvisoryPage() {
         console.error('Market analysis error:', error);
         toast({
           variant: 'destructive',
-          title: 'Analysis Failed',
-          description: 'Could not retrieve market analysis.',
+          title: t('market.toast.fail.title'),
+          description: t('market.toast.fail.description'),
         });
       } finally {
         setLoading(false);
       }
     };
     getAnalysis();
-  }, [toast]);
+  }, [toast, t]);
 
 
   return (
     <>
-    <h1 className="font-headline text-3xl font-bold mb-6">Market Advisory</h1>
+    <h1 className="font-headline text-3xl font-bold mb-6">{t('market.title')}</h1>
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
       
       <div className="lg:col-span-3">
@@ -89,17 +91,17 @@ export default function MarketAdvisoryPage() {
            <CardHeader>
             <div className="flex justify-between items-start">
               <div>
-                <CardTitle className="font-headline">Price Trend</CardTitle>
-                <CardDescription>Historical price data for {mockAnalysisData.produce}.</CardDescription>
+                <CardTitle className="font-headline">{t('market.chart.title')}</CardTitle>
+                <CardDescription>{t('market.chart.description', { produce: mockAnalysisData.produce })}</CardDescription>
               </div>
               <Select value={timeRange} onValueChange={setTimeRange}>
                 <SelectTrigger className="w-[120px]">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="daily">Daily</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
+                  <SelectItem value="daily">{t('market.chart.daily')}</SelectItem>
+                  <SelectItem value="weekly">{t('market.chart.weekly')}</SelectItem>
+                  <SelectItem value="monthly">{t('market.chart.monthly')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -120,19 +122,19 @@ export default function MarketAdvisoryPage() {
             <Card>
                 <CardHeader>
                   <div className="flex justify-between items-center">
-                    <CardTitle className="font-headline">Recommendation</CardTitle>
+                    <CardTitle className="font-headline">{t('market.recommendation.title')}</CardTitle>
                      <Badge
                           variant={result.recommendation === 'Sell' ? 'default' : 'secondary'}
                           className={`px-4 py-2 text-base ${result.recommendation === 'Sell' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-yellow-500 hover:bg-yellow-600 text-white'}`}
                         >
-                          {result.recommendation}
+                          {t(`market.recommendation.${result.recommendation.toLowerCase()}`)}
                         </Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
                     <Separator className="mb-4" />
                     <div>
-                        <h4 className="font-headline text-lg mb-2">Reason</h4>
+                        <h4 className="font-headline text-lg mb-2">{t('market.recommendation.reason')}</h4>
                         <p className="text-muted-foreground">{result.rationale}</p>
                     </div>
                 </CardContent>
@@ -141,7 +143,7 @@ export default function MarketAdvisoryPage() {
          {!loading && !result && (
             <Card>
                 <CardContent className="h-48 flex items-center justify-center">
-                    <p className="text-muted-foreground">Could not load recommendation.</p>
+                    <p className="text-muted-foreground">{t('market.recommendation.fail')}</p>
                 </CardContent>
             </Card>
         )}

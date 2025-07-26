@@ -1,12 +1,14 @@
 
+'use client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { AlertTriangle, Bug, Stethoscope } from 'lucide-react';
 import { Badge } from '../ui/badge';
+import { useLanguage } from '@/hooks/use-language';
 
 const advisories = [
-    { type: 'Pest', title: 'Leafhopper Alert', level: 'Low', icon: Bug },
-    { type: 'Disease', title: 'Blast Risk', level: 'Moderate', icon: Stethoscope },
-    { type: 'Risk', title: 'Heavy Rain Forecast', level: 'High', icon: AlertTriangle },
+    { type: 'Pest', titleKey: 'advisories.pest', level: 'Low', icon: Bug },
+    { type: 'Disease', titleKey: 'advisories.disease', level: 'Moderate', icon: Stethoscope },
+    { type: 'Risk', titleKey: 'advisories.risk', level: 'High', icon: AlertTriangle },
 ];
 
 const levelColors: { [key: string]: string } = {
@@ -17,11 +19,12 @@ const levelColors: { [key: string]: string } = {
 
 
 export function Advisories() {
+    const { t } = useLanguage();
     return (
         <Card>
             <CardHeader>
-                <CardTitle className="font-headline">Latest Advisories</CardTitle>
-                <CardDescription>Pest, disease, and risk alerts.</CardDescription>
+                <CardTitle className="font-headline">{t('advisories.title')}</CardTitle>
+                <CardDescription>{t('advisories.description')}</CardDescription>
             </CardHeader>
             <CardContent>
                 <ul className="space-y-4">
@@ -31,10 +34,10 @@ export function Advisories() {
                                 <advisory.icon className="h-5 w-5 text-secondary-foreground" />
                             </div>
                             <div className="flex-grow">
-                                <p className="font-semibold">{advisory.title}</p>
-                                <p className="text-sm text-muted-foreground">{advisory.type}</p>
+                                <p className="font-semibold">{t(advisory.titleKey)}</p>
+                                <p className="text-sm text-muted-foreground">{t(`advisories.types.${advisory.type.toLowerCase()}`)}</p>
                             </div>
-                            <Badge className={levelColors[advisory.level]}>{advisory.level}</Badge>
+                            <Badge className={levelColors[advisory.level]}>{t(`advisories.levels.${advisory.level.toLowerCase()}`)}</Badge>
                         </li>
                     ))}
                 </ul>

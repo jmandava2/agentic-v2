@@ -1,13 +1,17 @@
 
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Sun, Droplets, Wind } from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
 
 export function WeatherCard() {
+  const { t } = useLanguage();
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="font-headline">Weather Today</CardTitle>
-        <CardDescription>Current conditions and forecast.</CardDescription>
+        <CardTitle className="font-headline">{t('weather.title')}</CardTitle>
+        <CardDescription>{t('weather.description')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
@@ -15,16 +19,16 @@ export function WeatherCard() {
                 <Sun className="h-8 w-8 text-primary" />
                 <span className="text-4xl font-bold">28°C</span>
             </div>
-            <p className="text-right text-muted-foreground">Partly Cloudy</p>
+            <p className="text-right text-muted-foreground">{t('weather.condition')}</p>
         </div>
         <div className="flex justify-between text-sm">
             <div className="flex items-center gap-2">
                 <Droplets className="h-4 w-4 text-muted-foreground" />
-                <span>Humidity: 72%</span>
+                <span>{t('weather.humidity')}: 72%</span>
             </div>
             <div className="flex items-center gap-2">
                 <Wind className="h-4 w-4 text-muted-foreground" />
-                <span>Wind: 12 km/h</span>
+                <span>{t('weather.wind')}: 12 km/h</span>
             </div>
         </div>
       </CardContent>

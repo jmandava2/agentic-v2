@@ -49,6 +49,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { useLanguage } from '@/hooks/use-language';
 
 const formSchema = z.object({
   area: z.string().min(1, 'Area is required'),
@@ -63,6 +64,7 @@ type FormData = z.infer<typeof formSchema>;
 
 export function AddFarmCard() {
   const { toast } = useToast();
+  const { t } = useLanguage();
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
@@ -84,21 +86,21 @@ export function AddFarmCard() {
             <div className="mx-auto bg-background/70 rounded-full p-3 w-fit">
               <PlusCircle className="h-10 w-10 text-muted-foreground" />
             </div>
-            <CardTitle className="font-headline mt-4">Add a New Crop</CardTitle>
+            <CardTitle className="font-headline mt-4">{t('addCrop.title')}</CardTitle>
           </CardHeader>
           <CardContent>
             <Button className="w-full">
               <PlusCircle className="mr-2 h-4 w-4" />
-              Add Crop
+              {t('addCrop.button')}
             </Button>
           </CardContent>
         </Card>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="font-headline">Add New Crop</DialogTitle>
+          <DialogTitle className="font-headline">{t('addCrop.form.title')}</DialogTitle>
           <DialogDescription>
-            Enter the details for your new crop.
+            {t('addCrop.form.description')}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -108,9 +110,9 @@ export function AddFarmCard() {
               name="area"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Area (e.g., 5 Acres)</FormLabel>
+                  <FormLabel>{t('addCrop.form.area.label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="5 Acres" {...field} />
+                    <Input placeholder={t('addCrop.form.area.placeholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -121,9 +123,9 @@ export function AddFarmCard() {
               name="breed"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Breed</FormLabel>
+                  <FormLabel>{t('addCrop.form.breed.label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Sona Masoori" {...field} />
+                    <Input placeholder={t('addCrop.form.breed.placeholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -134,7 +136,7 @@ export function AddFarmCard() {
               name="plantingDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>Planting Date</FormLabel>
+                  <FormLabel>{t('addCrop.form.plantingDate.label')}</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -148,7 +150,7 @@ export function AddFarmCard() {
                           {field.value ? (
                             format(field.value, 'PPP')
                           ) : (
-                            <span>Pick a date</span>
+                            <span>{t('addCrop.form.plantingDate.placeholder')}</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -175,9 +177,9 @@ export function AddFarmCard() {
               name="expectedYield"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Expected Yield (e.g., 25 quintals)</FormLabel>
+                  <FormLabel>{t('addCrop.form.yield.label')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="25 quintals" {...field} />
+                    <Input placeholder={t('addCrop.form.yield.placeholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -188,21 +190,21 @@ export function AddFarmCard() {
               name="cropStage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Current Crop Stage</FormLabel>
+                  <FormLabel>{t('addCrop.form.stage.label')}</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a stage" />
+                        <SelectValue placeholder={t('addCrop.form.stage.placeholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="seedling">Seedling</SelectItem>
-                      <SelectItem value="vegetative">Vegetative</SelectItem>
-                      <SelectItem value="flowering">Flowering</SelectItem>
-                       <SelectItem value="maturity">Maturity</SelectItem>
+                      <SelectItem value="seedling">{t('addCrop.form.stage.seedling')}</SelectItem>
+                      <SelectItem value="vegetative">{t('addCrop.form.stage.vegetative')}</SelectItem>
+                      <SelectItem value="flowering">{t('addCrop.form.stage.flowering')}</SelectItem>
+                       <SelectItem value="maturity">{t('addCrop.form.stage.maturity')}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -214,29 +216,29 @@ export function AddFarmCard() {
               name="soil"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Soil Type</FormLabel>
+                  <FormLabel>{t('addCrop.form.soil.label')}</FormLabel>
                    <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select a soil type" />
+                        <SelectValue placeholder={t('addCrop.form.soil.placeholder')} />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="alluvial">Alluvial Soil</SelectItem>
-                      <SelectItem value="black">Black Soil</SelectItem>
-                      <SelectItem value="red">Red Soil</SelectItem>
-                      <SelectItem value="laterite">Laterite Soil</SelectItem>
-                      <SelectItem value="arid">Arid Soil</SelectItem>
-                      <SelectItem value="forest">Forest Soil</SelectItem>
-                      <SelectItem value="peat">Peat Soil</SelectItem>
-                      <SelectItem value="saline">Saline Soil</SelectItem>
-                      <SelectItem value="loam">Loam Soil</SelectItem>
-                      <SelectItem value="sandy">Sandy Soil</SelectItem>
-                      <SelectItem value="clay">Clay Loam</SelectItem>
-                      <SelectItem value="silt">Silt Soil</SelectItem>
+                      <SelectItem value="alluvial">{t('addCrop.form.soil.alluvial')}</SelectItem>
+                      <SelectItem value="black">{t('addCrop.form.soil.black')}</SelectItem>
+                      <SelectItem value="red">{t('addCrop.form.soil.red')}</SelectItem>
+                      <SelectItem value="laterite">{t('addCrop.form.soil.laterite')}</SelectItem>
+                      <SelectItem value="arid">{t('addCrop.form.soil.arid')}</SelectItem>
+                      <SelectItem value="forest">{t('addCrop.form.soil.forest')}</SelectItem>
+                      <SelectItem value="peat">{t('addCrop.form.soil.peat')}</SelectItem>
+                      <SelectItem value="saline">{t('addCrop.form.soil.saline')}</SelectItem>
+                      <SelectItem value="loam">{t('addCrop.form.soil.loam')}</SelectItem>
+                      <SelectItem value="sandy">{t('addCrop.form.soil.sandy')}</SelectItem>
+                      <SelectItem value="clay">{t('addCrop.form.soil.clay')}</SelectItem>
+                      <SelectItem value="silt">{t('addCrop.form.soil.silt')}</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -245,7 +247,7 @@ export function AddFarmCard() {
             />
             <DialogFooter>
               <DialogClose asChild>
-                <Button type="submit">Save Crop</Button>
+                <Button type="submit">{t('addCrop.form.save')}</Button>
               </DialogClose>
             </DialogFooter>
           </form>

@@ -6,16 +6,18 @@ import { usePathname } from 'next/navigation';
 import { Home, LineChart, User, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProfileMenu } from './ProfileMenu';
-
-const navItems = [
-  { href: '/dashboard', label: 'Dashboard', icon: Home },
-  { href: '/market-advisory', label: 'Market', icon: LineChart },
-  { href: '/schemes', label: 'Schemes', icon: Landmark },
-  { href: '/profile', label: 'Profile', icon: User },
-];
+import { useLanguage } from '@/hooks/use-language';
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { href: '/dashboard', label: t('sidebar.dashboard'), icon: Home },
+    { href: '/market-advisory', label: t('sidebar.market'), icon: LineChart },
+    { href: '/schemes', label: t('sidebar.schemes'), icon: Landmark },
+    { href: '/profile', label: t('sidebar.profile'), icon: User },
+  ];
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 z-30 bg-black md:hidden">

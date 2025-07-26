@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { VoiceVisualizer } from './VoiceVisualizer';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/hooks/use-language';
 
 type VoiceOverlayProps = {
   isOpen: boolean;
@@ -16,6 +17,7 @@ export function VoiceOverlay({
   transcript,
   onClose,
 }: VoiceOverlayProps) {
+  const { t } = useLanguage();
   return (
     <div
       className={cn(
@@ -40,7 +42,7 @@ export function VoiceOverlay({
 
           <div className="mt-8 flex h-16 items-center text-center">
             <p className="text-xl text-foreground">
-              {transcript || 'Say something...'}
+              {transcript || t('voice.prompt')}
             </p>
           </div>
 

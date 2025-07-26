@@ -7,11 +7,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { CheckSquare, ListTodo, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/use-language';
 
 export function Todos() {
   const [todos, setTodos] = useState<GenerateFarmTodosOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleGenerateTodos = async () => {
     setLoading(true);
@@ -37,8 +39,8 @@ export function Todos() {
       console.error('Error generating todos:', error);
       toast({
         variant: 'destructive',
-        title: 'Error',
-        description: 'Failed to generate To-Dos. Please try again.',
+        title: t('todos.toast.fail.title'),
+        description: t('todos.toast.fail.description'),
       });
     } finally {
       setLoading(false);
@@ -50,9 +52,9 @@ export function Todos() {
       <CardHeader>
         <div className="flex items-start justify-between gap-4">
           <div>
-            <CardTitle className="font-headline">AI-Powered To-Dos</CardTitle>
+            <CardTitle className="font-headline">{t('todos.title')}</CardTitle>
             <CardDescription>
-              Personalized tasks for today.
+              {t('todos.description')}
             </CardDescription>
           </div>
           <Button
@@ -66,7 +68,7 @@ export function Todos() {
             ) : (
               <ListTodo className="mr-2 h-4 w-4" />
             )}
-            Generate
+            {t('todos.generate')}
           </Button>
         </div>
       </CardHeader>
@@ -78,7 +80,7 @@ export function Todos() {
         )}
         {!loading && !todos && (
           <div className="text-center text-muted-foreground p-8">
-            <p>Click "Generate" to get your personalized to-do list.</p>
+            <p>{t('todos.prompt')}</p>
           </div>
         )}
         {todos?.todos && (

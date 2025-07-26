@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
+import { useLanguage } from '@/hooks/use-language';
 
 type FarmInfoCardProps = {
   cropName: string;
@@ -47,13 +48,14 @@ export function FarmInfoCard({
   suggestions,
   history,
 }: FarmInfoCardProps) {
+  const { t } = useLanguage();
   return (
     <Card className="relative h-full min-h-[350px] w-full overflow-hidden p-4 flex flex-col justify-between">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-transparent"></div>
        <CardHeader className="relative z-10 grid grid-cols-3 gap-3 p-0">
-        <InfoChip label="Area" value={area} />
-        <InfoChip label="Mandi Price" value={mandiPrice} />
-        <InfoChip label="Est. Yield" value={yieldDate} />
+        <InfoChip label={t('farmCard.area')} value={area} />
+        <InfoChip label={t('farmCard.mandiPrice')} value={mandiPrice} />
+        <InfoChip label={t('farmCard.estYield')} value={yieldDate} />
       </CardHeader>
 
       <CardContent className="relative z-0 flex h-full flex-col items-center justify-center p-0">
@@ -66,13 +68,13 @@ export function FarmInfoCard({
       <CardFooter className="relative z-10 flex justify-between items-center p-0">
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">Suggestions</Button>
+            <Button variant="outline" size="sm">{t('farmCard.suggestions.button')}</Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>Suggestions for {cropName}</DialogTitle>
+              <DialogTitle>{t('farmCard.suggestions.title', { cropName })}</DialogTitle>
               <DialogDescription>
-                AI-powered recommendations to improve your yield.
+                {t('farmCard.suggestions.description')}
               </DialogDescription>
             </DialogHeader>
             <ScrollArea className="max-h-[60vh] pr-4">
@@ -89,13 +91,13 @@ export function FarmInfoCard({
         </Dialog>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">History</Button>
+            <Button variant="outline" size="sm">{t('farmCard.history.button')}</Button>
           </DialogTrigger>
            <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>History for {cropName}</DialogTitle>
+              <DialogTitle>{t('farmCard.history.title', { cropName })}</DialogTitle>
               <DialogDescription>
-                Past observations and health check-ins.
+                {t('farmCard.history.description')}
               </DialogDescription>
             </DialogHeader>
             <ScrollArea className="max-h-[60vh] pr-4">

@@ -22,6 +22,7 @@ import {
 } from '@/components/ui/dialog';
 import { Separator } from '../ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/use-language';
 
 type SchemeCardProps = {
   title: string;
@@ -42,11 +43,12 @@ const DetailSection = ({ title, content }: { title: string, content: string }) =
 
 export function SchemeCard({ title, description, eligibility, benefits, howToApply, link }: SchemeCardProps) {
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleExplain = () => {
     toast({
-        title: "Voice Explanation (Mock)",
-        description: "This will play an audio explanation of the scheme.",
+        title: t('schemes.card.toast.title'),
+        description: t('schemes.card.toast.description'),
     })
   }
 
@@ -60,7 +62,7 @@ export function SchemeCard({ title, description, eligibility, benefits, howToApp
             </CardHeader>
              <CardFooter className="justify-end">
                  <Button variant="outline" size="sm">
-                    <span>Learn More</span>
+                    <span>{t('schemes.card.learnMore')}</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </CardFooter>
@@ -72,22 +74,22 @@ export function SchemeCard({ title, description, eligibility, benefits, howToApp
             </DialogHeader>
             <Separator />
             <div className="space-y-4 py-4">
-                <DetailSection title="Description" content={description} />
-                <DetailSection title="Eligibility Criteria" content={eligibility} />
-                <DetailSection title="Benefits" content={benefits} />
-                <DetailSection title="How To Apply" content={howToApply} />
+                <DetailSection title={t('schemes.card.descriptionTitle')} content={description} />
+                <DetailSection title={t('schemes.card.eligibilityTitle')} content={eligibility} />
+                <DetailSection title={t('schemes.card.benefitsTitle')} content={benefits} />
+                <DetailSection title={t('schemes.card.howToApplyTitle')} content={howToApply} />
             </div>
             <Separator />
             <DialogFooter className="pt-4 gap-2 sm:justify-between">
                  <Button onClick={handleExplain} variant="outline">
                     <Volume2 className="mr-2 h-4 w-4" />
-                    Explain in Voice
+                    {t('schemes.card.explain')}
                 </Button>
                 <DialogClose asChild>
                     <Button asChild className="bg-foreground text-primary hover:bg-foreground/90">
                     <a href={link} target="_blank" rel="noopener noreferrer">
                         <Globe className="mr-2 h-4 w-4" />
-                        Official Website
+                        {t('schemes.card.website')}
                     </a>
                     </Button>
                 </DialogClose>
