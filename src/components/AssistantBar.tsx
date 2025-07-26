@@ -38,7 +38,7 @@ export function AssistantBar() {
   return (
     <footer className="fixed bottom-16 left-0 right-0 z-20 p-2 md:bottom-0">
       <div className="relative mx-auto max-w-4xl">
-        <div className="flex w-full items-center gap-3 rounded-full border bg-background/95 p-2 pl-4 shadow-lg backdrop-blur-sm">
+        <div className="flex w-full items-center gap-3 rounded-full border bg-card p-2 pl-4 shadow-lg">
           {attachment && (
             <div className="relative flex-shrink-0">
               <Image
