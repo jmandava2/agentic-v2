@@ -1,3 +1,4 @@
+
 'use client';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -13,6 +14,7 @@ import {
   LineChart,
   Leaf,
   Landmark,
+  User,
 } from 'lucide-react';
 
 export function AppSidebar() {
@@ -22,6 +24,7 @@ export function AppSidebar() {
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
     { href: '/schemes', label: 'Schemes', icon: Landmark },
+    { href: '/profile', label: 'Profile', icon: User },
   ];
 
   return (

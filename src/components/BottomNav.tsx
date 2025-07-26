@@ -11,11 +11,11 @@ const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/market-advisory', label: 'Market', icon: LineChart },
   { href: '/schemes', label: 'Schemes', icon: Landmark },
+  { href: '/profile', label: 'Profile', icon: User },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
-  const isProfileActive = false;
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 z-30 bg-black md:hidden">
@@ -33,7 +33,6 @@ export function BottomNav() {
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
         ))}
-        <ProfileMenu />
       </nav>
     </footer>
   );
