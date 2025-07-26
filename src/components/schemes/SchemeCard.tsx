@@ -58,8 +58,8 @@ export function SchemeCard({ title, description, eligibility, benefits, howToApp
                 <CardTitle className="font-headline">{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
-             <CardFooter>
-                 <Button variant="link" size="sm" className="w-full justify-end text-primary">
+             <CardFooter className="justify-end">
+                 <Button variant="outline" size="sm">
                     <span>Learn More</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
