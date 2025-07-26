@@ -36,8 +36,10 @@ const notifyListeners = () => {
 };
 
 const setGlobalListening = (state: boolean) => {
-  isListeningGlobally = state;
-  notifyListeners();
+  if (isListeningGlobally !== state) {
+    isListeningGlobally = state;
+    notifyListeners();
+  }
 };
 
 export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
@@ -51,7 +53,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
-      setGlobalListening(false); // Manually set state to close overlay
+      // State is set in the onend handler
     }
   }, []);
 
@@ -66,7 +68,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
         toast({
           title: 'Command Recognized',
           description: `Navigating to ${
-            path === '/' ? 'Landing Page' : path
+            path === '/' ? 'Landing Page' : path.replace('/', '')
           }...`,
         });
         router.push(path);
@@ -90,15 +92,25 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
       recognition.lang = 'en-US'; // Could be extended to 'kn-IN' for Kannada
-      recognition.interimResults = false;
+      recognition.interimResults = true; // Changed to true for live transcript
       recognition.maxAlternatives = 1;
-
+      
       recognition.onresult = (event: SpeechRecognitionEvent) => {
-        const currentTranscript = event.results[0][0].transcript
-          .toLowerCase()
-          .trim();
-        setTranscript(currentTranscript);
-        processCommand(currentTranscript);
+        let interimTranscript = '';
+        let finalTranscript = '';
+        for (let i = 0; i < event.results.length; i++) {
+            const transcriptChunk = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcriptChunk;
+            } else {
+                interimTranscript += transcriptChunk;
+            }
+        }
+        setTranscript(interimTranscript || finalTranscript);
+
+        if (finalTranscript) {
+          processCommand(finalTranscript.toLowerCase().trim());
+        }
       };
 
       recognition.onstart = () => {
@@ -111,7 +123,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        if (event.error !== 'no-speech') {
+        if (event.error !== 'no-speech' && event.error !== 'aborted') {
           toast({
             variant: 'destructive',
             title: 'Voice Error',
@@ -140,6 +152,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
   const startListening = () => {
     if (recognitionRef.current && !isListeningGlobally) {
+       setTranscript('');
       recognitionRef.current.start();
     }
   };

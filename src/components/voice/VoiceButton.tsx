@@ -5,6 +5,7 @@ import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '../ui/button';
+import { useCamera } from '@/hooks/use-camera';
 
 export function VoiceButton() {
   const { toast } = useToast();
@@ -21,6 +22,7 @@ export function VoiceButton() {
         description: 'Your browser does not support voice commands.',
       }),
   });
+  const { isCameraOpen } = useCamera();
 
   const handleToggleListening = () => {
     if (isListening) {
@@ -39,6 +41,7 @@ export function VoiceButton() {
       variant="ghost"
       size="icon"
       onClick={handleToggleListening}
+      disabled={isListening || isCameraOpen}
       className={cn(
         'relative h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90'
       )}

@@ -11,9 +11,11 @@ import { useAttachment } from '@/hooks/use-attachment';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 
 export function AssistantBar() {
-  const { openCamera } = useCamera();
+  const { isCameraOpen, openCamera } = useCamera();
+  const { isListening } = useVoiceRecognition();
   const { attachment, setAttachment } = useAttachment();
   const { toast } = useToast();
   const [message, setMessage] = useState('');
@@ -63,6 +65,7 @@ export function AssistantBar() {
               variant="ghost"
               size="icon"
               onClick={openCamera}
+              disabled={isListening || isCameraOpen}
               className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
             >
               <Camera className="h-4 w-4" />
@@ -84,6 +87,7 @@ export function AssistantBar() {
             variant="ghost"
             size="icon"
             onClick={handleSendMessage}
+            disabled={isListening || isCameraOpen}
             className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
           >
             <Send className="h-4 w-4" />
