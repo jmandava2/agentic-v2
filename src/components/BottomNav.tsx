@@ -32,7 +32,7 @@ export function BottomNav() {
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
         ))}
-        <div className="flex flex-col items-center gap-1 p-2 text-muted-foreground">
+        <div className="flex flex-col items-center gap-1 p-2 text-muted-foreground [&_.h-8]:h-6 [&_.w-8]:w-6">
            <ProfileMenu />
            <span className="text-xs font-medium">Profile</span>
         </div>

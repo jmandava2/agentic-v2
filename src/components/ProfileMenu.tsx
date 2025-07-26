@@ -17,7 +17,7 @@ export function ProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon">
+        <button>
           <Avatar className="h-8 w-8">
             <AvatarImage
               src="https://placehold.co/40x40"
@@ -27,7 +27,7 @@ export function ProfileMenu() {
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
           <span className="sr-only">Open user menu</span>
-        </Button>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 mb-2">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
