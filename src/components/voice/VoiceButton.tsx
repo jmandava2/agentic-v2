@@ -8,15 +8,19 @@ import { Button } from '../ui/button';
 
 export function VoiceButton() {
   const { toast } = useToast();
-  const { isListening, startListening, stopListening, hasRecognitionSupport } =
-    useVoiceRecognition({
-      onNoSupport: () =>
-        toast({
-          variant: 'destructive',
-          title: 'Voice recognition not supported',
-          description: 'Your browser does not support voice commands.',
-        }),
-    });
+  const {
+    isListening,
+    startListening,
+    stopListening,
+    hasRecognitionSupport,
+  } = useVoiceRecognition({
+    onNoSupport: () =>
+      toast({
+        variant: 'destructive',
+        title: 'Voice recognition not supported',
+        description: 'Your browser does not support voice commands.',
+      }),
+  });
 
   const handleToggleListening = () => {
     if (isListening) {
@@ -36,8 +40,7 @@ export function VoiceButton() {
       size="icon"
       onClick={handleToggleListening}
       className={cn(
-        'relative flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90',
-        isListening && 'animate-pulse'
+        'relative flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90'
       )}
     >
       <Mic className="h-5 w-5" />

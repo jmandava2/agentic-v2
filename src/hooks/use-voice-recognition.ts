@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from './use-toast';
 
@@ -19,19 +19,67 @@ const commands = {
   'go to check-in': '/check-in',
   'open check-in': '/check-in',
   'start check-in': '/check-in',
+  'go to schemes': '/schemes',
+  'open schemes': '/schemes',
   'log out': '/',
   'sign out': '/',
 };
 
 type CommandKey = keyof typeof commands;
 
+// Global state management for voice overlay
+const listeners = new Set<(state: boolean) => void>();
+let isListeningGlobally = false;
+
+const notifyListeners = () => {
+  listeners.forEach((listener) => listener(isListeningGlobally));
+};
+
+const setGlobalListening = (state: boolean) => {
+  isListeningGlobally = state;
+  notifyListeners();
+};
+
 export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const router = useRouter();
   const { toast } = useToast();
-  const [isListening, setIsListening] = useState(false);
+  const [isListening, setIsListening] = useState(isListeningGlobally);
   const [transcript, setTranscript] = useState('');
   const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
+
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+    }
+  }, []);
+
+  const processCommand = useCallback(
+    (command: string) => {
+      const foundCommand = Object.keys(commands).find((key) =>
+        command.includes(key)
+      ) as CommandKey | undefined;
+
+      if (foundCommand) {
+        const path = commands[foundCommand];
+        toast({
+          title: 'Command Recognized',
+          description: `Navigating to ${
+            path === '/' ? 'Landing Page' : path
+          }...`,
+        });
+        router.push(path);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Command not recognized',
+          description: `Could not understand: "${command}"`,
+        });
+      }
+      stopListening();
+    },
+    [router, toast, stopListening]
+  );
 
   useEffect(() => {
     const SpeechRecognition =
@@ -45,26 +93,31 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       recognition.maxAlternatives = 1;
 
       recognition.onresult = (event: SpeechRecognitionEvent) => {
-        const currentTranscript = event.results[0][0].transcript.toLowerCase().trim();
+        const currentTranscript = event.results[0][0].transcript
+          .toLowerCase()
+          .trim();
         setTranscript(currentTranscript);
         processCommand(currentTranscript);
       };
 
       recognition.onstart = () => {
-        setIsListening(true);
-        toast({ title: 'Listening...', description: 'Please speak your command.' });
+        setGlobalListening(true);
       };
 
       recognition.onend = () => {
-        setIsListening(false);
+        setGlobalListening(false);
+        setTranscript('');
       };
 
       recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        toast({
-          variant: 'destructive',
-          title: 'Voice Error',
-          description: event.error,
-        });
+        if (event.error !== 'no-speech') {
+          toast({
+            variant: 'destructive',
+            title: 'Voice Error',
+            description: event.error,
+          });
+        }
+        setGlobalListening(false);
       };
 
       recognitionRef.current = recognition;
@@ -72,38 +125,21 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       setHasRecognitionSupport(false);
       props.onNoSupport?.();
     }
-  }, [router, toast, props]);
+  }, [processCommand, props, toast]);
+
+  useEffect(() => {
+    const listener = (state: boolean) => {
+      setIsListening(state);
+    };
+    listeners.add(listener);
+    return () => {
+      listeners.delete(listener);
+    };
+  }, []);
 
   const startListening = () => {
-    if (recognitionRef.current && !isListening) {
+    if (recognitionRef.current && !isListeningGlobally) {
       recognitionRef.current.start();
-    }
-  };
-
-  const stopListening = () => {
-    if (recognitionRef.current && isListening) {
-      recognitionRef.current.stop();
-    }
-  };
-
-  const processCommand = (command: string) => {
-    const foundCommand = Object.keys(commands).find(key =>
-      command.includes(key)
-    ) as CommandKey | undefined;
-
-    if (foundCommand) {
-      const path = commands[foundCommand];
-      toast({
-        title: 'Command Recognized',
-        description: `Navigating to ${path === '/' ? 'Landing Page' : path}...`,
-      });
-      router.push(path);
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Command not recognized',
-        description: `Could not understand: "${command}"`,
-      });
     }
   };
 
