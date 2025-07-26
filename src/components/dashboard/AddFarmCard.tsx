@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -55,7 +56,7 @@ const formSchema = z.object({
   plantingDate: z.date({ required_error: 'Planting date is required' }),
   expectedYield: z.string().min(1, 'Expected yield is required'),
   cropStage: z.string({ required_error: 'Please select a crop stage.' }),
-  soil: z.string().min(1, 'Soil type is required'),
+  soil: z.string({ required_error: 'Please select a soil type.' }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -214,9 +215,30 @@ export function AddFarmCard() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Soil Type</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Clay Loam" {...field} />
-                  </FormControl>
+                   <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a soil type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="alluvial">Alluvial Soil</SelectItem>
+                      <SelectItem value="black">Black Soil</SelectItem>
+                      <SelectItem value="red">Red Soil</SelectItem>
+                      <SelectItem value="laterite">Laterite Soil</SelectItem>
+                      <SelectItem value="arid">Arid Soil</SelectItem>
+                      <SelectItem value="forest">Forest Soil</SelectItem>
+                      <SelectItem value="peat">Peat Soil</SelectItem>
+                      <SelectItem value="saline">Saline Soil</SelectItem>
+                      <SelectItem value="loam">Loam Soil</SelectItem>
+                      <SelectItem value="sandy">Sandy Soil</SelectItem>
+                      <SelectItem value="clay">Clay Loam</SelectItem>
+                      <SelectItem value="silt">Silt Soil</SelectItem>
+                    </SelectContent>
+                  </Select>
                   <FormMessage />
                 </FormItem>
               )}
