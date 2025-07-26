@@ -1,5 +1,7 @@
 
 'use client';
+import { useState, useEffect } from 'react';
+import type { EmblaCarouselType } from 'embla-carousel-react';
 
 import {
   Carousel,
@@ -7,10 +9,13 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
+  useCarousel,
 } from '@/components/ui/carousel';
 import { FarmInfoCard } from './FarmInfoCard';
 import { AddFarmCard } from './AddFarmCard';
 import { Wheat } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
 
 const TomatoIcon = () => (
   <svg
@@ -98,8 +103,29 @@ const farms = [
 ];
 
 export function FarmInfoCarousel() {
+  const [api, setApi] = useState<EmblaCarouselType | undefined>();
+  const [current, setCurrent] = useState(0);
+
+  useEffect(() => {
+    if (!api) return;
+
+    setCurrent(api.selectedScrollSnap());
+    const onSelect = (api: EmblaCarouselType) => {
+      setCurrent(api.selectedScrollSnap());
+    };
+
+    api.on('select', onSelect);
+
+    return () => {
+      api.off('select', onSelect);
+    };
+  }, [api]);
+
+  const slideCount = farms.length + 1; // +1 for AddFarmCard
+
   return (
-    <Carousel className="w-full">
+    <div>
+    <Carousel setApi={setApi} className="w-full">
       <CarouselContent>
         {farms.map((farm, index) => (
           <CarouselItem key={index}>
@@ -113,5 +139,18 @@ export function FarmInfoCarousel() {
       <CarouselPrevious className="hidden md:flex" />
       <CarouselNext className="hidden md:flex" />
     </Carousel>
+     <div className="flex justify-center gap-2 mt-4">
+        {Array.from({ length: slideCount }).map((_, index) => (
+          <button
+            key={index}
+            onClick={() => api?.scrollTo(index)}
+            className={cn(
+              "h-2 w-2 rounded-full transition-colors",
+              current === index ? "bg-primary" : "bg-muted"
+            )}
+          />
+        ))}
+      </div>
+    </div>
   );
 }
