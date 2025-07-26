@@ -15,8 +15,8 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogDescription,
+  DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
@@ -33,7 +33,7 @@ type FarmInfoCardProps = {
 };
 
 const InfoChip = ({ label, value }: { label: string; value: string }) => (
-  <div className="rounded-lg bg-background/60 p-3 text-center shadow-md backdrop-blur-sm">
+  <div className="rounded-lg bg-background/60 p-3 text-center shadow-md backdrop-blur-sm flex-1">
     <p className="text-sm font-medium text-muted-foreground">{label}</p>
     <p className="text-lg font-bold text-foreground">{value}</p>
   </div>
@@ -41,6 +41,7 @@ const InfoChip = ({ label, value }: { label: string; value: string }) => (
 
 export function FarmInfoCard({
   farmName,
+  cropName,
   cropIcon,
   area,
   mandiPrice,
@@ -49,8 +50,8 @@ export function FarmInfoCard({
   history,
 }: FarmInfoCardProps) {
   return (
-    <Card className="relative h-full min-h-[300px] w-full overflow-hidden p-4 flex flex-col justify-between">
-      <CardHeader className="absolute inset-x-0 top-0 z-10 flex flex-row justify-between p-4">
+    <Card className="relative h-full min-h-[350px] w-full overflow-hidden p-4 flex flex-col justify-between">
+       <CardHeader className="flex flex-row justify-between items-center p-0 z-10">
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">Suggestions</Button>
@@ -108,6 +109,8 @@ export function FarmInfoCard({
         <div className="flex h-32 w-32 items-center justify-center rounded-full bg-background/50 text-primary shadow-inner backdrop-blur-xl">
            <div className="h-20 w-20">{cropIcon}</div>
         </div>
+         <p className="font-headline text-2xl font-bold mt-2">{cropName}</p>
+        <p className="text-sm text-muted-foreground">{farmName}</p>
       </CardContent>
 
       <CardFooter className="relative z-10 grid grid-cols-3 gap-3 p-0">
@@ -115,9 +118,6 @@ export function FarmInfoCard({
         <InfoChip label="Mandi Price" value={mandiPrice} />
         <InfoChip label="Est. Yield" value={yieldDate} />
       </CardFooter>
-       <div className="absolute bottom-2 right-4 text-xs font-bold text-foreground/80 z-10">
-          {farmName}
-        </div>
     </Card>
   );
 }
