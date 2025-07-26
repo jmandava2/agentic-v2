@@ -13,6 +13,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { MarketChart } from '@/components/market-advisory/MarketChart';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const formSchema = z.object({
   produce: z.string().min(2, { message: 'Produce name is required.' }),
@@ -26,13 +27,14 @@ export default function MarketAdvisoryPage() {
   const [result, setResult] = useState<AnalyzeMarketDataOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const [timeRange, setTimeRange] = useState('daily');
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       produce: 'Sona Masoori Rice',
       currentMarketPrice: 2500,
-      historicalMarketPrices: '[2200, 2300, 2250, 2400, 2450]',
+      historicalMarketPrices: '[2200, 2300, 2250, 2400, 2450, 2500, 2480]',
     },
   });
   
@@ -70,7 +72,34 @@ export default function MarketAdvisoryPage() {
     <>
     <h1 className="font-headline text-3xl font-bold mb-6">Market Advisory</h1>
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-      <div className="lg:col-span-2">
+      
+      <div className="lg:col-span-3">
+        <Card className="h-full">
+           <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="font-headline">Price Trend</CardTitle>
+                <CardDescription>Historical price data for {form.watch('produce')}.</CardDescription>
+              </div>
+              <Select value={timeRange} onValueChange={setTimeRange}>
+                <SelectTrigger className="w-[120px]">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="daily">Daily</SelectItem>
+                  <SelectItem value="weekly">Weekly</SelectItem>
+                  <SelectItem value="monthly">Monthly</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <MarketChart data={chartData} />
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="lg:col-span-2 space-y-8">
         <Card>
           <CardHeader>
             <CardTitle className="font-headline">Market Analysis</CardTitle>
@@ -128,17 +157,15 @@ export default function MarketAdvisoryPage() {
             </form>
           </Form>
         </Card>
-      </div>
 
-      <div className="lg:col-span-3">
-        <Card className="h-full">
+        <Card>
           <CardHeader>
             <CardTitle className="font-headline">Recommendation</CardTitle>
-            <CardDescription>Analysis result and price trend.</CardDescription>
+            <CardDescription>AI analysis result.</CardDescription>
           </CardHeader>
           <CardContent>
             {loading && (
-              <div className="flex h-64 items-center justify-center">
+              <div className="flex h-40 items-center justify-center">
                 <Loader2 className="h-10 w-10 animate-spin text-primary" />
               </div>
             )}
@@ -158,14 +185,11 @@ export default function MarketAdvisoryPage() {
               </div>
             )}
              {!loading && !result && (
-              <div className="flex h-64 items-center justify-center">
+              <div className="flex h-40 items-center justify-center">
                 <p className="text-muted-foreground">Results will appear here.</p>
               </div>
             )}
           </CardContent>
-           <CardFooter>
-              <MarketChart data={chartData} />
-            </CardFooter>
         </Card>
       </div>
     </div>

@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Line, LineChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
@@ -22,28 +22,43 @@ type MarketChartProps = {
 
 export function MarketChart({ data }: MarketChartProps) {
   return (
-    <ChartContainer config={chartConfig} className="h-[250px] w-full">
-      <BarChart accessibilityLayer data={data}>
+    <ChartContainer config={chartConfig} className="h-[300px] w-full">
+      <LineChart
+        accessibilityLayer
+        data={data}
+        margin={{
+          top: 5,
+          right: 20,
+          left: -10,
+          bottom: 5,
+        }}
+      >
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="day"
           tickLine={false}
-          tickMargin={10}
           axisLine={false}
+          tickMargin={10}
           tickFormatter={(value) => value.slice(0, 6)}
         />
         <YAxis
             tickLine={false}
             axisLine={false}
             tickMargin={10}
-            width={30}
+            width={40}
         />
         <ChartTooltip
-          cursor={false}
+          cursor={true}
           content={<ChartTooltipContent indicator="dot" />}
         />
-        <Bar dataKey="price" fill="var(--color-price)" radius={4} />
-      </BarChart>
+        <Line 
+            dataKey="price" 
+            type="monotone"
+            stroke="var(--color-price)" 
+            strokeWidth={2}
+            dot={false}
+        />
+      </LineChart>
     </ChartContainer>
   );
 }
