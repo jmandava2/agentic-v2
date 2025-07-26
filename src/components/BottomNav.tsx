@@ -25,7 +25,7 @@ export function BottomNav() {
             href={item.href}
             className={cn(
               'flex flex-col items-center gap-1 p-2 text-muted-foreground',
-              pathname.startsWith(item.href) && 'text-primary'
+              pathname.startsWith(item.href) && 'text-foreground'
             )}
           >
             <item.icon className="h-6 w-6" />
