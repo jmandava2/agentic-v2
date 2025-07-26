@@ -23,12 +23,7 @@ export function ProfileMenu() {
           className="rounded-full hover:bg-transparent"
         >
           <Avatar className="h-8 w-8" data-slot="avatar">
-            <AvatarImage
-              src="https://placehold.co/40x40"
-              alt="User"
-              data-ai-hint="person portrait"
-            />
-            <AvatarFallback>U</AvatarFallback>
+            <AvatarFallback>F</AvatarFallback>
           </Avatar>
           <span className="sr-only">Open user menu</span>
         </Button>
