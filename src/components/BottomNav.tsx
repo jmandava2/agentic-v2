@@ -3,14 +3,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, ClipboardCheck, User, Landmark } from 'lucide-react';
+import { Home, LineChart, User, Landmark } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProfileMenu } from './ProfileMenu';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/market-advisory', label: 'Market', icon: LineChart },
-  { href: '/check-in', label: 'Check-in', icon: ClipboardCheck },
   { href: '/schemes', label: 'Schemes', icon: Landmark },
 ];
 
