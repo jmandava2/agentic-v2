@@ -11,7 +11,7 @@ type UseVoiceRecognitionProps = {
 };
 
 // Check for SpeechRecognition API
-const SpeechRecognition =
+const getSpeechRecognition = () =>
   typeof window !== 'undefined'
     ? window.SpeechRecognition || window.webkitSpeechRecognition
     : null;
@@ -22,15 +22,18 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
-  const [hasRecognitionSupport, setHasRecognitionSupport] = useState(!!SpeechRecognition);
+  const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
 
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
+    const SpeechRecognition = getSpeechRecognition();
     if (!SpeechRecognition) {
       onNoSupport?.();
       setHasRecognitionSupport(false);
+    } else {
+      setHasRecognitionSupport(true);
     }
     // Clean up audio element on unmount
     return () => {
@@ -54,8 +57,9 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   }, []);
 
   const startListening = useCallback(() => {
-    if (isListening || !SpeechRecognition) {
-      return;
+    const SpeechRecognition = getSpeechRecognition();
+    if (!SpeechRecognition) {
+        return;
     }
 
     setIsListening(true);
@@ -65,9 +69,9 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = 'en-US';
+    recognitionRef.current = recognition;
 
     recognition.onstart = () => {
-        // Already set state, just log
       console.log('Voice recognition started.');
     };
 
@@ -122,16 +126,12 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     };
 
     recognition.onend = () => {
-        // stopListening() is called by onresult or onerror, so this is just a final check.
-        if (isListening) {
-           stopListening();
-        }
+       stopListening();
     };
     
-    recognitionRef.current = recognition;
     recognition.start();
 
-  }, [isListening, toast, stopListening]);
+  }, [toast, stopListening]);
 
   return {
     isListening,
