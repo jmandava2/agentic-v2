@@ -1,9 +1,12 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, HeartPulse, Wheat } from 'lucide-react';
+import { Home, LineChart, HeartPulse, Wheat, Mic } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { VoiceButton } from './voice/VoiceButton';
+import { ProfileMenu } from './Header';
 
 const links = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
@@ -36,6 +39,8 @@ export function BottomNav() {
             </Link>
           );
         })}
+        <VoiceButton />
+        <ProfileMenu />
       </nav>
     </footer>
   );

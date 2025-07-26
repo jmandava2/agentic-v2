@@ -1,7 +1,6 @@
 
 'use client';
 import { Mic } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
@@ -31,22 +30,21 @@ export function VoiceButton() {
   }
 
   return (
-    <Button
-      variant="outline"
-      size="icon"
+    <button
       onClick={handleToggleListening}
       className={cn(
-        'relative rounded-full',
-        isListening && 'bg-primary/20 text-primary-foreground'
+        'relative flex flex-col items-center gap-1 p-2 rounded-md text-xs font-medium transition-colors text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+        isListening && 'text-primary'
       )}
     >
       <Mic className="h-5 w-5" />
-      {isListening && (
-        <span className="absolute inset-0 z-0 h-full w-full animate-ping rounded-full bg-primary opacity-75"></span>
+      <span>Assistant</span>
+       {isListening && (
+        <span className="absolute top-1 right-1 z-0 h-2 w-2 rounded-full bg-primary animate-ping"></span>
       )}
       <span className="sr-only">
         {isListening ? 'Stop listening' : 'Start voice command'}
       </span>
-    </Button>
+    </button>
   );
 }

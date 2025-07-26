@@ -4,7 +4,6 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
-import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -23,7 +22,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
       <Sidebar variant="sidebar" collapsible="icon">
         <AppSidebar />
       </Sidebar>
-      <Header />
       <SidebarInset className="p-4 md:p-6 pb-24 md:pb-6">
         {children}
       </SidebarInset>
