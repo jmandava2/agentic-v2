@@ -5,8 +5,10 @@ import { VoiceButton } from './voice/VoiceButton';
 import { ProfileMenu } from './ProfileMenu';
 import { Button } from './ui/button';
 import { Camera } from 'lucide-react';
+import { useCamera } from '@/hooks/use-camera';
 
 export function AssistantBar() {
+  const { openCamera } = useCamera();
   return (
     <footer className="fixed bottom-16 left-0 right-0 z-20 p-2 md:bottom-0">
       <div className="relative mx-auto max-w-4xl">
@@ -14,6 +16,7 @@ export function AssistantBar() {
           <Button
             variant="ghost"
             size="icon"
+            onClick={openCamera}
             className="flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
           >
             <Camera className="h-5 w-5" />

@@ -8,9 +8,12 @@ import { AssistantBar } from '@/components/AssistantBar';
 import { BottomNav } from '@/components/BottomNav';
 import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { VoiceOverlay } from './voice/VoiceOverlay';
+import { useCamera } from '@/hooks/use-camera';
+import { CameraOverlay } from './camera/CameraOverlay';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const { isListening, transcript, stopListening } = useVoiceRecognition();
+  const { isCameraOpen, closeCamera } = useCamera();
   return (
     <>
       <Sidebar variant="sidebar" collapsible="icon">
@@ -24,6 +27,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
         transcript={transcript}
         onClose={stopListening}
       />
+      <CameraOverlay isOpen={isCameraOpen} onClose={closeCamera} />
     </>
   );
 }
