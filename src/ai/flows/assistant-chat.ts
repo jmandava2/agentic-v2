@@ -7,8 +7,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
-import { generate } from 'genkit/generate';
+import { z, generate } from 'genkit';
 
 const PagesSchema = z.enum(['dashboard', 'market-advisory', 'schemes']);
 
@@ -44,17 +43,6 @@ export async function assistantChat(
   return assistantChatFlow(input);
 }
 
-const prompt = ai.definePrompt({
-  name: 'assistantChatPrompt',
-  tools: [navigateToPage],
-  system:
-    "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool.",
-  input: { schema: AssistantChatInputSchema },
-  output: { schema: AssistantChatOutputSchema },
-  prompt: `User's query: {{{query}}}`,
-});
-
-
 const assistantChatFlow = ai.defineFlow(
   {
     name: 'assistantChatFlow',
@@ -77,9 +65,9 @@ const assistantChatFlow = ai.defineFlow(
     const toolRequest = response.toolRequest();
     if (toolRequest) {
       console.log('Tool call requested:', toolRequest.tool.name);
-      await toolRequest.tool.fn(toolRequest.input);
-      // We can optionally generate a follow-up response after the tool call.
-      // For navigation, a simple confirmation is enough.
+      // The tool function itself doesn't need to be called here on the server
+      // as the client will handle the navigation. We just need to pass the
+      // tool request information back to the client.
       return {
         response: `Navigating to ${toolRequest.input.page}.`,
         toolRequest: toolRequest.json,
