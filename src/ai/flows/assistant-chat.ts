@@ -70,7 +70,7 @@ const assistantChatFlow = ai.defineFlow(
       // tool request information back to the client.
       return {
         response: `Navigating to ${toolRequest.input.page}.`,
-        toolRequest: toolRequest.json,
+        toolRequest: toolRequest,
       };
     }
 
