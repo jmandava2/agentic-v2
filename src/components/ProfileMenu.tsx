@@ -22,7 +22,7 @@ export function ProfileMenu() {
           size="icon"
           className="rounded-full hover:bg-transparent"
         >
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-8 w-8" data-slot="avatar">
             <AvatarImage
               src="https://placehold.co/40x40"
               alt="User"

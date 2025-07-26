@@ -18,22 +18,22 @@ export function BottomNav() {
   const pathname = usePathname();
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-30 border-t bg-background/95 backdrop-blur-sm md:hidden">
+    <footer className="fixed bottom-0 left-0 right-0 z-30 bg-black md:hidden">
       <nav className="flex h-16 items-center justify-around">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
             className={cn(
-              'flex flex-col items-center gap-1 p-2 text-muted-foreground',
-              pathname.startsWith(item.href) && 'text-foreground'
+              'flex flex-col items-center gap-1 p-2 text-primary/70 transition-colors',
+              pathname.startsWith(item.href) && 'text-primary'
             )}
           >
             <item.icon className="h-6 w-6" />
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
         ))}
-        <div className="flex flex-col items-center gap-1 p-2 text-muted-foreground [&>div]:h-6 [&>div]:w-6">
+        <div className="flex flex-col items-center gap-1 p-2 text-primary/70 [&>div]:h-6 [&>div]:w-6 [&_[data-slot=avatar]]:h-6 [&_[data-slot=avatar]]:w-6">
            <ProfileMenu />
            <span className="text-xs font-medium">Profile</span>
         </div>
