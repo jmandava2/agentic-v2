@@ -25,7 +25,7 @@ export function BottomNav() {
             key={item.href}
             href={item.href}
             className={cn(
-              'flex flex-col items-center gap-1 p-2 text-primary/70 transition-colors',
+              'flex flex-col items-center gap-1 p-2 text-gray-400 transition-colors',
               pathname.startsWith(item.href) && 'text-primary'
             )}
           >
@@ -33,7 +33,7 @@ export function BottomNav() {
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
         ))}
-        <div className="flex flex-col items-center gap-1 p-2 text-primary/70 [&>div]:h-6 [&>div]:w-6 [&_[data-slot=avatar]]:h-6 [&_[data-slot=avatar]]:w-6">
+        <div className="flex flex-col items-center gap-1 p-2 text-gray-400 [&>div]:h-6 [&>div]:w-6 [&_[data-slot=avatar]]:h-6 [&_[data-slot=avatar]]:w-6">
            <ProfileMenu />
            <span className="text-xs font-medium">Profile</span>
         </div>
