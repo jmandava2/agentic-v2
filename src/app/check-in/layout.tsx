@@ -2,7 +2,7 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppLayout } from '@/components/AppLayout';
 
-export default function YieldCheckLayout({
+export default function CheckinLayout({
   children,
 }: {
   children: React.ReactNode;

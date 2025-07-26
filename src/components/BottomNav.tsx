@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, HeartPulse, Wheat, Mic } from 'lucide-react';
+import { Home, LineChart, ClipboardCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { VoiceButton } from './voice/VoiceButton';
 import { ProfileMenu } from './Header';
@@ -11,8 +11,7 @@ import { ProfileMenu } from './Header';
 const links = [
   { href: '/dashboard', label: 'Dashboard', icon: Home },
   { href: '/market-advisory', label: 'Market', icon: LineChart },
-  { href: '/health-check', label: 'Health', icon: HeartPulse },
-  { href: '/yield-check', label: 'Yield', icon: Wheat },
+  { href: '/check-in', label: 'Check-in', icon: ClipboardCheck },
 ];
 
 export function BottomNav() {

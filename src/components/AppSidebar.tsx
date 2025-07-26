@@ -11,8 +11,7 @@ import {
 import {
   Home,
   LineChart,
-  HeartPulse,
-  Wheat,
+  ClipboardCheck,
   Leaf,
 } from 'lucide-react';
 
@@ -22,8 +21,7 @@ export function AppSidebar() {
   const links = [
     { href: '/dashboard', label: 'Dashboard', icon: Home },
     { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
-    { href: '/health-check', label: 'Health Check-in', icon: HeartPulse },
-    { href: '/yield-check', label: 'Yield Check-in', icon: Wheat },
+    { href: '/check-in', label: 'Check-in', icon: ClipboardCheck },
   ];
 
   return (
