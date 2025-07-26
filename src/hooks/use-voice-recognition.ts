@@ -104,7 +104,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
         console.log('Gemini response:', chatResponse.response);
         setTranscript(chatResponse.response);
 
-        const audioResponse = await textToSpeech(chatResponse.response);
+        const audioResponse = await textToSpeech({ text: chatResponse.response, language });
         
         if (audioResponse.media) {
             if (!audioRef.current) {
