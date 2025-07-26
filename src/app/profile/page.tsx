@@ -2,11 +2,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { User, Phone, Mail } from 'lucide-react';
+import { User, Phone, Mail, LogOut } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { Button } from '@/components/ui/button';
+import { useRouter } from 'next/navigation';
 
 const InfoRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
     <div className="flex items-center justify-between p-3 rounded-lg bg-secondary">
@@ -25,6 +27,11 @@ const InfoRow = ({ icon, label, value }: { icon: React.ReactNode; label: string;
 
 export default function ProfilePage() {
     const [language, setLanguage] = useState('en');
+    const router = useRouter();
+
+    const handleLogout = () => {
+        router.push('/');
+    }
     
     return (
         <div className="space-y-8">
@@ -80,6 +87,12 @@ export default function ProfilePage() {
                         </div>
                     </div>
                 </CardContent>
+                <CardFooter className="mt-4">
+                     <Button variant="destructive" className="w-full" onClick={handleLogout}>
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Logout
+                    </Button>
+                </CardFooter>
             </Card>
 
         </div>
