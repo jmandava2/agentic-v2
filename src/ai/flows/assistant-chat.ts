@@ -75,7 +75,7 @@ const assistantChatFlow = ai.defineFlow(
     }
 
     return {
-      response: response.output()?.response || 'Sorry, I could not process that.',
+      response: response.output?.response || 'Sorry, I could not process that.',
       toolRequest: undefined,
     };
   }
