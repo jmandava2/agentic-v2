@@ -47,21 +47,23 @@ export function Todos() {
 
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between">
-        <div>
-          <CardTitle className="font-headline">AI-Powered To-Dos</CardTitle>
-          <CardDescription>
-            Personalized tasks for today.
-          </CardDescription>
+      <CardHeader>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <CardTitle className="font-headline">AI-Powered To-Dos</CardTitle>
+            <CardDescription>
+              Personalized tasks for today.
+            </CardDescription>
+          </div>
+          <Button onClick={handleGenerateTodos} disabled={loading} size="sm" className='shrink-0'>
+            {loading ? (
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            ) : (
+              <ListTodo className="mr-2 h-4 w-4" />
+            )}
+            Generate
+          </Button>
         </div>
-        <Button onClick={handleGenerateTodos} disabled={loading} size="sm">
-          {loading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <ListTodo className="mr-2 h-4 w-4" />
-          )}
-          Generate
-        </Button>
       </CardHeader>
       <CardContent>
         {loading && (
