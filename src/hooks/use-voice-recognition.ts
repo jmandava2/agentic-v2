@@ -50,13 +50,6 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
-  const stopListening = useCallback(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      // State is set in the onend handler
-    }
-  }, []);
-
   const processCommand = useCallback(
     (command: string) => {
       const foundCommand = Object.keys(commands).find((key) =>
@@ -79,10 +72,18 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
           description: `Could not understand: "${command}"`,
         });
       }
-      stopListening();
     },
-    [router, toast, stopListening]
+    [router, toast]
   );
+  
+  const stopListening = useCallback(() => {
+    if (recognitionRef.current) {
+      recognitionRef.current.stop();
+      // Directly update the state, don't wait for the 'onend' event.
+      // The onend event will still fire, but this makes the UI responsive.
+      setGlobalListening(false);
+    }
+  }, []);
 
   useEffect(() => {
     const SpeechRecognition =
@@ -91,8 +92,8 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       setHasRecognitionSupport(true);
       const recognition = new SpeechRecognition();
       recognition.continuous = false;
-      recognition.lang = 'en-US'; // Could be extended to 'kn-IN' for Kannada
-      recognition.interimResults = true; // Changed to true for live transcript
+      recognition.lang = 'en-US'; 
+      recognition.interimResults = true; 
       recognition.maxAlternatives = 1;
       
       recognition.onresult = (event: SpeechRecognitionEvent) => {
@@ -110,6 +111,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
         if (finalTranscript) {
           processCommand(finalTranscript.toLowerCase().trim());
+          stopListening();
         }
       };
 
@@ -138,7 +140,8 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       setHasRecognitionSupport(false);
       props.onNoSupport?.();
     }
-  }, [processCommand, props, toast]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const listener = (state: boolean) => {

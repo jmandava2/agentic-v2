@@ -41,9 +41,10 @@ export function VoiceButton() {
       variant="ghost"
       size="icon"
       onClick={handleToggleListening}
-      disabled={isListening || isCameraOpen}
+      disabled={isCameraOpen}
       className={cn(
-        'relative h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90'
+        'relative h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90',
+        isListening && 'bg-primary text-primary-foreground animate-pulse'
       )}
     >
       <Mic className="h-4 w-4" />
