@@ -45,7 +45,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname.startsWith(link.href)}
+                isActive={pathname === link.href}
                 tooltip={{ children: link.label }}
               >
                 <Link href={link.href}>
