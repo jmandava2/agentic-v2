@@ -29,7 +29,7 @@ export function Header() {
     <header className="fixed left-0 top-0 z-10 flex h-14 w-full items-center border-b bg-background/95 backdrop-blur-sm md:h-[4.5rem] peer-data-[variant=sidebar]:pl-14">
       <div className="flex h-full w-full items-center px-4 md:px-6">
         <div className="flex items-center gap-4">
-            <SidebarTrigger className="md:hidden -ml-2" />
+            <SidebarTrigger className="hidden md:flex" />
             <h1 className="font-headline text-xl font-semibold md:text-2xl">
               {title}
             </h1>
