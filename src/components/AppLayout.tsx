@@ -10,12 +10,13 @@ import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { VoiceOverlay } from './voice/VoiceOverlay';
 import { useCamera } from '@/hooks/use-camera';
 import { CameraOverlay } from './camera/CameraOverlay';
+import { AttachmentProvider } from '@/hooks/use-attachment';
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const { isListening, transcript, stopListening } = useVoiceRecognition();
   const { isCameraOpen, closeCamera } = useCamera();
   return (
-    <>
+    <AttachmentProvider>
       <Sidebar variant="sidebar" collapsible="icon">
         <AppSidebar />
       </Sidebar>
@@ -28,6 +29,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
         onClose={stopListening}
       />
       <CameraOverlay isOpen={isCameraOpen} onClose={closeCamera} />
-    </>
+    </AttachmentProvider>
   );
 }

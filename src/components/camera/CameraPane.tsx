@@ -9,16 +9,21 @@ import {
 } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '../ui/button';
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, Camera as CameraIcon } from 'lucide-react';
+import { useCamera } from '@/hooks/use-camera';
+import { useAttachment } from '@/hooks/use-attachment';
 
 export function CameraPane() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hasCameraPermission, setHasCameraPermission] = useState(true);
   const [devices, setDevices] = useState<MediaDeviceInfo[]>([]);
   const [currentDeviceId, setCurrentDeviceId] = useState<string | undefined>(
     undefined
   );
   const { toast } = useToast();
+  const { closeCamera } = useCamera();
+  const { setAttachment } = useAttachment();
 
   const getCameraPermission = useCallback(
     async (deviceId?: string) => {
@@ -33,7 +38,6 @@ export function CameraPane() {
         return;
       }
 
-      // Stop any existing stream
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach((track) => track.stop());
@@ -54,14 +58,12 @@ export function CameraPane() {
           videoRef.current.srcObject = stream;
         }
 
-        // After getting permission, enumerate devices to populate the list
         const allDevices = await navigator.mediaDevices.enumerateDevices();
         const videoDevices = allDevices.filter(
           (d) => d.kind === 'videoinput'
         );
         setDevices(videoDevices);
         
-        // Set the current device ID
         const currentTrack = stream.getVideoTracks()[0];
         const currentSettings = currentTrack.getSettings();
         setCurrentDeviceId(currentSettings.deviceId);
@@ -70,7 +72,6 @@ export function CameraPane() {
       } catch (error) {
         console.error('Error accessing camera:', error);
         setHasCameraPermission(false);
-        // Fallback to any camera if environment fails
         if ((error as Error).name === 'OverconstrainedError' || (error as Error).name === "NotFoundError") {
              try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -103,7 +104,6 @@ export function CameraPane() {
     getCameraPermission();
 
     return () => {
-      // Cleanup: stop video stream when component unmounts
       if (videoRef.current && videoRef.current.srcObject) {
         const stream = videoRef.current.srcObject as MediaStream;
         stream.getTracks().forEach((track) => track.stop());
@@ -123,10 +123,26 @@ export function CameraPane() {
     }
   };
 
+  const handleCapture = () => {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+    if (video && canvas) {
+      const context = canvas.getContext('2d');
+      if (context) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+        setAttachment(dataUrl);
+        closeCamera();
+      }
+    }
+  };
+
 
   return (
     <div className="w-full max-w-md h-full flex flex-col items-center justify-center p-4">
-      <div className="w-full aspect-[9/16] rounded-2xl border-2 border-dashed bg-secondary/50 flex items-center justify-center overflow-hidden mb-4">
+      <div className="w-full aspect-[9/16] rounded-2xl border-2 border-dashed bg-secondary/50 flex items-center justify-center overflow-hidden mb-4 relative">
         <video
           ref={videoRef}
           className="w-full h-full object-cover"
@@ -134,6 +150,7 @@ export function CameraPane() {
           muted
           playsInline
         />
+        <canvas ref={canvasRef} className="hidden" />
       </div>
       {!hasCameraPermission ? (
         <div className="w-full">
@@ -146,12 +163,18 @@ export function CameraPane() {
           </Alert>
         </div>
       ) : (
-        devices.length > 1 && (
-            <Button onClick={handleSwitchCamera} variant="outline" className="w-full">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                Switch Camera
+        <div className="w-full space-y-2">
+            <Button onClick={handleCapture} className="w-full" size="lg">
+                <CameraIcon className="mr-2 h-5 w-5" />
+                Capture
             </Button>
-        )
+            {devices.length > 1 && (
+                <Button onClick={handleSwitchCamera} variant="outline" className="w-full">
+                    <RefreshCw className="mr-2 h-4 w-4" />
+                    Switch Camera
+                </Button>
+            )}
+        </div>
       )}
     </div>
   );
