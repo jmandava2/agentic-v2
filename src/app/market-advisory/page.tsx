@@ -120,7 +120,7 @@ export default function MarketAdvisoryPage() {
             <Card>
                 <CardContent className="p-4">
                     <div className="flex justify-between items-center mb-4">
-                        <p className="font-medium text-muted-foreground">Recommendation</p>
+                        <h4 className="font-headline text-xl">Recommendation</h4>
                         <Badge
                           variant={result.recommendation === 'Sell' ? 'default' : 'secondary'}
                           className={`px-4 py-2 text-base ${result.recommendation === 'Sell' ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-yellow-500 hover:bg-yellow-600 text-white'}`}
