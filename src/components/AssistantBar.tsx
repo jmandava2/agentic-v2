@@ -14,8 +14,7 @@ export function AssistantBar() {
           <Button
             variant="ghost"
             size="icon"
-            className="flex-shrink-0 rounded-full bg-foreground text-background shadow-[0_0_0_2px_hsl(var(--foreground))] transition-shadow hover:bg-foreground/90 hover:shadow-[0_0_0_2px_hsl(var(--primary))] focus-visible:shadow-[0_0_0_2px_hsl(var(--primary))]"
-            style={{ boxShadow: 'var(--glow)' }}
+            className="flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
           >
             <Camera className="h-5 w-5" />
             <span className="sr-only">Upload Image</span>

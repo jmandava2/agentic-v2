@@ -36,10 +36,9 @@ export function VoiceButton() {
       size="icon"
       onClick={handleToggleListening}
       className={cn(
-        'relative flex-shrink-0 rounded-full bg-foreground text-background shadow-[0_0_0_2px_hsl(var(--foreground))] transition-shadow hover:bg-foreground/90 hover:shadow-[0_0_0_2px_hsl(var(--primary))] focus-visible:shadow-[0_0_0_2px_hsl(var(--primary))]',
-        isListening && 'text-primary'
+        'relative flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90',
+        isListening && 'animate-pulse'
       )}
-       style={{boxShadow: 'var(--glow)'}}
     >
       <Mic className="h-5 w-5" />
       <span className="sr-only">
