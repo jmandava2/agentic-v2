@@ -74,6 +74,10 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
   const stopListening = useCallback(() => {
     if (recognitionRef) {
+      recognitionRef.onresult = null;
+      recognitionRef.onend = null;
+      recognitionRef.onerror = null;
+      recognitionRef.onstart = null;
       recognitionRef.stop();
       recognitionRef = null;
     }
@@ -126,13 +130,13 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
                 const chatResponse = await assistantChat({ query: finalTranscript });
 
                 if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
-                const page = chatResponse.toolRequest.input.page;
-                setGlobalVoiceState({ transcript: `Navigating to ${page}...` });
-                setTimeout(() => {
-                    window.location.assign(`/${page}`);
-                    stopListening();
-                }, 1000);
-                return;
+                  const page = chatResponse.toolRequest.input.page;
+                  setGlobalVoiceState({ transcript: `Navigating to ${page}...` });
+                  setTimeout(() => {
+                      window.location.assign(`/${page}`);
+                      stopListening();
+                  }, 1000);
+                  return;
                 }
 
                 console.log('Gemini response:', chatResponse.response);
@@ -153,9 +157,9 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
             } catch (error) {
                 console.error('Error processing voice input:', error);
                 toast({
-                variant: 'destructive',
-                title: 'Voice Assistant Error',
-                description: 'Sorry, I encountered an error.'
+                  variant: 'destructive',
+                  title: 'Voice Assistant Error',
+                  description: 'Sorry, I encountered an error.'
                 });
                 stopListening();
             }
@@ -175,12 +179,8 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     };
 
     recognition.onend = () => {
-      if (voiceState.isListening) {
-        // Only call stop if the recognition ended prematurely, not by user action
-        // The logic inside onresult handles the natural end of speech.
-        // We can add a check here if we want to differentiate.
-        stopListening();
-      }
+        // The overlay closing logic is now handled exclusively in onresult.
+        // This handler is intentionally left blank to prevent premature closing.
     };
 
     recognition.start();
