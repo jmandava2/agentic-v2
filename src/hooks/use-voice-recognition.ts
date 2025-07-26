@@ -140,19 +140,26 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
                 }
 
                 console.log('Gemini response:', chatResponse.response);
+                // Update UI with text response immediately
                 setGlobalVoiceState({ transcript: chatResponse.response });
 
-                const audioResponse = await textToSpeech({ text: chatResponse.response, language });
-
-                if (audioResponse.media && audioRef.current) {
-                  audioRef.current.src = audioResponse.media;
-                  audioRef.current.play();
-                  audioRef.current.onended = () => {
+                // Start fetching audio but don't block
+                textToSpeech({ text: chatResponse.response, language }).then(audioResponse => {
+                    if (audioResponse.media && audioRef.current) {
+                        audioRef.current.src = audioResponse.media;
+                        audioRef.current.play();
+                        audioRef.current.onended = () => {
+                            setTimeout(() => stopListening(), 2000);
+                        };
+                    } else {
+                        // If no audio, still close overlay after a delay
+                        setTimeout(() => stopListening(), 2000);
+                    }
+                }).catch(err => {
+                    console.error("TTS error:", err);
+                    // Close overlay even if TTS fails
                     setTimeout(() => stopListening(), 2000);
-                  };
-                } else {
-                  setTimeout(() => stopListening(), 2000);
-                }
+                });
 
             } catch (error) {
                 console.error('Error processing voice input:', error);
@@ -179,8 +186,8 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     };
 
     recognition.onend = () => {
-        // The overlay closing logic is now handled exclusively in onresult.
-        // This handler is intentionally left blank to prevent premature closing.
+        // This handler is intentionally left blank. 
+        // The closing logic is now handled exclusively in onresult to prevent premature closing.
     };
 
     recognition.start();
