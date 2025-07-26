@@ -74,7 +74,7 @@ export function AssistantBar() {
           )}
 
           <Input
-            placeholder="Ask anything or type a command..."
+            placeholder="Ask anything"
             className="flex-grow border-0 bg-transparent shadow-none focus-visible:ring-0 truncate"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
