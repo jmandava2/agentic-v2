@@ -28,9 +28,9 @@ export function VoiceOverlay({
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="absolute right-4 top-4 rounded-full text-foreground"
+          className="absolute right-4 top-4 h-9 w-9 rounded-full bg-black/10 text-primary hover:bg-black/20"
         >
-          <X className="h-6 w-6" />
+          <X className="h-5 w-5" />
           <span className="sr-only">Close</span>
         </Button>
         <div className="flex h-full flex-col items-center justify-center">
