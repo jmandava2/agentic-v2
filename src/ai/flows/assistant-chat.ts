@@ -7,7 +7,7 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { z, generate } from 'genkit';
+import { z } from 'genkit';
 
 const PagesSchema = z.enum(['dashboard', 'market-advisory', 'schemes']);
 
@@ -50,7 +50,7 @@ const assistantChatFlow = ai.defineFlow(
     outputSchema: AssistantChatOutputSchema,
   },
   async (input) => {
-    const response = await generate({
+    const response = await ai.generate({
       prompt: `User's query: ${input.query}`,
       model: 'googleai/gemini-1.5-flash-latest',
       tools: [navigateToPage],
