@@ -13,19 +13,26 @@ import { User, LifeBuoy, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from './ui/button';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function ProfileMenu() {
   const pathname = usePathname();
   const isMobile = (pathname !== '/dashboard' && pathname !== '/market-advisory' && pathname !== '/check-in' && pathname !== '/schemes');
-  
+  const isProfileActive = false; // Add logic here if a profile page is ever created
+
   if (isMobile) {
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="flex flex-col items-center justify-center gap-1 p-2 text-gray-400">
-             <User className="h-6 w-6" />
-             <span className="text-xs font-medium">Profile</span>
-          </div>
+           <div
+              className={cn(
+                'flex flex-col items-center gap-1 p-2 text-gray-400 transition-colors',
+                isProfileActive && 'text-primary'
+              )}
+            >
+              <User className="h-6 w-6" />
+              <span className="text-xs font-medium">Profile</span>
+            </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 mb-2">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>

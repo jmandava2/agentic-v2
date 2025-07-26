@@ -33,9 +33,7 @@ export function BottomNav() {
             <span className="text-xs font-medium">{item.label}</span>
           </Link>
         ))}
-        <div className="flex flex-col items-center justify-center gap-1 p-2 text-gray-400">
-           <ProfileMenu />
-        </div>
+        <ProfileMenu />
       </nav>
     </footer>
   );
