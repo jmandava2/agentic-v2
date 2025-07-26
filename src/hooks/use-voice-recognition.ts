@@ -89,63 +89,75 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       return;
     }
 
-    setGlobalVoiceState({ isListening: true, transcript: 'Listening...' });
+    setGlobalVoiceState({ isListening: true, transcript: '' });
 
     if (recognitionRef) {
       recognitionRef.stop();
     }
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.interimResults = false;
+    recognition.interimResults = true; // Enable interim results
     recognition.lang = language === 'kn' ? 'kn-IN' : 'en-US';
     recognitionRef = recognition;
 
     recognition.onstart = () => {
       console.log('Voice recognition started.');
-      setGlobalVoiceState({ isListening: true, transcript: 'Listening...' });
+      setGlobalVoiceState({ isListening: true, transcript: '' });
     };
 
     recognition.onresult = async (event: SpeechRecognitionEvent) => {
-      const capturedTranscript = event.results[0][0].transcript;
-      setGlobalVoiceState({ transcript: `You said: "${capturedTranscript}"` });
-      console.log('Voice input received:', capturedTranscript);
+        let interimTranscript = '';
+        let finalTranscript = '';
 
-      try {
-        setGlobalVoiceState({ transcript: 'Thinking...' });
-        const chatResponse = await assistantChat({ query: capturedTranscript });
-
-        if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
-          const page = chatResponse.toolRequest.input.page;
-          setGlobalVoiceState({ transcript: `Navigating to ${page}...` });
-          setTimeout(() => {
-            window.location.assign(`/${page}`);
-            stopListening();
-          }, 1000);
-          return;
+        for (let i = 0; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+                finalTranscript += event.results[i][0].transcript;
+            } else {
+                interimTranscript += event.results[i][0].transcript;
+            }
         }
+        
+        setGlobalVoiceState({ transcript: finalTranscript || interimTranscript });
 
-        console.log('Gemini response:', chatResponse.response);
-        setGlobalVoiceState({ transcript: chatResponse.response });
+        if (finalTranscript) {
+            console.log('Final voice input received:', finalTranscript);
+            try {
+                setGlobalVoiceState({ transcript: 'Thinking...' });
+                const chatResponse = await assistantChat({ query: finalTranscript });
 
-        const audioResponse = await textToSpeech({ text: chatResponse.response, language });
+                if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
+                const page = chatResponse.toolRequest.input.page;
+                setGlobalVoiceState({ transcript: `Navigating to ${page}...` });
+                setTimeout(() => {
+                    window.location.assign(`/${page}`);
+                    stopListening();
+                }, 1000);
+                return;
+                }
 
-        if (audioResponse.media && audioRef.current) {
-          audioRef.current.src = audioResponse.media;
-          audioRef.current.play();
-          audioRef.current.onended = stopListening;
-        } else {
-          stopListening();
+                console.log('Gemini response:', chatResponse.response);
+                setGlobalVoiceState({ transcript: chatResponse.response });
+
+                const audioResponse = await textToSpeech({ text: chatResponse.response, language });
+
+                if (audioResponse.media && audioRef.current) {
+                audioRef.current.src = audioResponse.media;
+                audioRef.current.play();
+                audioRef.current.onended = stopListening;
+                } else {
+                stopListening();
+                }
+
+            } catch (error) {
+                console.error('Error processing voice input:', error);
+                toast({
+                variant: 'destructive',
+                title: 'Voice Assistant Error',
+                description: 'Sorry, I encountered an error.'
+                });
+                stopListening();
+            }
         }
-
-      } catch (error) {
-        console.error('Error processing voice input:', error);
-        toast({
-          variant: 'destructive',
-          title: 'Voice Assistant Error',
-          description: 'Sorry, I encountered an error.'
-        });
-        stopListening();
-      }
     };
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
@@ -180,7 +192,8 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
 
   return {
-    ...state,
+    isListening: state.isListening,
+    transcript: state.transcript,
     startListening: toggleListening,
     stopListening,
     hasRecognitionSupport,
