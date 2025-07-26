@@ -5,7 +5,10 @@ import { ArrowRight, Leaf, Mic, Languages } from 'lucide-react';
 
 export default function LandingPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background p-8 md:p-16">
+    <div
+      className="flex min-h-screen flex-col p-8 md:p-16"
+      style={{ backgroundColor: 'hsl(120 50% 97%)' }}
+    >
       <header className="flex items-center gap-3 mb-16">
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
           <Leaf className="h-6 w-6 text-primary-foreground" />
@@ -25,7 +28,7 @@ export default function LandingPage() {
             Your AI Farming Ally. Proactive advice for your farm, in your
             language, backed by intelligent analysis.
           </p>
-          <Button asChild size="lg" className="mt-10 h-14 px-8 text-lg bg-foreground text-primary hover:bg-foreground/90">
+          <Button asChild size="lg" className="mt-10 h-14 px-8 text-lg">
             <Link href="/dashboard">
                 <span>Enter Dashboard</span>
                 <ArrowRight className="ml-2 h-5 w-5" />
