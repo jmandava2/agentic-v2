@@ -67,7 +67,7 @@ export default function MarketAdvisoryPage() {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-5">
+    <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-5">
       <div className="lg:col-span-2">
         <Card>
           <CardHeader>
