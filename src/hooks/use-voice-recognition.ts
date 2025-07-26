@@ -11,24 +11,46 @@ type UseVoiceRecognitionProps = {
   onNoSupport?: () => void;
 };
 
+// --- Global State Management ---
+type VoiceState = {
+  isListening: boolean;
+  transcript: string;
+};
+const listeners = new Set<(state: VoiceState) => void>();
+let voiceState: VoiceState = {
+  isListening: false,
+  transcript: '',
+};
+
+const notifyListeners = () => {
+  listeners.forEach((listener) => listener(voiceState));
+};
+
+const setGlobalVoiceState = (newState: Partial<VoiceState>) => {
+  voiceState = { ...voiceState, ...newState };
+  notifyListeners();
+};
+// -----------------------------
+
+
 // Check for SpeechRecognition API
 const getSpeechRecognition = () =>
   typeof window !== 'undefined'
     ? window.SpeechRecognition || window.webkitSpeechRecognition
     : null;
 
+let recognitionRef: SpeechRecognition | null = null;
+const audioRef = { current: typeof window !== 'undefined' ? new Audio() : null };
+
+
 export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const { onNoSupport } = props;
   const { toast } = useToast();
   const { language } = useLanguage();
-
-  const [isListening, setIsListening] = useState(false);
-  const [transcript, setTranscript] = useState('');
+  const [state, setState] = useState(voiceState);
   const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
-
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
+  
+  // Effect for setting up listeners and checking for support
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition();
     if (!SpeechRecognition) {
@@ -37,95 +59,90 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     } else {
       setHasRecognitionSupport(true);
     }
-    // Clean up audio element on unmount
+    
+    const listener = (newState: VoiceState) => setState(newState);
+    listeners.add(listener);
+
     return () => {
-        if (audioRef.current) {
-            audioRef.current.pause();
-            audioRef.current.remove();
-        }
-    }
+      listeners.delete(listener);
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
   }, [onNoSupport]);
 
+
   const stopListening = useCallback(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      recognitionRef.current = null;
+    if (recognitionRef) {
+      recognitionRef.stop();
+      recognitionRef = null;
     }
     if (audioRef.current) {
       audioRef.current.pause();
     }
-    setIsListening(false);
-    setTranscript('');
+    setGlobalVoiceState({ isListening: false, transcript: '' });
   }, []);
 
   const startListening = useCallback(() => {
     const SpeechRecognition = getSpeechRecognition();
-    if (!SpeechRecognition) {
-        return;
+    if (!SpeechRecognition || voiceState.isListening) {
+      return;
     }
 
-    setIsListening(true);
-    setTranscript('Listening...');
+    setGlobalVoiceState({ isListening: true, transcript: 'Listening...' });
 
-    if (recognitionRef.current) {
-        recognitionRef.current.stop();
+    if (recognitionRef) {
+      recognitionRef.stop();
     }
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = language === 'kn' ? 'kn-IN' : 'en-US';
-    recognitionRef.current = recognition;
+    recognitionRef = recognition;
 
     recognition.onstart = () => {
       console.log('Voice recognition started.');
-      setIsListening(true);
+      setGlobalVoiceState({ isListening: true, transcript: 'Listening...' });
     };
 
     recognition.onresult = async (event: SpeechRecognitionEvent) => {
       const capturedTranscript = event.results[0][0].transcript;
-      setTranscript(`You said: "${capturedTranscript}"`);
+      setGlobalVoiceState({ transcript: `You said: "${capturedTranscript}"` });
       console.log('Voice input received:', capturedTranscript);
 
       try {
-        setTranscript('Thinking...');
+        setGlobalVoiceState({ transcript: 'Thinking...' });
         const chatResponse = await assistantChat({ query: capturedTranscript });
-        
+
         if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
-            const page = chatResponse.toolRequest.input.page;
-            setTranscript(`Navigating to ${page}...`);
-            // A short delay to allow the user to read the transcript
-            setTimeout(() => {
-               window.location.assign(`/${page}`);
-               stopListening();
-            }, 1000);
-            return;
+          const page = chatResponse.toolRequest.input.page;
+          setGlobalVoiceState({ transcript: `Navigating to ${page}...` });
+          setTimeout(() => {
+            window.location.assign(`/${page}`);
+            stopListening();
+          }, 1000);
+          return;
         }
 
         console.log('Gemini response:', chatResponse.response);
-        setTranscript(chatResponse.response);
+        setGlobalVoiceState({ transcript: chatResponse.response });
 
         const audioResponse = await textToSpeech({ text: chatResponse.response, language });
-        
-        if (audioResponse.media) {
-            if (!audioRef.current) {
-                audioRef.current = new Audio();
-                document.body.appendChild(audioRef.current);
-            }
-            audioRef.current.src = audioResponse.media;
-            audioRef.current.play();
-            audioRef.current.onended = () => {
-                stopListening(); 
-            };
+
+        if (audioResponse.media && audioRef.current) {
+          audioRef.current.src = audioResponse.media;
+          audioRef.current.play();
+          audioRef.current.onended = stopListening;
         } else {
-            stopListening();
+          stopListening();
         }
 
       } catch (error) {
         console.error('Error processing voice input:', error);
         toast({
-            variant: 'destructive',
-            title: 'Voice Assistant Error',
-            description: 'Sorry, I encountered an error.'
+          variant: 'destructive',
+          title: 'Voice Assistant Error',
+          description: 'Sorry, I encountered an error.'
         });
         stopListening();
       }
@@ -133,40 +150,38 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
-       if (event.error !== 'aborted' && event.error !== 'no-speech') {
-            toast({
-                variant: 'destructive',
-                title: 'Voice Error',
-                description: `An error occurred: ${event.error}`
-            });
-       }
+      if (event.error !== 'aborted' && event.error !== 'no-speech') {
+        toast({
+          variant: 'destructive',
+          title: 'Voice Error',
+          description: `An error occurred: ${event.error}`
+        });
+      }
       stopListening();
     };
 
     recognition.onend = () => {
-       if (isListening) {
-         // This is to handle cases where recognition ends prematurely
-         stopListening();
-       }
+      if (voiceState.isListening) {
+        stopListening();
+      }
     };
-    
+
     recognition.start();
 
-  }, [toast, stopListening, isListening, language]);
+  }, [language, stopListening, toast]);
 
-  const handleToggleListening = () => {
-    if (isListening) {
+  const toggleListening = useCallback(() => {
+    if (voiceState.isListening) {
       stopListening();
     } else {
       startListening();
     }
-  };
+  }, [startListening, stopListening]);
 
 
   return {
-    isListening,
-    transcript,
-    startListening: handleToggleListening, // Use the toggler
+    ...state,
+    startListening: toggleListening,
     stopListening,
     hasRecognitionSupport,
   };
