@@ -1,5 +1,6 @@
 
 import { SchemeCard } from '@/components/schemes/SchemeCard';
+import { Separator } from '@/components/ui/separator';
 
 const allSchemes = [
   {
@@ -55,25 +56,37 @@ const allSchemes = [
 
 
 export default function SchemesPage() {
-  const sortedSchemes = [...allSchemes].sort((a, b) => {
-    if (a.crop === 'Sona Masoori Rice' && b.crop !== 'Sona Masoori Rice') {
-      return -1;
-    }
-    if (a.crop !== 'Sona Masoori Rice' && b.crop === 'Sona Masoori Rice') {
-      return 1;
-    }
-    return 0;
-  });
+  const recommendedSchemes = allSchemes.filter(
+    (scheme) => scheme.crop === 'Sona Masoori Rice'
+  );
+  const otherSchemes = allSchemes.filter(
+    (scheme) => scheme.crop !== 'Sona Masoori Rice'
+  );
 
   return (
     <>
       <h1 className="font-headline text-3xl font-bold mb-6">
-        Recommended Government Schemes
+        Government Schemes
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedSchemes.map((scheme, index) => (
-          <SchemeCard key={index} {...scheme} />
-        ))}
+      
+      <div>
+        <h2 className="font-headline text-2xl font-semibold mb-4">Recommended for You</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {recommendedSchemes.map((scheme, index) => (
+            <SchemeCard key={index} {...scheme} />
+            ))}
+        </div>
+      </div>
+
+      <Separator className="my-8" />
+
+      <div>
+        <h2 className="font-headline text-2xl font-semibold mb-4">All Other Schemes</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {otherSchemes.map((scheme, index) => (
+            <SchemeCard key={index} {...scheme} />
+            ))}
+        </div>
       </div>
     </>
   );
