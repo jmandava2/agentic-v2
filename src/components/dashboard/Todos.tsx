@@ -13,7 +13,7 @@ export function Todos() {
   const [todos, setTodos] = useState<GenerateFarmTodosOutput | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const handleGenerateTodos = async () => {
     setLoading(true);
@@ -33,6 +33,7 @@ export function Todos() {
           pestPressure: 'Low, some leafhoppers spotted.',
           diseaseRisk: 'Moderate risk of blast due to humidity.',
         },
+        language: language,
       });
       setTodos(result);
     } catch (error) {

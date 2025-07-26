@@ -1,3 +1,4 @@
+
 'use server';
 
 /**
@@ -44,6 +45,7 @@ const GenerateFarmTodosInputSchema = z.object({
     'The current lifecycle stage of the crop.'
   ),
   farmState: FarmStateSchema.describe('The current state of the farm.'),
+  language: z.enum(['en', 'kn']).describe('The language for the output.'),
 });
 export type GenerateFarmTodosInput = z.infer<typeof GenerateFarmTodosInputSchema>;
 
@@ -69,6 +71,9 @@ Weather: {{{weather.forecast}}}, Temperature: {{{weather.temperature}}}°C, Humi
 Crop: {{{crop}}}
 Crop Lifecycle Stage: {{{cropLifecycleStage}}}
 Farm State: Soil Moisture: {{{farmState.soilMoisture}}}%, Pest Pressure: {{{farmState.pestPressure}}}, Disease Risk: {{{farmState.diseaseRisk}}}
+Language for To-Do Items: {{{language}}}
+
+Please provide the to-do items in the specified language. For Kannada, use the Kannada script.
 
 To-Do Items:`,
 });
