@@ -19,6 +19,7 @@ const AnalyzeMarketDataInputSchema = z.object({
     .describe(
       'Historical market prices of the produce, as a JSON string array of prices.'
     ),
+  language: z.enum(['en', 'kn']).describe('The language for the output.'),
 });
 export type AnalyzeMarketDataInput = z.infer<typeof AnalyzeMarketDataInputSchema>;
 
@@ -47,6 +48,9 @@ Consider the current market price and historical market prices to determine the 
 Produce: {{{produce}}}
 Current Market Price: {{{currentMarketPrice}}}
 Historical Market Prices: {{{historicalMarketPrices}}}
+Language for Rationale: {{{language}}}
+
+Please provide your rationale in the specified language. For Kannada, use the Kannada script.
 
 Recommendation:`,
 });

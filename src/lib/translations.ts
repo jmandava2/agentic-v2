@@ -1,4 +1,3 @@
-
 const en = {
     appName: 'Namma Krushi',
     landing: {
@@ -22,6 +21,10 @@ const en = {
     },
     dashboard: {
         title: 'Dashboard',
+    },
+    crops: {
+        sonaMasooriRice: 'Sona Masoori Rice',
+        tomato: 'Tomato',
     },
     weather: {
         title: 'Weather Today',
@@ -150,6 +153,43 @@ const en = {
         title: 'Government Schemes',
         recommended: 'Recommended for You',
         other: 'All Other Schemes',
+        list: {
+            pmfby: {
+                title: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
+                description: 'A comprehensive crop insurance scheme to protect farmers against yield losses due to unforeseen events.',
+                eligibility: 'All farmers growing notified crops like Rice in designated areas are eligible.',
+                benefits: 'Insurance coverage against natural calamities, pests, and diseases.',
+                howToApply: 'Enroll through the national crop insurance portal or a financial institution.',
+            },
+            soilHealthCard: {
+                title: 'Soil Health Card Scheme',
+                description: 'Provides a soil health card with crop-wise nutrient recommendations.',
+                eligibility: 'All farmers are eligible to get a soil health card for their holdings.',
+                benefits: 'Informed decisions on fertilizer application, leading to improved soil health and productivity.',
+                howToApply: 'Contact the local agriculture department to get your soil sampled.',
+            },
+            nfsm: {
+                title: 'National Food Security Mission (NFSM)',
+                description: 'Aims to increase the production of rice through area expansion and productivity enhancement.',
+                eligibility: 'Targets districts with lower rice productivity. Assistance is provided to farmers for inputs and technology.',
+                benefits: 'Subsidies on seeds, machinery, and other inputs.',
+                howToApply: 'Schemes are implemented by state agriculture departments.',
+            },
+            kcc: {
+                title: 'Kisan Credit Card (KCC) Scheme',
+                description: 'Provides farmers with timely access to credit for their cultivation and other needs.',
+                eligibility: 'All farmers, including small and marginal farmers, sharecroppers, and tenants.',
+                benefits: 'Low-interest credit for agricultural and allied activities.',
+                howToApply: 'Apply at any commercial bank, regional rural bank, or cooperative bank.',
+            },
+            pkvy: {
+                title: 'Paramparagat Krishi Vikas Yojana (PKVY)',
+                description: 'Promotes organic farming through the adoption of organic villages and PGS certification.',
+                eligibility: 'Farmers in a cluster of 50 acres or more are eligible to participate.',
+                benefits: 'Financial assistance for organic inputs, certification, and marketing.',
+                howToApply: 'Join a cluster formed by the state agriculture department.',
+            }
+        },
         card: {
             learnMore: 'Learn More',
             descriptionTitle: 'Description',
@@ -215,6 +255,10 @@ const kn = {
     },
     dashboard: {
         title: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
+    },
+    crops: {
+        sonaMasooriRice: 'ಸೋನಾ ಮಸೂರಿ ಅಕ್ಕಿ',
+        tomato: 'ಟೊಮೆಟೊ',
     },
     weather: {
         title: 'ಇಂದಿನ ಹವಾಮಾನ',
@@ -343,6 +387,43 @@ const kn = {
         title: 'ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು',
         recommended: 'ನಿಮಗಾಗಿ ಶಿಫಾರಸು ಮಾಡಲಾಗಿದೆ',
         other: 'ಇತರ ಎಲ್ಲಾ ಯೋಜನೆಗಳು',
+        list: {
+            pmfby: {
+                title: 'ಪ್ರಧಾನ ಮಂತ್ರಿ ಫಸಲ್ ಬಿಮಾ ಯೋಜನೆ (PMFBY)',
+                description: 'ಅನಿರೀಕ್ಷಿತ ಘಟನೆಗಳಿಂದ ಉಂಟಾಗುವ ಇಳುವರಿ ನಷ್ಟದಿಂದ ರೈತರನ್ನು ರಕ್ಷಿಸಲು ಒಂದು ವ್ಯಾಪಕ ಬೆಳೆ ವಿಮಾ ಯೋಜನೆ.',
+                eligibility: ' ಗೊತ್ತುಪಡಿಸಿದ ಪ್ರದೇಶಗಳಲ್ಲಿ ಅಕ್ಕಿಯಂತಹ ಅಧಿಸೂಚಿತ ಬೆಳೆಗಳನ್ನು ಬೆಳೆಯುವ ಎಲ್ಲಾ ರೈತರು ಅರ್ಹರು.',
+                benefits: 'ನೈಸರ್ಗಿಕ ವಿಕೋಪಗಳು, ಕೀಟಗಳು ಮತ್ತು ರೋಗಗಳ ವಿರುದ್ಧ ವಿಮಾ ರಕ್ಷಣೆ.',
+                howToApply: 'ರಾಷ್ಟ್ರೀಯ ಬೆಳೆ ವಿಮಾ ಪೋರ್ಟಲ್ ಅಥವಾ ಹಣಕಾಸು ಸಂಸ್ಥೆಯ ಮೂಲಕ ನೋಂದಾಯಿಸಿ.',
+            },
+            soilHealthCard: {
+                title: 'ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಕಾರ್ಡ್ ಯೋಜನೆ',
+                description: 'ಬೆಳೆವಾರು ಪೋಷಕಾಂಶಗಳ ಶಿಫಾರಸುಗಳೊಂದಿಗೆ ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಕಾರ್ಡ್ ಒದಗಿಸುತ್ತದೆ.',
+                eligibility: 'ಎಲ್ಲಾ ರೈತರು ತಮ್ಮ ಹಿಡುವಳಿಗಳಿಗೆ ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಕಾರ್ಡ್ ಪಡೆಯಲು ಅರ್ಹರು.',
+                benefits: 'ಗೊಬ್ಬರ ಬಳಕೆಯ ಬಗ್ಗೆ ತಿಳುವಳಿಕೆಯುಳ್ಳ ನಿರ್ಧಾರಗಳು, ಮಣ್ಣಿನ ಆರೋಗ್ಯ ಮತ್ತು ಉತ್ಪಾದಕತೆ ಸುಧಾರಣೆಗೆ ಕಾರಣವಾಗುತ್ತದೆ.',
+                howToApply: 'ನಿಮ್ಮ ಮಣ್ಣಿನ ಮಾದರಿಯನ್ನು ಪಡೆಯಲು ಸ್ಥಳೀಯ ಕೃಷಿ ಇಲಾಖೆಯನ್ನು ಸಂಪರ್ಕಿಸಿ.',
+            },
+            nfsm: {
+                title: 'ರಾಷ್ಟ್ರೀಯ ಆಹಾರ ಭದ್ರತಾ ಮಿಷನ್ (NFSM)',
+                description: 'ಪ್ರದೇಶ ವಿಸ್ತರಣೆ ಮತ್ತು ಉತ್ಪಾದಕತೆ ಹೆಚ್ಚಳದ ಮೂಲಕ ಅಕ್ಕಿ ಉತ್ಪಾದನೆಯನ್ನು ಹೆಚ್ಚಿಸುವ ಗುರಿ ಹೊಂದಿದೆ.',
+                eligibility: 'ಕಡಿಮೆ ಅಕ್ಕಿ ಉತ್ಪಾದಕತೆ ಹೊಂದಿರುವ ಜಿಲ್ಲೆಗಳನ್ನು ಗುರಿಯಾಗಿಸಿಕೊಂಡಿದೆ. ರೈತರಿಗೆ ಒಳಹರಿವು ಮತ್ತು ತಂತ್ರಜ್ಞಾನಕ್ಕಾಗಿ ನೆರವು ನೀಡಲಾಗುತ್ತದೆ.',
+                benefits: 'ಬೀಜಗಳು, ಯಂತ್ರೋಪಕರಣಗಳು ಮತ್ತು ಇತರ ಒಳಹರಿವುಗಳ ಮೇಲೆ ಸಬ್ಸಿಡಿಗಳು.',
+                howToApply: 'ರಾಜ್ಯ ಕೃಷಿ ಇಲಾಖೆಗಳು ಯೋಜನೆಗಳನ್ನು ಜಾರಿಗೊಳಿಸುತ್ತವೆ.',
+            },
+            kcc: {
+                title: 'ಕಿಸಾನ್ ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್ (KCC) ಯೋಜನೆ',
+                description: 'ರೈತರಿಗೆ ತಮ್ಮ ಕೃಷಿ ಮತ್ತು ಇತರ ಅಗತ್ಯಗಳಿಗಾಗಿ ಸಕಾಲದಲ್ಲಿ ಸಾಲ ಒದಗಿಸುತ್ತದೆ.',
+                eligibility: 'ಸಣ್ಣ ಮತ್ತು ಅತಿ ಸಣ್ಣ ರೈತರು, ಪಾಲುದಾರರು ಮತ್ತು ಗೇಣಿದಾರರು ಸೇರಿದಂತೆ ಎಲ್ಲಾ ರೈತರು.',
+                benefits: 'ಕೃಷಿ ಮತ್ತು ಸಂಬಂಧಿತ ಚಟುವಟಿಕೆಗಳಿಗೆ ಕಡಿಮೆ ಬಡ್ಡಿಯ ಸಾಲ.',
+                howToApply: 'ಯಾವುದೇ ವಾಣಿಜ್ಯ ಬ್ಯಾಂಕ್, ಪ್ರಾದೇಶಿಕ ಗ್ರಾಮೀಣ ಬ್ಯಾಂಕ್ ಅಥವಾ ಸಹಕಾರಿ ಬ್ಯಾಂಕ್‌ನಲ್ಲಿ ಅರ್ಜಿ ಸಲ್ಲಿಸಿ.',
+            },
+            pkvy: {
+                title: 'ಪರಂಪರಾಗತ ಕೃಷಿ ವಿಕಾಸ ಯೋಜನೆ (PKVY)',
+                description: 'ಸಾವಯವ ಗ್ರಾಮಗಳ ಅಳವಡಿಕೆ ಮತ್ತು ಪಿಜಿಎಸ್ ಪ್ರಮಾಣೀಕರಣದ ಮೂಲಕ ಸಾವಯವ ಕೃಷಿಯನ್ನು ಉತ್ತೇಜಿಸುತ್ತದೆ.',
+                eligibility: '50 ಎಕರೆ ಅಥವಾ ಅದಕ್ಕಿಂತ ಹೆಚ್ಚಿನ ಕ್ಲಸ್ಟರ್‌ನಲ್ಲಿರುವ ರೈತರು ಭಾಗವಹಿಸಲು ಅರ್ಹರು.',
+                benefits: 'ಸಾವಯವ ಒಳಹರಿವು, ಪ್ರಮಾಣೀಕರಣ ಮತ್ತು ಮಾರುಕಟ್ಟೆಗಾಗಿ ಆರ್ಥಿಕ ನೆರವು.',
+                howToApply: 'ರಾಜ್ಯ ಕೃಷಿ ಇಲಾಖೆಯಿಂದ ರಚಿಸಲಾದ ಕ್ಲಸ್ಟರ್‌ಗೆ ಸೇರಿ.',
+            }
+        },
         card: {
             learnMore: 'ಇನ್ನಷ್ಟು ತಿಳಿಯಿರಿ',
             descriptionTitle: 'ವಿವರಣೆ',

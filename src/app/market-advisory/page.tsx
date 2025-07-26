@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import { analyzeMarketData } from '@/ai/flows/analyze-market-data';
@@ -50,7 +49,7 @@ export default function MarketAdvisoryPage() {
   const { toast } = useToast();
   const [timeRange, setTimeRange] = useState('daily');
   const [chartData, setChartData] = useState(generateChartData(timeRange));
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   useEffect(() => {
     setChartData(generateChartData(timeRange));
@@ -63,7 +62,8 @@ export default function MarketAdvisoryPage() {
         const analysisResult = await analyzeMarketData({
           produce: mockAnalysisData.produce,
           currentMarketPrice: mockAnalysisData.currentMarketPrice,
-          historicalMarketPrices: mockAnalysisData.historicalMarketPrices
+          historicalMarketPrices: mockAnalysisData.historicalMarketPrices,
+          language: language,
         });
         setResult(analysisResult);
       } catch (error) {
@@ -78,7 +78,7 @@ export default function MarketAdvisoryPage() {
       }
     };
     getAnalysis();
-  }, [toast, t]);
+  }, [toast, t, language]);
 
 
   return (
@@ -92,7 +92,7 @@ export default function MarketAdvisoryPage() {
             <div className="flex justify-between items-start">
               <div>
                 <CardTitle className="font-headline">{t('market.chart.title')}</CardTitle>
-                <CardDescription>{t('market.chart.description', { produce: mockAnalysisData.produce })}</CardDescription>
+                <CardDescription>{t('market.chart.description', { produce: t('crops.sonaMasooriRice') })}</CardDescription>
               </div>
               <Select value={timeRange} onValueChange={setTimeRange}>
                 <SelectTrigger className="w-[120px]">
@@ -132,7 +132,7 @@ export default function MarketAdvisoryPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                    <Separator className="mb-4" />
+                    <Separator className="my-2" />
                     <div>
                         <h4 className="font-headline text-lg mb-2">{t('market.recommendation.reason')}</h4>
                         <p className="text-muted-foreground">{result.rationale}</p>

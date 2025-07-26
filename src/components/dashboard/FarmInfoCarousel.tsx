@@ -1,4 +1,3 @@
-
 'use client';
 import { useState, useEffect } from 'react';
 import type { EmblaCarouselType } from 'embla-carousel-react';
@@ -9,12 +8,12 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-  useCarousel,
 } from '@/components/ui/carousel';
 import { FarmInfoCard } from './FarmInfoCard';
 import { AddFarmCard } from './AddFarmCard';
 import { Wheat } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/hooks/use-language';
 
 
 const TomatoIcon = () => (
@@ -30,7 +29,7 @@ const TomatoIcon = () => (
 
 const farms = [
   {
-    cropName: 'Sona Masoori Rice',
+    cropNameKey: 'crops.sonaMasooriRice',
     cropIcon: <Wheat className="h-full w-full" />,
     area: '5 Acres',
     mandiPrice: '₹2500/q',
@@ -71,7 +70,7 @@ const farms = [
     ],
   },
   {
-    cropName: 'Tomato',
+    cropNameKey: 'crops.tomato',
     cropIcon: <TomatoIcon />,
     area: '2 Acres',
     mandiPrice: '₹1800/q',
@@ -105,6 +104,7 @@ const farms = [
 export function FarmInfoCarousel() {
   const [api, setApi] = useState<EmblaCarouselType | undefined>();
   const [current, setCurrent] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (!api) return;
@@ -129,7 +129,7 @@ export function FarmInfoCarousel() {
       <CarouselContent>
         {farms.map((farm, index) => (
           <CarouselItem key={index}>
-            <FarmInfoCard {...farm} />
+            <FarmInfoCard {...farm} cropName={t(farm.cropNameKey as any)} />
           </CarouselItem>
         ))}
         <CarouselItem>

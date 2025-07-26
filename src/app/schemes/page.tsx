@@ -1,58 +1,64 @@
-
 'use client';
 
 import { SchemeCard } from '@/components/schemes/SchemeCard';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/hooks/use-language';
+import { TranslationKey } from '@/lib/translations';
 
-const allSchemes = [
+type Scheme = {
+  titleKey: TranslationKey;
+  crop: 'Sona Masoori Rice' | 'Sugarcane';
+  descriptionKey: TranslationKey;
+  eligibilityKey: TranslationKey;
+  benefitsKey: TranslationKey;
+  howToApplyKey: TranslationKey;
+  link: string;
+};
+
+const allSchemes: Scheme[] = [
   {
-    title: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)',
+    titleKey: 'schemes.list.pmfby.title',
     crop: 'Sona Masoori Rice',
-    description:
-      'A comprehensive crop insurance scheme to protect farmers against yield losses due to unforeseen events.',
-    eligibility:
-      'All farmers growing notified crops like Rice in designated areas are eligible.',
-    benefits: 'Insurance coverage against natural calamities, pests, and diseases.',
-    howToApply: 'Enroll through the national crop insurance portal or a financial institution.',
+    descriptionKey: 'schemes.list.pmfby.description',
+    eligibilityKey: 'schemes.list.pmfby.eligibility',
+    benefitsKey: 'schemes.list.pmfby.benefits',
+    howToApplyKey: 'schemes.list.pmfby.howToApply',
     link: '#',
   },
   {
-    title: 'Soil Health Card Scheme',
+    titleKey: 'schemes.list.soilHealthCard.title',
     crop: 'Sona Masoori Rice',
-    description:
-      'Provides a soil health card with crop-wise nutrient recommendations.',
-    eligibility: 'All farmers are eligible to get a soil health card for their holdings.',
-    benefits: 'Informed decisions on fertilizer application, leading to improved soil health and productivity.',
-    howToApply: 'Contact the local agriculture department to get your soil sampled.',
+    descriptionKey: 'schemes.list.soilHealthCard.description',
+    eligibilityKey: 'schemes.list.soilHealthCard.eligibility',
+    benefitsKey: 'schemes.list.soilHealthCard.benefits',
+    howToApplyKey: 'schemes.list.soilHealthCard.howToApply',
     link: '#',
   },
   {
-    title: 'National Food Security Mission (NFSM)',
+    titleKey: 'schemes.list.nfsm.title',
     crop: 'Sona Masoori Rice',
-    description:
-      'Aims to increase the production of rice through area expansion and productivity enhancement.',
-    eligibility: 'Targets districts with lower rice productivity. Assistance is provided to farmers for inputs and technology.',
-    benefits: 'Subsidies on seeds, machinery, and other inputs.',
-    howToApply: 'Schemes are implemented by state agriculture departments.',
+    descriptionKey: 'schemes.list.nfsm.description',
+    eligibilityKey: 'schemes.list.nfsm.eligibility',
+    benefitsKey: 'schemes.list.nfsm.benefits',
+    howToApplyKey: 'schemes.list.nfsm.howToApply',
     link: '#',
   },
   {
-    title: 'Kisan Credit Card (KCC) Scheme',
+    titleKey: 'schemes.list.kcc.title',
     crop: 'Sugarcane',
-    description: 'Provides farmers with timely access to credit for their cultivation and other needs.',
-    eligibility: 'All farmers, including small and marginal farmers, sharecroppers, and tenants.',
-    benefits: 'Low-interest credit for agricultural and allied activities.',
-    howToApply: 'Apply at any commercial bank, regional rural bank, or cooperative bank.',
+    descriptionKey: 'schemes.list.kcc.description',
+    eligibilityKey: 'schemes.list.kcc.eligibility',
+    benefitsKey: 'schemes.list.kcc.benefits',
+    howToApplyKey: 'schemes.list.kcc.howToApply',
     link: '#',
   },
   {
-    title: 'Paramparagat Krishi Vikas Yojana (PKVY)',
+    titleKey: 'schemes.list.pkvy.title',
     crop: 'Sugarcane',
-    description: 'Promotes organic farming through the adoption of organic villages and PGS certification.',
-    eligibility: 'Farmers in a cluster of 50 acres or more are eligible to participate.',
-    benefits: 'Financial assistance for organic inputs, certification, and marketing.',
-    howToApply: 'Join a cluster formed by the state agriculture department.',
+    descriptionKey: 'schemes.list.pkvy.description',
+    eligibilityKey: 'schemes.list.pkvy.eligibility',
+    benefitsKey: 'schemes.list.pkvy.benefits',
+    howToApplyKey: 'schemes.list.pkvy.howToApply',
     link: '#',
   },
 ];

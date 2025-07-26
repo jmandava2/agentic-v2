@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -23,13 +22,14 @@ import {
 import { Separator } from '../ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/use-language';
+import { TranslationKey } from '@/lib/translations';
 
 type SchemeCardProps = {
-  title: string;
-  description: string;
-  eligibility: string;
-  benefits: string;
-  howToApply: string;
+  titleKey: TranslationKey;
+  descriptionKey: TranslationKey;
+  eligibilityKey: TranslationKey;
+  benefitsKey: TranslationKey;
+  howToApplyKey: TranslationKey;
   link: string;
 };
 
@@ -41,7 +41,7 @@ const DetailSection = ({ title, content }: { title: string, content: string }) =
 );
 
 
-export function SchemeCard({ title, description, eligibility, benefits, howToApply, link }: SchemeCardProps) {
+export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsKey, howToApplyKey, link }: SchemeCardProps) {
   const { toast } = useToast();
   const { t } = useLanguage();
 
@@ -51,6 +51,12 @@ export function SchemeCard({ title, description, eligibility, benefits, howToApp
         description: t('schemes.card.toast.description'),
     })
   }
+
+  const title = t(titleKey);
+  const description = t(descriptionKey);
+  const eligibility = t(eligibilityKey);
+  const benefits = t(benefitsKey);
+  const howToApply = t(howToApplyKey);
 
   return (
     <Dialog>
