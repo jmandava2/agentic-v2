@@ -19,22 +19,21 @@ export function VoiceOverlay({
   return (
     <div
       className={cn(
-        'fixed inset-x-0 bottom-0 z-50 transform transition-transform duration-300 ease-in-out',
+        'fixed inset-0 z-50 transform transition-transform duration-300 ease-in-out',
         isOpen ? 'translate-y-0' : 'translate-y-full'
       )}
     >
-      <div className="h-[300px] rounded-t-2xl border-t border-border bg-accent/95 p-4 pb-20 shadow-lg backdrop-blur-md">
-        <div className="relative flex h-full flex-col items-center justify-center">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className="absolute right-2 top-2 rounded-full"
-          >
-            <X className="h-5 w-5" />
-            <span className="sr-only">Close</span>
-          </Button>
-
+      <div className="relative h-full w-full bg-accent/95 p-4 shadow-lg backdrop-blur-md">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="absolute right-4 top-4 rounded-full text-foreground"
+        >
+          <X className="h-6 w-6" />
+          <span className="sr-only">Close</span>
+        </Button>
+        <div className="flex h-full flex-col items-center justify-center">
           <div className="flex-grow" />
 
           <VoiceVisualizer />
