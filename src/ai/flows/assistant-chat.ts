@@ -62,7 +62,7 @@ const assistantChatFlow = ai.defineFlow(
       },
     });
 
-    const toolRequest = response.toolRequest();
+    const toolRequest = response.toolRequest;
     if (toolRequest) {
       console.log('Tool call requested:', toolRequest.tool.name);
       // The tool function itself doesn't need to be called here on the server
