@@ -35,7 +35,6 @@ export function BottomNav() {
         ))}
         <div className="flex flex-col items-center justify-center gap-1 p-2 text-gray-400">
            <ProfileMenu />
-           <span className="text-xs font-medium">Profile</span>
         </div>
       </nav>
     </footer>
