@@ -1,4 +1,3 @@
-
 'use client';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -39,7 +38,7 @@ export function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Avatar className="cursor-pointer">
-              <AvatarImage src="https://placehold.co/40x40" alt="User" />
+              <AvatarImage src="https://placehold.co/40x40" alt="User" data-ai-hint="person portrait" />
               <AvatarFallback>NK</AvatarFallback>
             </Avatar>
           </DropdownMenuTrigger>

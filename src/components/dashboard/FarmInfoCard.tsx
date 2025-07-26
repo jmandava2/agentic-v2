@@ -19,7 +19,7 @@ export function FarmInfoCard() {
               alt="Farm"
               fill
               className="object-cover"
-              data-ai-hint="farm field"
+              data-ai-hint="farm rice paddy"
             />
           </div>
           <div className="flex flex-col justify-center space-y-4">
