@@ -1,7 +1,7 @@
 
 'use client';
 
-import { type ReactNode } from 'react';
+import { type ReactNode, useState } from 'react';
 import { Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { AssistantBar } from '@/components/AssistantBar';
@@ -10,7 +10,18 @@ import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { VoiceOverlay } from './voice/VoiceOverlay';
 import { useCamera } from '@/hooks/use-camera';
 import { CameraOverlay } from './camera/CameraOverlay';
-import { AttachmentProvider } from '@/hooks/use-attachment';
+import { AttachmentContext } from '@/hooks/use-attachment';
+
+function AttachmentProvider({ children }: { children: ReactNode }) {
+  const [attachment, setAttachment] = useState<string | null>(null);
+
+  return (
+    <AttachmentContext.Provider value={{ attachment, setAttachment }}>
+      {children}
+    </AttachmentContext.Provider>
+  );
+}
+
 
 export function AppLayout({ children }: { children: ReactNode }) {
   const { isListening, transcript, stopListening } = useVoiceRecognition();
