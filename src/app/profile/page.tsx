@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation';
 const InfoRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) => (
     <div className="flex items-center justify-between p-3 rounded-lg bg-secondary">
       <div className="flex items-center gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-background text-primary">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-foreground text-primary">
             {icon}
         </div>
         <div>
@@ -62,16 +62,7 @@ export default function ProfilePage() {
                     <CardDescription>View your account details and support options.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                    <div>
-                        <h3 className="text-lg font-semibold mb-2 text-muted-foreground">User</h3>
-                        <InfoRow 
-                            icon={<User />}
-                            label="User"
-                            value="farmer@krushi.co"
-                        />
-                    </div>
-                     <Separator />
-                    <div>
+                     <div>
                         <h3 className="text-lg font-semibold mb-2 text-muted-foreground">Support</h3>
                         <div className="space-y-2">
                             <InfoRow 
@@ -88,7 +79,10 @@ export default function ProfilePage() {
                     </div>
                 </CardContent>
                 <CardFooter className="mt-4">
-                     <Button variant="destructive" className="w-full" onClick={handleLogout}>
+                     <Button 
+                        onClick={handleLogout}
+                        className="w-full bg-foreground text-primary hover:bg-foreground/90 hover:text-primary/90"
+                      >
                         <LogOut className="mr-2 h-4 w-4" />
                         Logout
                     </Button>
