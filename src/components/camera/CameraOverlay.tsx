@@ -23,9 +23,9 @@ export function CameraOverlay({ isOpen, onClose }: CameraOverlayProps) {
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 h-9 w-9 rounded-full bg-black/10 text-white hover:bg-black/20"
+          className="absolute right-4 top-4 z-10 h-8 w-8 rounded-full bg-black/10 text-white hover:bg-black/20"
         >
-          <X className="h-5 w-5 font-bold" strokeWidth={3} />
+          <X className="h-4 w-4" strokeWidth={3} />
           <span className="sr-only">Close Camera</span>
         </Button>
         <div className="flex h-full flex-col items-center justify-center">

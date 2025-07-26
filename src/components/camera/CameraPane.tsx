@@ -163,15 +163,15 @@ export function CameraPane() {
           </Alert>
         </div>
       ) : (
-        <div className="w-full space-y-2">
+        <div className="w-full flex items-center justify-center gap-2">
             <Button onClick={handleCapture} className="w-full" size="lg">
                 <CameraIcon className="mr-2 h-5 w-5" />
                 Capture
             </Button>
             {devices.length > 1 && (
-                <Button onClick={handleSwitchCamera} variant="outline" className="w-full">
-                    <RefreshCw className="mr-2 h-4 w-4" />
-                    Switch Camera
+                <Button onClick={handleSwitchCamera} variant="outline" size="icon">
+                    <RefreshCw className="h-5 w-5" />
+                    <span className="sr-only">Switch Camera</span>
                 </Button>
             )}
         </div>

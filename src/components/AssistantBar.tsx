@@ -10,6 +10,7 @@ import { useCamera } from '@/hooks/use-camera';
 import { useAttachment } from '@/hooks/use-attachment';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export function AssistantBar() {
   const { openCamera } = useCamera();
@@ -58,7 +59,7 @@ export function AssistantBar() {
             </div>
           )}
           {!attachment && (
-            <Button
+             <Button
               variant="ghost"
               size="icon"
               onClick={openCamera}
@@ -83,7 +84,7 @@ export function AssistantBar() {
             variant="ghost"
             size="icon"
             onClick={handleSendMessage}
-            className="h-8 w-8 flex-shrink-0 rounded-full bg-primary text-primary-foreground transition-shadow hover:bg-primary/90"
+            className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
           >
             <Send className="h-4 w-4" />
             <span className="sr-only">Send Message</span>
