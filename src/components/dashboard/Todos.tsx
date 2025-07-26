@@ -55,7 +55,12 @@ export function Todos() {
               Personalized tasks for today.
             </CardDescription>
           </div>
-          <Button onClick={handleGenerateTodos} disabled={loading} size="sm" className='shrink-0'>
+          <Button
+            onClick={handleGenerateTodos}
+            disabled={loading}
+            size="sm"
+            className="shrink-0 bg-foreground text-primary hover:bg-foreground/90"
+          >
             {loading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (

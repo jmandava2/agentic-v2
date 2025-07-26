@@ -84,7 +84,7 @@ export function SchemeCard({ title, description, eligibility, benefits, howToApp
                     Explain in Voice
                 </Button>
                 <DialogClose asChild>
-                    <Button asChild>
+                    <Button asChild className="bg-foreground text-primary hover:bg-foreground/90">
                     <a href={link} target="_blank" rel="noopener noreferrer">
                         <Globe className="mr-2 h-4 w-4" />
                         Official Website
