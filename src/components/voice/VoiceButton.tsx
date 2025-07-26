@@ -39,6 +39,7 @@ export function VoiceButton() {
       variant="ghost"
       size="icon"
       onClick={handleToggleListening}
+      disabled={isListening}
       className={cn(
         'relative flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90'
       )}
