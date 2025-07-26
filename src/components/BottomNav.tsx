@@ -16,6 +16,7 @@ const navItems = [
 
 export function BottomNav() {
   const pathname = usePathname();
+  const isProfileActive = false;
 
   return (
     <footer className="fixed bottom-0 left-0 right-0 z-30 bg-black md:hidden">

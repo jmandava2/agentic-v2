@@ -1,6 +1,6 @@
 
 'use client';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,25 +14,27 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function ProfileMenu() {
   const pathname = usePathname();
-  const isMobile = (pathname !== '/dashboard' && pathname !== '/market-advisory' && pathname !== '/check-in' && pathname !== '/schemes');
+  const isMobile = useIsMobile();
   const isProfileActive = false; // Add logic here if a profile page is ever created
 
   if (isMobile) {
     return (
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-           <div
-              className={cn(
-                'flex flex-col items-center gap-1 p-2 text-gray-400 transition-colors',
-                isProfileActive && 'text-primary'
-              )}
-            >
-              <User className="h-6 w-6" />
-              <span className="text-xs font-medium">Profile</span>
-            </div>
+        <DropdownMenuTrigger
+          asChild
+          className={cn(
+            'flex flex-col items-center gap-1 p-2 text-gray-400 transition-colors',
+            isProfileActive && 'text-primary'
+          )}
+        >
+          <div>
+            <User className="h-6 w-6" />
+            <span className="text-xs font-medium">Profile</span>
+          </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56 mb-2">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
@@ -62,7 +64,7 @@ export function ProfileMenu() {
       </DropdownMenu>
     );
   }
-  
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
