@@ -10,22 +10,22 @@ import {
   SidebarMenuButton,
 } from '@/components/ui/sidebar';
 import {
-  LayoutDashboard,
+  Home,
   LineChart,
   HeartPulse,
   Wheat,
   Leaf,
 } from 'lucide-react';
 
-const links = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
-  { href: '/health-check', label: 'Health Check-in', icon: HeartPulse },
-  { href: '/yield-check', label: 'Yield Check-in', icon: Wheat },
-];
-
 export function AppSidebar() {
   const pathname = usePathname();
+
+  const links = [
+    { href: '/dashboard', label: 'Dashboard', icon: Home },
+    { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
+    { href: '/health-check', label: 'Health Check-in', icon: HeartPulse },
+    { href: '/yield-check', label: 'Yield Check-in', icon: Wheat },
+  ];
 
   return (
     <>
@@ -45,7 +45,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === link.href}
+                isActive={pathname.startsWith(link.href)}
                 tooltip={{ children: link.label }}
               >
                 <Link href={link.href}>
