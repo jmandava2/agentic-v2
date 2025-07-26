@@ -67,6 +67,8 @@ export default function MarketAdvisoryPage() {
   }
 
   return (
+    <>
+    <h1 className="font-headline text-3xl font-bold mb-6">Market Advisory</h1>
     <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
       <div className="lg:col-span-2">
         <Card>
@@ -167,5 +169,6 @@ export default function MarketAdvisoryPage() {
         </Card>
       </div>
     </div>
+    </>
   );
 }

@@ -13,6 +13,7 @@ import { YieldLogPane } from '@/components/check-in/YieldLogPane';
 export default function CheckInPage() {
   return (
     <div className="max-w-4xl mx-auto">
+      <h1 className="font-headline text-3xl font-bold mb-6">Check-in</h1>
       <Tabs defaultValue="health-check">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="health-check">Health Check</TabsTrigger>

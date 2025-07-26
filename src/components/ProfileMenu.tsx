@@ -9,15 +9,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LifeBuoy, LogOut } from 'lucide-react';
+import { User, LifeBuoy, LogOut, MoreVertical } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from './ui/button';
 
 export function ProfileMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="flex flex-col items-center gap-1 p-2 rounded-md text-xs font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground">
-          <Avatar className="h-5 w-5">
+        <Button variant="ghost" size="icon">
+          <Avatar className="h-8 w-8">
             <AvatarImage
               src="https://placehold.co/40x40"
               alt="User"
@@ -25,8 +26,8 @@ export function ProfileMenu() {
             />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
-          <span>Profile</span>
-        </button>
+          <span className="sr-only">Open user menu</span>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56 mb-2">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
