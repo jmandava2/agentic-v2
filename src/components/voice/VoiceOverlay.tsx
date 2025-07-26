@@ -28,7 +28,7 @@ export function VoiceOverlay({
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="absolute right-4 top-4 h-9 w-9 rounded-full bg-black/10 text-white hover:bg-black/20"
+          className="absolute right-4 top-4 h-9 w-9 rounded-full bg-muted/70 text-white hover:bg-muted"
         >
           <X className="h-5 w-5 font-bold" strokeWidth={3} />
           <span className="sr-only">Close</span>
