@@ -39,7 +39,7 @@ export function VoiceButton() {
         'relative flex-shrink-0 rounded-full bg-foreground text-background shadow-[0_0_0_2px_hsl(var(--foreground))] transition-shadow hover:bg-foreground/90 hover:shadow-[0_0_0_2px_hsl(var(--primary))] focus-visible:shadow-[0_0_0_2px_hsl(var(--primary))]',
         isListening && 'text-primary'
       )}
-       style={isListening ? { boxShadow: 'var(--glow)'} : {}}
+       style={{boxShadow: 'var(--glow)'}}
     >
       <Mic className="h-5 w-5" />
       <span className="sr-only">
