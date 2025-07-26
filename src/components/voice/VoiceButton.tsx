@@ -41,10 +41,10 @@ export function VoiceButton() {
       onClick={handleToggleListening}
       disabled={isListening}
       className={cn(
-        'relative flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90'
+        'relative h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90'
       )}
     >
-      <Mic className="h-5 w-5" />
+      <Mic className="h-4 w-4" />
       <span className="sr-only">
         {isListening ? 'Stop listening' : 'Start voice command'}
       </span>
