@@ -13,7 +13,6 @@ import {
   LayoutDashboard,
   LineChart,
   HeartPulse,
-  Tractor,
   Wheat,
   Leaf,
 } from 'lucide-react';
@@ -46,7 +45,7 @@ export function AppSidebar() {
             <SidebarMenuItem key={link.href}>
               <SidebarMenuButton
                 asChild
-                isActive={pathname === link.href}
+                isActive={pathname.startsWith(link.href)}
                 tooltip={{ children: link.label }}
               >
                 <Link href={link.href}>
