@@ -1,12 +1,22 @@
 
 'use client';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { VoiceButton } from './voice/VoiceButton';
+import { User, LifeBuoy, LogOut } from 'lucide-react';
 
 const pageTitles: { [key: string]: string } = {
-  '/': 'Dashboard',
+  '/dashboard': 'Dashboard',
   '/market-advisory': 'Market Advisory',
   '/health-check': 'Health Check-in',
   '/yield-check': 'Yield Check-in',
@@ -26,10 +36,39 @@ export function Header() {
       </h1>
       <div className="ml-auto flex items-center gap-4">
         <VoiceButton />
-        <Avatar>
-          <AvatarImage src="https://placehold.co/40x40" alt="User" />
-          <AvatarFallback>NK</AvatarFallback>
-        </Avatar>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Avatar className="cursor-pointer">
+              <AvatarImage src="https://placehold.co/40x40" alt="User" />
+              <AvatarFallback>NK</AvatarFallback>
+            </Avatar>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>
+              <User className="mr-2 h-4 w-4" />
+              <span>User: farmer@krushi.co</span>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuLabel>Support</DropdownMenuLabel>
+             <DropdownMenuItem>
+                <LifeBuoy className="mr-2 h-4 w-4" />
+                <span>Phone: +91-9876543210</span>
+              </DropdownMenuItem>
+               <DropdownMenuItem>
+                <User className="mr-2 h-4 w-4" />
+                <span>Email: help@krushi.co</span>
+              </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href="/">
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

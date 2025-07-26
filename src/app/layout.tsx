@@ -2,8 +2,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { cn } from '@/lib/utils';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppLayout } from '@/components/AppLayout';
 import { Toaster } from '@/components/ui/toaster';
 
 export const metadata: Metadata = {
@@ -27,9 +25,7 @@ export default function RootLayout({
         />
       </head>
       <body className={cn('font-body antialiased')}>
-        <SidebarProvider>
-          <AppLayout>{children}</AppLayout>
-        </SidebarProvider>
+        {children}
         <Toaster />
       </body>
     </html>

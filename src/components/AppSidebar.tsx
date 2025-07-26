@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 const links = [
-  { href: '/', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/market-advisory', label: 'Market Advisory', icon: LineChart },
   { href: '/health-check', label: 'Health Check-in', icon: HeartPulse },
   { href: '/yield-check', label: 'Yield Check-in', icon: Wheat },

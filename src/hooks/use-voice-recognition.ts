@@ -10,9 +10,9 @@ type UseVoiceRecognitionProps = {
 };
 
 const commands = {
-  'go to dashboard': '/',
-  'open dashboard': '/',
-  'show me the dashboard': '/',
+  'go to dashboard': '/dashboard',
+  'open dashboard': '/dashboard',
+  'show me the dashboard': '/dashboard',
   'go to market': '/market-advisory',
   'open market advisory': '/market-advisory',
   'check prices': '/market-advisory',
@@ -22,6 +22,8 @@ const commands = {
   'go to yield': '/yield-check',
   'open yield check': '/yield-check',
   'add yield': '/yield-check',
+  'log out': '/',
+  'sign out': '/',
 };
 
 type CommandKey = keyof typeof commands;
@@ -96,7 +98,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       const path = commands[foundCommand];
       toast({
         title: 'Command Recognized',
-        description: `Navigating to ${path}...`,
+        description: `Navigating to ${path === '/' ? 'Landing Page' : path}...`,
       });
       router.push(path);
     } else {
