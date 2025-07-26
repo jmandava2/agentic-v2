@@ -48,6 +48,7 @@ export function MarketChart({ data }: MarketChartProps) {
             width={40}
             domain={['dataMin', 'dataMax']}
             allowDataOverflow={true}
+            tickCount={6}
         />
         <ChartTooltip
           cursor={true}
