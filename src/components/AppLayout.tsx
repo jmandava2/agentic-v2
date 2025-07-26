@@ -9,7 +9,6 @@ import { BottomNav } from '@/components/BottomNav';
 import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { VoiceOverlay } from './voice/VoiceOverlay';
 import { useCamera } from '@/hooks/use-camera';
-import { CameraOverlay } from './camera/CameraOverlay';
 import { AttachmentContext } from '@/hooks/use-attachment';
 
 function AttachmentProvider({ children }: { children: ReactNode }) {

@@ -1,161 +1,27 @@
 
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
-import { useToast } from './use-toast';
+import { useState, useCallback } from 'react';
 
 type UseVoiceRecognitionProps = {
   onNoSupport?: () => void;
 };
 
-const commands = {
-  'go to dashboard': '/dashboard',
-  'open dashboard': '/dashboard',
-  'show me the dashboard': '/dashboard',
-  'go to market': '/market-advisory',
-  'open market advisory': '/market-advisory',
-  'check prices': '/market-advisory',
-  'go to schemes': '/schemes',
-  'open schemes': '/schemes',
-  'log out': '/',
-  'sign out': '/',
-};
-
-type CommandKey = keyof typeof commands;
-
-// Global state management for voice overlay
-const listeners = new Set<(state: boolean) => void>();
-let isListeningGlobally = false;
-
-const notifyListeners = () => {
-  listeners.forEach((listener) => listener(isListeningGlobally));
-};
-
-const setGlobalListening = (state: boolean) => {
-  if (isListeningGlobally !== state) {
-    isListeningGlobally = state;
-    notifyListeners();
-  }
-};
+// All voice logic has been removed as per the request.
+// The hook now returns a "dummy" state to prevent breaking the UI.
 
 export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
-  const router = useRouter();
-  const { toast } = useToast();
-  const [isListening, setIsListening] = useState(isListeningGlobally);
-  const [transcript, setTranscript] = useState('');
-  const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const [isListening] = useState(false);
+  const [transcript] = useState('');
+  const [hasRecognitionSupport] = useState(true); // Keep UI visible
 
-  const processCommand = useCallback(
-    (command: string) => {
-      const foundCommand = Object.keys(commands).find((key) =>
-        command.includes(key)
-      ) as CommandKey | undefined;
+  const startListening = useCallback(() => {
+    // No-op
+  }, []);
 
-      if (foundCommand) {
-        const path = commands[foundCommand];
-        toast({
-          title: 'Command Recognized',
-          description: `Navigating to ${
-            path === '/' ? 'Landing Page' : path.replace('/', '')
-          }...`,
-        });
-        router.push(path);
-      } else {
-        toast({
-          variant: 'destructive',
-          title: 'Command not recognized',
-          description: `Could not understand: "${command}"`,
-        });
-      }
-    },
-    [router, toast]
-  );
-  
   const stopListening = useCallback(() => {
-    if (recognitionRef.current) {
-      recognitionRef.current.stop();
-      // Directly update the state, don't wait for the 'onend' event.
-      // The onend event will still fire, but this makes the UI responsive.
-      setGlobalListening(false);
-    }
+    // No-op
   }, []);
-
-  useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (SpeechRecognition) {
-      setHasRecognitionSupport(true);
-      const recognition = new SpeechRecognition();
-      recognition.continuous = false;
-      recognition.lang = 'en-US'; 
-      recognition.interimResults = true; 
-      recognition.maxAlternatives = 1;
-      
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        let interimTranscript = '';
-        let finalTranscript = '';
-        for (let i = 0; i < event.results.length; i++) {
-            const transcriptChunk = event.results[i][0].transcript;
-            if (event.results[i].isFinal) {
-                finalTranscript += transcriptChunk;
-            } else {
-                interimTranscript += transcriptChunk;
-            }
-        }
-        setTranscript(interimTranscript || finalTranscript);
-
-        if (finalTranscript) {
-          processCommand(finalTranscript.toLowerCase().trim());
-          stopListening();
-        }
-      };
-
-      recognition.onstart = () => {
-        setGlobalListening(true);
-      };
-
-      recognition.onend = () => {
-        setGlobalListening(false);
-        setTranscript('');
-      };
-
-      recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
-        if (event.error !== 'no-speech' && event.error !== 'aborted') {
-          toast({
-            variant: 'destructive',
-            title: 'Voice Error',
-            description: event.error,
-          });
-        }
-        setGlobalListening(false);
-      };
-
-      recognitionRef.current = recognition;
-    } else {
-      setHasRecognitionSupport(false);
-      props.onNoSupport?.();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    const listener = (state: boolean) => {
-      setIsListening(state);
-    };
-    listeners.add(listener);
-    return () => {
-      listeners.delete(listener);
-    };
-  }, []);
-
-  const startListening = () => {
-    if (recognitionRef.current && !isListeningGlobally) {
-       setTranscript('');
-      recognitionRef.current.start();
-    }
-  };
 
   return {
     isListening,
