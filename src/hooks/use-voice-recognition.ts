@@ -51,6 +51,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
+      setGlobalListening(false); // Manually set state to close overlay
     }
   }, []);
 
