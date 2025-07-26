@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '../ui/button';
-import { CameraRotate } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 
 export function CameraPane() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -148,7 +148,7 @@ export function CameraPane() {
       ) : (
         devices.length > 1 && (
             <Button onClick={handleSwitchCamera} variant="outline" className="w-full">
-                <CameraRotate className="mr-2 h-4 w-4" />
+                <RefreshCw className="mr-2 h-4 w-4" />
                 Switch Camera
             </Button>
         )
