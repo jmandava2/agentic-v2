@@ -10,6 +10,7 @@ import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { VoiceOverlay } from './voice/VoiceOverlay';
 import { useCamera } from '@/hooks/use-camera';
 import { AttachmentContext } from '@/hooks/use-attachment';
+import { CameraOverlay } from './camera/CameraOverlay';
 
 function AttachmentProvider({ children }: { children: ReactNode }) {
   const [attachment, setAttachment] = useState<string | null>(null);
