@@ -5,6 +5,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 import { assistantChat } from '@/ai/flows/assistant-chat';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
 import { useToast } from './use-toast';
+import { useLanguage } from './use-language';
 
 type UseVoiceRecognitionProps = {
   onNoSupport?: () => void;
@@ -19,6 +20,7 @@ const getSpeechRecognition = () =>
 export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const { onNoSupport } = props;
   const { toast } = useToast();
+  const { language } = useLanguage();
 
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
@@ -71,7 +73,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
     recognition.interimResults = false;
-    recognition.lang = 'en-US';
+    recognition.lang = language === 'kn' ? 'kn-IN' : 'en-US';
     recognitionRef.current = recognition;
 
     recognition.onstart = () => {
@@ -88,11 +90,14 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
         setTranscript('Thinking...');
         const chatResponse = await assistantChat({ query: capturedTranscript });
         
-        if (chatResponse.toolRequest && chatResponse.toolRequest.name === 'navigateToPage') {
+        if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
             const page = chatResponse.toolRequest.input.page;
             setTranscript(`Navigating to ${page}...`);
-            window.location.assign(`/${page}`);
-            // Don't play audio or stop listening immediately, let the page redirect.
+            // A short delay to allow the user to read the transcript
+            setTimeout(() => {
+               window.location.assign(`/${page}`);
+               stopListening();
+            }, 1000);
             return;
         }
 
@@ -147,7 +152,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     
     recognition.start();
 
-  }, [toast, stopListening, isListening]);
+  }, [toast, stopListening, isListening, language]);
 
   const handleToggleListening = () => {
     if (isListening) {

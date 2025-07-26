@@ -9,7 +9,7 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const PagesSchema = z.enum(['dashboard', 'market-advisory', 'schemes']);
+const PagesSchema = z.enum(['dashboard', 'market-advisory', 'schemes', 'profile']);
 
 const navigateToPage = ai.defineTool(
   {
