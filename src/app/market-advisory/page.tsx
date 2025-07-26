@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { MarketChart } from '@/components/market-advisory/MarketChart';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
 
 const mockAnalysisData = {
   produce: 'Sona Masoori Rice',
@@ -16,7 +17,30 @@ const mockAnalysisData = {
   historicalMarketPrices: '[2200, 2300, 2250, 2400, 2450, 2500, 2480]',
 };
 
-const mockChartData = JSON.parse(mockAnalysisData.historicalMarketPrices).map((price: number, index: number) => ({ day: `Day ${index + 1}`, price }));
+const generateChartData = (timeRange: string) => {
+    switch (timeRange) {
+        case 'weekly':
+            return [
+                { label: 'Week 1', price: 2250 },
+                { label: 'Week 2', price: 2350 },
+                { label: 'Week 3', price: 2400 },
+                { label: 'Week 4', price: 2480 },
+            ];
+        case 'monthly':
+            return [
+                { label: 'Jan', price: 2100 },
+                { label: 'Feb', price: 2150 },
+                { label: 'Mar', price: 2200 },
+                { label: 'Apr', price: 2250 },
+                { label: 'May', price: 2300 },
+                { label: 'Jun', price: 2400 },
+                { label: 'Jul', price: 2480 },
+            ]
+        case 'daily':
+        default:
+            return JSON.parse(mockAnalysisData.historicalMarketPrices).map((price: number, index: number) => ({ label: `Day ${index + 1}`, price }));
+    }
+}
 
 
 export default function MarketAdvisoryPage() {
@@ -24,6 +48,11 @@ export default function MarketAdvisoryPage() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const [timeRange, setTimeRange] = useState('daily');
+  const [chartData, setChartData] = useState(generateChartData(timeRange));
+
+  useEffect(() => {
+    setChartData(generateChartData(timeRange));
+  }, [timeRange]);
 
   useEffect(() => {
     const getAnalysis = async () => {
@@ -76,7 +105,7 @@ export default function MarketAdvisoryPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <MarketChart data={mockChartData} />
+            <MarketChart data={chartData} />
           </CardContent>
         </Card>
       </div>
@@ -88,9 +117,9 @@ export default function MarketAdvisoryPage() {
           </Card>
         )}
         {!loading && result && (
-            <>
-                <Card>
-                    <CardContent className="p-4 flex justify-between items-center">
+            <Card>
+                <CardContent className="p-4">
+                    <div className="flex justify-between items-center mb-4">
                         <p className="font-medium text-muted-foreground">Recommendation</p>
                         <Badge
                           variant={result.recommendation === 'Sell' ? 'default' : 'secondary'}
@@ -98,17 +127,14 @@ export default function MarketAdvisoryPage() {
                         >
                           {result.recommendation}
                         </Badge>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="font-headline text-lg">Reason</CardTitle>
-                    </CardHeader>
-                    <CardContent>
+                    </div>
+                    <Separator className="my-4" />
+                    <div>
+                        <h4 className="font-headline text-lg mb-2">Reason</h4>
                         <p className="text-muted-foreground">{result.rationale}</p>
-                    </CardContent>
-                </Card>
-            </>
+                    </div>
+                </CardContent>
+            </Card>
         )}
          {!loading && !result && (
             <Card>

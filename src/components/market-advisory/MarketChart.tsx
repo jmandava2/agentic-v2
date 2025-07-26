@@ -17,7 +17,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 type MarketChartProps = {
-  data: { day: string; price: number }[];
+  data: { label: string; price: number }[];
 };
 
 export function MarketChart({ data }: MarketChartProps) {
@@ -35,7 +35,7 @@ export function MarketChart({ data }: MarketChartProps) {
       >
         <CartesianGrid vertical={false} />
         <XAxis
-          dataKey="day"
+          dataKey="label"
           tickLine={false}
           axisLine={false}
           tickMargin={10}
