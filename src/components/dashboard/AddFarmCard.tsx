@@ -50,6 +50,17 @@ export function AddFarmCard() {
                     <SelectItem value="Maize">Maize</SelectItem>
                     <SelectItem value="Sugarcane">Sugarcane</SelectItem>
                     <SelectItem value="Cotton">Cotton</SelectItem>
+                    <SelectItem value="Tur (Pigeon Pea)">Tur (Pigeon Pea)</SelectItem>
+                    <SelectItem value="Gram (Chickpea)">Gram (Chickpea)</SelectItem>
+                    <SelectItem value="Groundnut (Peanut)">Groundnut (Peanut)</SelectItem>
+                    <SelectItem value="Mustard">Mustard</SelectItem>
+                    <SelectItem value="Soybean">Soybean</SelectItem>
+                    <SelectItem value="Jowar (Sorghum)">Jowar (Sorghum)</SelectItem>
+                    <SelectItem value="Bajra (Pearl Millet)">Bajra (Pearl Millet)</SelectItem>
+                    <SelectItem value="Ragi (Finger Millet)">Ragi (Finger Millet)</SelectItem>
+                    <SelectItem value="Tomato">Tomato</SelectItem>
+                    <SelectItem value="Onion">Onion</SelectItem>
+                    <SelectItem value="Potato">Potato</SelectItem>
                 </SelectContent>
             </Select>
           </div>
@@ -65,10 +76,15 @@ export function AddFarmCard() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="Alluvial">Alluvial</SelectItem>
-                    <SelectItem value="Black">Black</SelectItem>
-                    <SelectItem value="Red">Red</SelectItem>
+                    <SelectItem value="Black (Regur)">Black (Regur)</SelectItem>
+                    <SelectItem value="Red and Yellow">Red and Yellow</SelectItem>
                     <SelectItem value="Laterite">Laterite</SelectItem>
+                    <SelectItem value="Arid (Desert)">Arid (Desert)</SelectItem>
+                    <SelectItem value="Saline (Usara)">Saline (Usara)</SelectItem>
+                    <SelectItem value="Peaty and Marshy">Peaty and Marshy</SelectItem>
+                    <SelectItem value="Forest">Forest</SelectItem>
                     <SelectItem value="Clay Loam">Clay Loam</SelectItem>
+                    <SelectItem value="Sandy Loam">Sandy Loam</SelectItem>
                 </SelectContent>
             </Select>
           </div>
