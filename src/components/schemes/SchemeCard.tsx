@@ -63,7 +63,7 @@ export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsK
         <DialogTrigger asChild>
             <Card className="flex flex-col cursor-pointer hover:border-primary/50 transition-colors">
             <CardHeader className="flex-grow">
-                <CardTitle className="font-headline">{title}</CardTitle>
+                <CardTitle className="font-headline text-lg md:text-xl">{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
              <CardFooter className="justify-end">
