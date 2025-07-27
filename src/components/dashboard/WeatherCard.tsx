@@ -23,11 +23,11 @@ export function WeatherCard() {
         </div>
         <div className="flex justify-between text-sm">
             <div className="flex items-center gap-2">
-                <Droplets className="h-4 w-4 text-muted-foreground" />
+                <Droplets className="h-4 w-4 text-blue-500" />
                 <span>{t('weather.humidity')}: 72%</span>
             </div>
             <div className="flex items-center gap-2">
-                <Wind className="h-4 w-4 text-muted-foreground" />
+                <Wind className="h-4 w-4 text-slate-500" />
                 <span>{t('weather.wind')}: 12 km/h</span>
             </div>
         </div>
