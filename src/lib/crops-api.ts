@@ -1,6 +1,6 @@
 import { authService } from './auth';
 
-const API_BASE_URL = 'https://ktz54m33-8000.inc1.devtunnels.ms';
+const API_BASE_URL = 'http://localhost:8000';
 
 interface Crop {
   id: number;

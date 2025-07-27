@@ -1,0 +1,266 @@
+{
+  "status": "success",
+  "analysis_id": "business_analysis_20250727_083352",
+  "report": {
+    "analysis_id": "business_analysis_20250727_083352",
+    "timestamp": "2025-07-27T08:34:24.261406",
+    "farmer_id": 1,
+    "crop_types": ["all"],
+    "analysis_period": "Last 12 months",
+    "farm_size_acres": 12,
+    "cost_analysis": {
+      "seeds_cost": 0,
+      "fertilizer_cost": 0,
+      "pesticide_cost": 0,
+      "labor_cost": 0,
+      "equipment_cost": 0,
+      "irrigation_cost": 0,
+      "transportation_cost": 0,
+      "storage_cost": 0,
+      "other_costs": 0,
+      "total_cost_per_acre": 0,
+      "cost_per_unit": 0
+    },
+    "roi_analysis": {
+      "total_investment": 0,
+      "total_revenue": 0,
+      "gross_profit": 0,
+      "net_profit": 0,
+      "roi_percentage": 0,
+      "payback_period_months": 120,
+      "break_even_price": 0,
+      "profit_margin": 0
+    },
+    "market_trends": {
+      "current_price": 69.20681666666667,
+      "price_trend_30_days": "decreasing",
+      "price_trend_90_days": "decreasing",
+      "seasonal_pattern": "Prices typically increase during harvest season and decrease during off-season",
+      "price_forecast_1_month": 75.186461590115,
+      "price_forecast_3_months": 77.83499926830248,
+      "price_forecast_6_months": 60.137549338773326,
+      "demand_forecast": "Moderate to high demand expected based on seasonal patterns",
+      "market_volatility": "high",
+      "supply_demand_balance": "Balanced supply-demand with seasonal variations"
+    },
+    "gtm_strategy": {
+      "recommended_channels": [
+        "Direct sales to consumers",
+        "Local wholesale markets",
+        "Online marketplaces",
+        "Farmer Producer Organizations (FPOs)"
+      ],
+      "pricing_strategy": "Premium pricing at ₹76.13 based on quality differentiation",
+      "target_markets": [
+        "Urban consumers seeking fresh produce",
+        "Local restaurants and hotels",
+        "Organic food retailers",
+        "Export markets for premium varieties"
+      ],
+      "competitive_advantages": [
+        "Fresh, locally grown produce",
+        "Sustainable farming practices",
+        "Direct farmer-to-consumer relationship",
+        "Quality assurance and traceability"
+      ],
+      "market_entry_timing": "Enter market during peak demand season with pre-harvest contracts",
+      "distribution_strategy": "Multi-channel approach combining direct sales and intermediary partnerships",
+      "marketing_recommendations": [
+        "Develop farmer brand identity",
+        "Use social media for direct customer engagement",
+        "Participate in farmer markets and exhibitions",
+        "Obtain organic/quality certifications"
+      ],
+      "partnership_opportunities": [
+        "Local FPOs for collective bargaining",
+        "Agri-tech companies for technology adoption",
+        "Retail chains for consistent offtake",
+        "Export companies for international markets"
+      ]
+    },
+    "consumer_insights": {
+      "target_demographics": [
+        "Urban middle class",
+        "Health-conscious consumers",
+        "Local restaurants"
+      ],
+      "demand_drivers": [
+        "Quality",
+        "Freshness",
+        "Local sourcing",
+        "Organic certification"
+      ],
+      "price_sensitivity": 0.7,
+      "quality_preferences": [
+        "Freshness",
+        "Organic",
+        "Pesticide-free",
+        "Local origin"
+      ],
+      "seasonal_demand_patterns": "Higher demand during festival seasons and winter months",
+      "premium_market_potential": 25,
+      "organic_demand_trend": "increasing",
+      "local_vs_export_preference": "Strong preference for local markets with growing export potential"
+    },
+    "competitive_analysis": {
+      "market_share_estimate": 5,
+      "key_competitors": [
+        "Large commercial farms",
+        "Cooperative societies",
+        "Import suppliers"
+      ],
+      "competitive_pricing": {
+        "local_farms": 65.74647583333334,
+        "cooperatives": 72.6671575
+      },
+      "differentiation_opportunities": [
+        "Quality certification",
+        "Direct sales",
+        "Organic farming",
+        "Traceability"
+      ],
+      "market_gaps": [
+        "Premium organic segment",
+        "Direct-to-consumer delivery",
+        "Value-added products"
+      ],
+      "competitive_threats": [
+        "Price competition",
+        "Large-scale operations",
+        "Import competition"
+      ],
+      "competitive_advantages": [
+        "Local freshness",
+        "Personal relationships",
+        "Flexibility",
+        "Quality control"
+      ]
+    },
+    "financial_projections": {
+      "revenue_forecast_1_year": 0,
+      "profit_projection_1_year": 0,
+      "cash_flow_analysis": "Positive cash flow expected with seasonal variations",
+      "working_capital_needs": 0,
+      "investment_recommendations": [
+        "Technology upgrade",
+        "Storage infrastructure",
+        "Quality certification"
+      ],
+      "funding_requirements": 0,
+      "financial_risks": [
+        "Market price volatility",
+        "Weather dependency",
+        "Input cost inflation"
+      ],
+      "mitigation_strategies": [
+        "Diversification",
+        "Insurance",
+        "Contract farming",
+        "Cost optimization"
+      ]
+    },
+    "visualizations": [
+      {
+        "chart_type": "pie_chart",
+        "title": "Cost Breakdown Analysis",
+        "description": "Breakdown of farming costs by category",
+        "data_points": 0,
+        "time_period": "Current analysis period",
+        "image_base64": ""
+      },
+      {
+        "chart_type": "bar_chart",
+        "title": "ROI Analysis",
+        "description": "Investment, revenue, and profit analysis",
+        "data_points": 4,
+        "time_period": "Current analysis period",
+        "image_base64": ""
+      },
+      {
+        "chart_type": "line_chart",
+        "title": "Price Trend Analysis",
+        "description": "Historical price trends with forecast",
+        "data_points": 90,
+        "time_period": "Last 90 days",
+        "image_base64": ""
+      }
+    ],
+    "optimization_recommendations": {
+      "cost_reduction_opportunities": [
+        "Implement precision agriculture to reduce input costs",
+        "Adopt integrated pest management to reduce pesticide costs",
+        "Use organic fertilizers to reduce fertilizer expenses",
+        "Implement water-efficient irrigation systems",
+        "Optimize labor scheduling and mechanization"
+      ],
+      "revenue_enhancement_strategies": [
+        "Develop premium product lines with quality certifications",
+        "Implement direct-to-consumer sales channels",
+        "Add value through processing and packaging",
+        "Explore export market opportunities",
+        "Develop contract farming arrangements"
+      ],
+      "operational_improvements": [
+        "Implement farm management software for better tracking",
+        "Adopt IoT sensors for real-time monitoring",
+        "Improve post-harvest handling and storage",
+        "Implement quality control systems",
+        "Develop supplier relationship management"
+      ],
+      "technology_adoption": [
+        "Use drone technology for crop monitoring",
+        "Implement soil testing and nutrient management",
+        "Adopt weather-based advisory systems",
+        "Use mobile apps for market price tracking",
+        "Implement blockchain for traceability"
+      ],
+      "market_expansion_opportunities": [
+        "premium_pricing",
+        "direct_sales",
+        "value_addition",
+        "organic_certification"
+      ],
+      "risk_mitigation_actions": [
+        "Diversify crop portfolio to reduce market risk",
+        "Implement crop insurance coverage",
+        "Develop multiple sales channels",
+        "Build emergency fund for operational continuity",
+        "Implement weather risk management strategies"
+      ],
+      "sustainability_initiatives": [
+        "Adopt organic farming practices",
+        "Implement water conservation techniques",
+        "Use renewable energy sources",
+        "Implement carbon sequestration practices",
+        "Develop biodiversity conservation programs"
+      ],
+      "capacity_building_needs": [
+        "Attend agricultural training programs",
+        "Join farmer producer organizations",
+        "Develop digital literacy skills",
+        "Learn financial management and planning",
+        "Develop marketing and sales skills"
+      ]
+    },
+    "immediate_actions": [
+      "Implement Implement precision agriculture to reduce input costs",
+      "Develop Direct sales to consumers channel",
+      "Optimize pricing strategy based on market analysis",
+      "Establish quality control and certification processes",
+      "Create financial reserves for market volatility"
+    ],
+    "strategic_initiatives": [
+      "Pursue premium_pricing opportunities",
+      "Develop long-term partnerships with key buyers",
+      "Invest in technology and infrastructure upgrades",
+      "Build brand recognition and customer loyalty",
+      "Implement sustainability and certification programs"
+    ],
+    "executive_summary": "\n        Business analysis reveals a 0.0% ROI with total costs of ₹0 per acre. \n        Current market price of ₹69.21 shows TrendDirection.DECREASING trend with RiskLevel.HIGH volatility.\n        \n        Key opportunities include Direct sales to consumers, Local wholesale markets and premium market positioning. \n        Cost optimization through Implement precision agriculture to reduce input costs could improve profitability by 15-20%.\n        \n        Market forecast indicates moderate to high demand expected based on seasonal patterns with price projections of ₹77.83 \n        in 3 months. Strategic focus on Urban consumers seeking fresh produce presents significant growth potential.\n        ",
+    "confidence_score": 0.67,
+    "daily_log_id": null,
+    "todo_ids": [],
+    "integration_status": "pending"
+  },
+  "error_message": null
+}
