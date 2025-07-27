@@ -21,6 +21,10 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { useLanguage } from '@/hooks/use-language';
+import { CheckIn } from './CheckIn';
+import { Logbook } from 'lucide-react';
+
+export type FarmHistory = { date: string; event: string; details: string, photo?: boolean };
 
 type FarmInfoCardProps = {
   cropName: string;
@@ -29,7 +33,8 @@ type FarmInfoCardProps = {
   mandiPrice: string;
   yieldDate: string;
   suggestions: { title: string; description: string }[];
-  history: { date: string; event: string; details: string }[];
+  history: FarmHistory[];
+  onCheckIn: (note: string, photo?: string) => void;
 };
 
 const InfoChip = ({ label, value }: { label: string; value: string }) => (
@@ -47,6 +52,7 @@ export function FarmInfoCard({
   yieldDate,
   suggestions,
   history,
+  onCheckIn,
 }: FarmInfoCardProps) {
   const { t } = useLanguage();
   return (
@@ -89,6 +95,14 @@ export function FarmInfoCard({
             </ScrollArea>
           </DialogContent>
         </Dialog>
+
+        <CheckIn cropName={cropName} onCheckIn={onCheckIn}>
+          <Button>
+            <Logbook className="mr-2 h-4 w-4" />
+            Log Check-in
+          </Button>
+        </CheckIn>
+        
         <Dialog>
           <DialogTrigger asChild>
             <Button variant="outline" size="sm">{t('farmCard.history.button')}</Button>
@@ -110,6 +124,7 @@ export function FarmInfoCard({
                            </div>
                             <Separator className="my-2" />
                             <p className="text-sm text-muted-foreground">{item.details}</p>
+                             {item.photo && <p className="text-xs text-primary mt-1">Photo attached</p>}
                         </div>
                     ))}
                 </div>

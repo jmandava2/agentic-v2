@@ -17,9 +17,11 @@ import { assistantChat } from '@/ai/flows/assistant-chat';
 import { useRouter } from 'next/navigation';
 
 export function AssistantBar() {
-  const { isCameraOpen, openCamera } = useCamera();
-  const { isListening } = useVoiceRecognition();
   const { attachment, setAttachment } = useAttachment();
+  const { openCamera: openCameraForAttachment } = useCamera({ onCapture: setAttachment });
+  const { isCameraOpen } = useCamera();
+
+  const { isListening } = useVoiceRecognition();
   const { toast } = useToast();
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -31,6 +33,7 @@ export function AssistantBar() {
     setLoading(true);
     
     try {
+      // For now, ignoring attachment in chat, but you could send it here
       const chatResponse = await assistantChat({ query: message });
 
       if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
@@ -94,7 +97,7 @@ export function AssistantBar() {
              <Button
               variant="ghost"
               size="icon"
-              onClick={openCamera}
+              onClick={openCameraForAttachment}
               disabled={isListening || isCameraOpen}
               className="h-8 w-8 flex-shrink-0 rounded-full bg-foreground text-primary transition-shadow hover:bg-foreground/90"
             >

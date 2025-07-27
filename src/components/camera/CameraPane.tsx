@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '../ui/button';
 import { RefreshCw, Camera as CameraIcon } from 'lucide-react';
 import { useCamera } from '@/hooks/use-camera';
-import { useAttachment } from '@/hooks/use-attachment';
 
 export function CameraPane() {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -22,8 +21,7 @@ export function CameraPane() {
     undefined
   );
   const { toast } = useToast();
-  const { closeCamera } = useCamera();
-  const { setAttachment } = useAttachment();
+  const { closeCamera, onCapture } = useCamera();
 
   const getCameraPermission = useCallback(
     async (deviceId?: string) => {
@@ -133,7 +131,7 @@ export function CameraPane() {
         canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
         const dataUrl = canvas.toDataURL('image/jpeg');
-        setAttachment(dataUrl);
+        onCapture?.(dataUrl);
         closeCamera();
       }
     }
