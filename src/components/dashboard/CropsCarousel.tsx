@@ -105,7 +105,7 @@ export function CropsCarousel() {
             <CardTitle className="font-headline mt-4">Login Required</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" onClick={() => setShowLoginDialog(true)}>
+            <Button className="w-full bg-foreground text-primary hover:bg-foreground/90" onClick={() => setShowLoginDialog(true)}>
               Sign In to View Crops
             </Button>
           </CardContent>

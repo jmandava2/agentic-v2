@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -106,7 +107,7 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
               
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-foreground text-primary hover:bg-foreground/90" 
                 disabled={isLoading}
               >
                 {isLoading ? (

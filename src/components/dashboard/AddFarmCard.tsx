@@ -217,7 +217,7 @@ export function AddFarmCard() {
             <CardTitle className="font-headline mt-4">{t('addCrop.title')}</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button className="w-full">
+            <Button className="w-full bg-foreground text-primary hover:bg-foreground/90">
               <PlusCircle className="mr-2 h-4 w-4" />
               {t('addCrop.button')}
             </Button>
@@ -645,7 +645,7 @@ export function AddFarmCard() {
               />
             </div>
             <DialogFooter>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} className="bg-foreground text-primary hover:bg-foreground/90">
                 {isSubmitting ? 'Adding Crop...' : 'Add Crop'}
               </Button>
             </DialogFooter>

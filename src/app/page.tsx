@@ -32,7 +32,7 @@ export default function LandingPage() {
           <p className="mt-4 font-body text-xl text-muted-foreground md:text-2xl">
             {t('landing.tagline')}
           </p>
-          <Button asChild size="lg" className="mt-10 h-14 px-8 text-lg">
+          <Button asChild size="lg" className="mt-10 h-14 px-8 text-lg bg-foreground text-primary hover:bg-foreground/90">
             <Link href="/dashboard">
                 <span>{t('landing.cta')}</span>
                 <ArrowRight className="ml-2 h-5 w-5" />
