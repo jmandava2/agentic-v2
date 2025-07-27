@@ -12,7 +12,7 @@ import { History } from '@/components/dashboard/History';
 import { Separator } from '@/components/ui/separator';
 import { AppContext } from '@/components/AppLayout';
 import { useContext } from 'react';
-
+import { Logo } from '@/components/ui/logo';
 
 export default function DashboardPage() {
   const { t } = useLanguage();
@@ -21,7 +21,15 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-8">
-      <h1 className="font-headline text-3xl font-bold">{t('dashboard.title')}</h1>
+      <div className="flex items-center gap-3 md:hidden">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg">
+          <Logo />
+        </div>
+        <h1 className="font-headline text-2xl font-bold text-foreground">
+          {t('appName')}
+        </h1>
+      </div>
+      <h1 className="hidden font-headline text-3xl font-bold md:block">{t('dashboard.title')}</h1>
       
       <div>
         <h2 className="font-headline text-2xl font-bold mb-4">Add New Crop</h2>
