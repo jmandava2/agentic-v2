@@ -1,6 +1,5 @@
 
 'use client';
-import { FarmInfoCarousel } from '@/components/dashboard/FarmInfoCarousel';
 import { CropsCarousel } from '@/components/dashboard/CropsCarousel';
 import { WeatherCard } from '@/components/dashboard/WeatherCard';
 import { Todos } from '@/components/dashboard/Todos';
@@ -8,14 +7,22 @@ import { Advisories } from '@/components/dashboard/Advisories';
 import { useLanguage } from '@/hooks/use-language';
 import { AddFarmCard } from '@/components/dashboard/AddFarmCard';
 import { VoiceCropCreator } from '@/components/dashboard/VoiceCropCreator';
+import { Suggestions } from '@/components/dashboard/Suggestions';
+import { History } from '@/components/dashboard/History';
+import { Separator } from '@/components/ui/separator';
+import { AppContext } from '@/components/AppLayout';
+import { useContext } from 'react';
+
 
 export default function DashboardPage() {
   const { t } = useLanguage();
+  const appContext = useContext(AppContext);
+  const activeCrop = appContext?.crops.find(c => c.id === appContext.activeCropId);
+
   return (
     <div className="flex flex-col gap-8">
       <h1 className="font-headline text-3xl font-bold">{t('dashboard.title')}</h1>
       
-      {/* Add Crop Section */}
       <div>
         <h2 className="font-headline text-2xl font-bold mb-4">Add New Crop</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -24,23 +31,28 @@ export default function DashboardPage() {
         </div>
       </div>
       
-      {/* My Crops Section */}
       <div>
         <CropsCarousel />
       </div>
+
+      {activeCrop && (
+        <>
+            <Separator />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Suggestions crop={activeCrop} />
+                <History crop={activeCrop} />
+            </div>
+        </>
+      )}
       
-      {/* Original Farm Info and Weather */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2">
-          <FarmInfoCarousel />
+        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Todos />
+            <Advisories />
         </div>
         <WeatherCard />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Todos />
-        <Advisories />
-      </div>
     </div>
   );
 }

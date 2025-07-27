@@ -122,15 +122,12 @@ export function FarmInfoCarousel() {
   const [current, setCurrent] = useState(0);
   const { t } = useLanguage();
   const appContext = useContext(AppContext);
+  const [farms, setFarms] = useState<Farm[]>(initialFarms);
 
   useEffect(() => {
-    if (appContext) {
-      appContext.setFarms(initialFarms);
-      if (initialFarms.length > 0) {
-        appContext.setActiveFarmId(initialFarms[0].id);
-      }
+    if (appContext && initialFarms.length > 0) {
+      appContext.setActiveCropId(initialFarms[0].id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -139,8 +136,8 @@ export function FarmInfoCarousel() {
     const onSelect = (api: EmblaCarouselType) => {
       const selectedIndex = api.selectedScrollSnap();
       setCurrent(selectedIndex);
-      if (appContext.farms[selectedIndex]) {
-        appContext.setActiveFarmId(appContext.farms[selectedIndex].id);
+      if (farms[selectedIndex]) {
+        appContext.setActiveCropId(farms[selectedIndex].id);
       }
     };
 
@@ -151,11 +148,10 @@ export function FarmInfoCarousel() {
     return () => {
       api.off('select', onSelect);
     };
-  }, [api, appContext]);
+  }, [api, appContext, farms]);
 
   if (!appContext) return null; // Or a loading spinner
 
-  const { farms } = appContext;
   const slideCount = farms.length + 1; // +1 for AddFarmCard
 
   return (

@@ -21,6 +21,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { useLanguage } from '@/hooks/use-language';
+import { Notebook } from 'lucide-react';
 
 export type FarmHistory = { date: string; event: string; details: string, photo?: boolean };
 
@@ -94,7 +95,10 @@ export function FarmInfoCard({
         
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm">{t('farmCard.history.button')}</Button>
+            <Button variant="outline" size="sm" >
+              <Notebook className="mr-2 h-4 w-4" />
+              {t('farmCard.history.button')}
+            </Button>
           </DialogTrigger>
            <DialogContent className="max-w-md">
             <DialogHeader>

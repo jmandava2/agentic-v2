@@ -52,7 +52,7 @@ const assistantChatFlow = ai.defineFlow(
   async (input) => {
     const llmResponse = await ai.generate({
       prompt: `User's query: ${input.query}`,
-      model: 'googleai/gemini-1.5-flash-latest',
+      model: 'googleai/gemini-2.0-flash',
       tools: [navigateToPage],
       system:
         "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool.",

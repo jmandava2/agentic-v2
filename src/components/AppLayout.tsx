@@ -11,25 +11,25 @@ import { VoiceOverlay } from './voice/VoiceOverlay';
 import { useCamera } from '@/hooks/use-camera';
 import { AttachmentContext } from '@/hooks/use-attachment';
 import { CameraOverlay } from './camera/CameraOverlay';
-import type { Farm } from './dashboard/FarmInfoCarousel';
+import type { Crop } from '@/lib/crops-api';
 
 type AppContextType = {
-  farms: Farm[];
-  setFarms: React.Dispatch<React.SetStateAction<Farm[]>>;
-  activeFarmId: number | null;
-  setActiveFarmId: React.Dispatch<React.SetStateAction<number | null>>;
+  crops: Crop[];
+  setCrops: React.Dispatch<React.SetStateAction<Crop[]>>;
+  activeCropId: number | null;
+  setActiveCropId: React.Dispatch<React.SetStateAction<number | null>>;
 };
 
 export const AppContext = createContext<AppContextType | null>(null);
 
 function AppProvider({ children }: { children: ReactNode }) {
   const [attachment, setAttachment] = useState<string | null>(null);
-  const [farms, setFarms] = useState<Farm[]>([]);
-  const [activeFarmId, setActiveFarmId] = useState<number | null>(null);
+  const [crops, setCrops] = useState<Crop[]>([]);
+  const [activeCropId, setActiveCropId] = useState<number | null>(null);
 
 
   return (
-    <AppContext.Provider value={{ farms, setFarms, activeFarmId, setActiveFarmId }}>
+    <AppContext.Provider value={{ crops, setCrops, activeCropId, setActiveCropId }}>
       <AttachmentContext.Provider value={{ attachment, setAttachment }}>
         {children}
       </AttachmentContext.Provider>

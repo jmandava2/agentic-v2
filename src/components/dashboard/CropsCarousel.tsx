@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { cropsApi, type Crop } from '@/lib/crops-api';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
@@ -10,13 +11,15 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Wheat, Leaf, Calendar, TrendingUp, MapPin, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
+import { AppContext } from '../AppLayout';
+import { cn } from '@/lib/utils';
 
 export function CropsCarousel() {
-  const [crops, setCrops] = useState<Crop[]>([]);
   const [loading, setLoading] = useState(true);
   const [showLoginDialog, setShowLoginDialog] = useState(false);
   const { isAuthenticated } = useAuth();
   const { toast } = useToast();
+  const appContext = useContext(AppContext);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -27,10 +30,14 @@ export function CropsCarousel() {
   }, [isAuthenticated]);
 
   const fetchCrops = async () => {
+    if (!appContext) return;
     try {
       setLoading(true);
       const cropsData = await cropsApi.getCrops();
-      setCrops(cropsData);
+      appContext.setCrops(cropsData);
+      if (cropsData.length > 0 && !appContext.activeCropId) {
+        appContext.setActiveCropId(cropsData[0].id);
+      }
     } catch (error) {
       console.error('Failed to fetch crops:', error);
       if (error instanceof Error && error.message.includes('Authentication required')) {
@@ -66,6 +73,10 @@ export function CropsCarousel() {
       return dateString;
     }
   };
+  
+  if (!appContext) return null;
+
+  const { crops, activeCropId, setActiveCropId } = appContext;
 
   if (!isAuthenticated) {
     return (
@@ -148,7 +159,14 @@ export function CropsCarousel() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {crops.map((crop) => (
-          <Card key={crop.id} className="h-full hover:shadow-lg transition-shadow">
+          <Card 
+            key={crop.id}
+            onClick={() => setActiveCropId(crop.id)}
+            className={cn(
+              'h-full hover:shadow-lg transition-all cursor-pointer',
+              activeCropId === crop.id && 'ring-2 ring-primary shadow-lg'
+            )}
+          >
             <CardHeader>
               <div className="flex items-center gap-3">
                 {getCropIcon(crop.crop_name)}
