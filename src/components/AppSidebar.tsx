@@ -19,6 +19,7 @@ import {
   LogIn,
   LogOut,
   HeartPulse,
+  BarChart,
 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 import { useAuth } from '@/hooks/use-auth';
@@ -36,6 +37,7 @@ export function AppSidebar() {
     { href: '/dashboard', label: t('sidebar.dashboard'), icon: Home },
     { href: '/market-advisory', label: t('sidebar.market'), icon: LineChart },
     { href: '/health', label: t('sidebar.health'), icon: HeartPulse },
+    { href: '/analytics', label: t('sidebar.analytics'), icon: BarChart },
     { href: '/schemes', label: t('sidebar.schemes'), icon: Landmark },
     { href: '/profile', label: t('sidebar.profile'), icon: User },
   ];

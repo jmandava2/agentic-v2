@@ -18,6 +18,7 @@ const en = {
         dashboard: 'Dashboard',
         market: 'Market Advisory',
         health: 'Health',
+        analytics: 'Analytics',
         schemes: 'Schemes',
         profile: 'Profile',
     },
@@ -249,6 +250,18 @@ const en = {
             title: 'Actions',
             create_logs_and_todos: 'Create Logs and To-Dos'
         }
+    },
+    analytics: {
+        title: 'Farm Analytics',
+        details: {
+            title: 'Analytics Parameters',
+            description: 'Parameters for the requested farm analysis.',
+            location: 'Location',
+            farm_size: 'Farm Size',
+            analysis_type: 'Analysis Type',
+            analysis_period: 'Analysis Period',
+            create_logs_and_todos: 'Generate Actionable Insights'
+        }
     }
 };
 
@@ -271,6 +284,7 @@ const kn = {
         dashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
         market: 'ಮಾರುಕಟ್ಟೆ ಸಲಹೆ',
         health: 'ಆರೋಗ್ಯ',
+        analytics: 'ವಿಶ್ಲೇಷಣೆ',
         schemes: 'ಯೋಜನೆಗಳು',
         profile: 'ಪ್ರೊಫೈಲ್',
     },
@@ -501,6 +515,18 @@ const kn = {
         actions: {
             title: 'ಕ್ರಿಯೆಗಳು',
             create_logs_and_todos: 'ಲಾಗ್‌ಗಳು ಮತ್ತು ಮಾಡಬೇಕಾದ ಪಟ್ಟಿಗಳನ್ನು ರಚಿಸಿ'
+        }
+    },
+    analytics: {
+        title: 'ಫಾರ್ಮ್ ವಿಶ್ಲೇಷಣೆ',
+        details: {
+            title: 'ವಿಶ್ಲೇಷಣೆ ನಿಯತಾಂಕಗಳು',
+            description: 'ವಿನಂತಿಸಿದ ಫಾರ್ಮ್ ವಿಶ್ಲೇಷಣೆಗಾಗಿ ನಿಯತಾಂಕಗಳು.',
+            location: 'ಸ್ಥಳ',
+            farm_size: 'ಫಾರ್ಮ್ ಗಾತ್ರ',
+            analysis_type: 'ವಿಶ್ಲೇಷಣೆ ಪ್ರಕಾರ',
+            analysis_period: 'ವಿಶ್ಲೇಷಣೆ ಅವಧಿ',
+            create_logs_and_todos: 'ಕಾರ್ಯಸಾಧ್ಯ ಒಳನೋಟಗಳನ್ನು ರಚಿಸಿ'
         }
     }
 };
