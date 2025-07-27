@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
@@ -350,7 +351,7 @@ export function VoiceCropCreator() {
             <p className="text-muted-foreground">
               Create crops using voice commands. I'll guide you through each step.
             </p>
-            <Button onClick={startVoiceFlow} size="lg" className="w-full">
+            <Button onClick={startVoiceFlow} size="lg" className="w-full bg-foreground text-primary hover:bg-foreground/90">
               <Mic className="mr-2 h-4 w-4" />
               Start Voice Creation
             </Button>
