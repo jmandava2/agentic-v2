@@ -8,6 +8,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import { generate, run, astream } from 'genkit/flow';
 
 const PagesSchema = z.enum(['dashboard', 'market', 'health', 'analytics', 'schemes', 'profile']);
 const LanguagesSchema = z.enum(['en', 'kn']);
@@ -19,11 +20,12 @@ const navigateToPage = ai.defineTool(
     inputSchema: z.object({
       page: PagesSchema.describe('The page to navigate to.'),
     }),
-    outputSchema: z.void(),
+    outputSchema: z.string(),
   },
   async (input) => {
     // This is a placeholder. The actual navigation is handled client-side.
     console.log(`(Server) Navigation request to: ${input.page}`);
+    return `Navigating to ${input.page}`;
   }
 );
 
@@ -34,11 +36,12 @@ const changeLanguage = ai.defineTool(
     inputSchema: z.object({
       language: LanguagesSchema.describe("The language to switch to. 'kn' for Kannada, 'en' for English."),
     }),
-    outputSchema: z.void(),
+    outputSchema: z.string(),
   },
   async (input) => {
     // This is a placeholder. The actual language change is handled client-side.
     console.log(`(Server) Language change request to: ${input.language}`);
+    return `Changing language to ${input.language === 'kn' ? 'Kannada' : 'English'}`;
   }
 );
 
@@ -67,31 +70,31 @@ const assistantChatFlow = ai.defineFlow(
     outputSchema: AssistantChatOutputSchema,
   },
   async (input) => {
-    const llmResponse = await ai.generate({
+    const llmResponse = await generate({
       prompt: `User's query: ${input.query}`,
-      model: 'googleai/gemini-2.0-flash',
+      model: 'googleai/gemini-1.5-flash-latest',
       tools: [navigateToPage, changeLanguage],
       system:
         "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool. If the user asks to change language, use the 'changeLanguage' tool.",
     });
 
-    const toolRequest = llmResponse.toolRequest;
+    const toolRequest = llmResponse.toolRequest();
     if (toolRequest) {
       console.log('Tool call requested:', toolRequest.tool.name, 'with input:', toolRequest.input);
-      let responseText = 'An action was performed.';
-      if (toolRequest.tool.name === 'navigateToPage') {
-          responseText = `Navigating to ${toolRequest.input.page}.`;
-      } else if (toolRequest.tool.name === 'changeLanguage') {
-          responseText = `Changing language to ${toolRequest.input.language === 'kn' ? 'Kannada' : 'English'}.`;
-      }
+       const toolResponse = await run('run-tool', async () =>
+        toolRequest.tool.fn(toolRequest.input)
+      );
 
       return {
-        response: responseText,
-        toolRequest: toolRequest,
+        response: toolResponse,
+        toolRequest: { // Sending the original request back to the client
+          name: toolRequest.tool.name,
+          input: toolRequest.input
+        },
       };
     }
 
-    const textResponse = llmResponse.text;
+    const textResponse = llmResponse.text();
     return {
       response: textResponse || 'Sorry, I could not process that.',
       toolRequest: undefined,
