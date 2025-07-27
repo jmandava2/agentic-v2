@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, LineChart, User, Landmark } from 'lucide-react';
+import { Home, LineChart, User, Landmark, HeartPulse } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ProfileMenu } from './ProfileMenu';
 import { useLanguage } from '@/hooks/use-language';
@@ -15,6 +15,7 @@ export function BottomNav() {
   const navItems = [
     { href: '/dashboard', label: t('sidebar.dashboard'), icon: Home },
     { href: '/market-advisory', label: t('sidebar.market'), icon: LineChart },
+    { href: '/health', label: t('sidebar.health'), icon: HeartPulse },
     { href: '/schemes', label: t('sidebar.schemes'), icon: Landmark },
     { href: '/profile', label: t('sidebar.profile'), icon: User },
   ];

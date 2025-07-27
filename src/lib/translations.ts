@@ -1,3 +1,4 @@
+
 const en = {
     appName: 'Namma Krushi',
     landing: {
@@ -16,6 +17,7 @@ const en = {
     sidebar: {
         dashboard: 'Dashboard',
         market: 'Market Advisory',
+        health: 'Health',
         schemes: 'Schemes',
         profile: 'Profile',
     },
@@ -230,6 +232,24 @@ const en = {
     voice: {
         prompt: 'Say something...',
     },
+    health: {
+        title: 'Crop Health Check',
+        image: {
+            title: 'Crop Image',
+            description: 'The image provided for analysis.'
+        },
+        details: {
+            title: 'Health Details',
+            description: 'Information about the crop and observed symptoms.',
+            crop_type: 'Crop Type',
+            location: 'Location',
+            symptoms: 'Observed Symptoms',
+        },
+        actions: {
+            title: 'Actions',
+            create_logs_and_todos: 'Create Logs and To-Dos'
+        }
+    }
 };
 
 const kn = {
@@ -250,6 +270,7 @@ const kn = {
     sidebar: {
         dashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
         market: 'ಮಾರುಕಟ್ಟೆ ಸಲಹೆ',
+        health: 'ಆರೋಗ್ಯ',
         schemes: 'ಯೋಜನೆಗಳು',
         profile: 'ಪ್ರೊಫೈಲ್',
     },
@@ -464,6 +485,24 @@ const kn = {
     voice: {
         prompt: 'ಏನಾದರೂ ಹೇಳಿ...',
     },
+    health: {
+        title: 'ಬೆಳೆ ಆರೋಗ್ಯ ತಪಾಸಣೆ',
+        image: {
+            title: 'ಬೆಳೆ ಚಿತ್ರ',
+            description: 'ವಿಶ್ಲೇಷಣೆಗಾಗಿ ಒದಗಿಸಲಾದ ಚಿತ್ರ.'
+        },
+        details: {
+            title: 'ಆರೋಗ್ಯ ವಿವರಗಳು',
+            description: 'ಬೆಳೆ ಮತ್ತು ಗಮನಿಸಿದ ರೋಗಲಕ್ಷಣಗಳ ಬಗ್ಗೆ ಮಾಹಿತಿ.',
+            crop_type: 'ಬೆಳೆ ಪ್ರಕಾರ',
+            location: 'ಸ್ಥಳ',
+            symptoms: 'ಗಮನಿಸಿದ ರೋಗಲಕ್ಷಣಗಳು',
+        },
+        actions: {
+            title: 'ಕ್ರಿಯೆಗಳು',
+            create_logs_and_todos: 'ಲಾಗ್‌ಗಳು ಮತ್ತು ಮಾಡಬೇಕಾದ ಪಟ್ಟಿಗಳನ್ನು ರಚಿಸಿ'
+        }
+    }
 };
 
 export const translations = { en, kn };
