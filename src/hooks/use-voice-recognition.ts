@@ -209,15 +209,6 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
   }, [language, stopListening, toast, handleAssistantResponse]);
 
-  const toggleListening = useCallback(() => {
-    if (voiceState.isListening) {
-      stopListening();
-    } else {
-      startListening();
-    }
-  }, [startListening, stopListening]);
-
-
   return {
     isListening: state.isListening,
     transcript: state.transcript,
