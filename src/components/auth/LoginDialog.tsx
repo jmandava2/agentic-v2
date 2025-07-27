@@ -65,7 +65,7 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
         <DialogHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-8 text-primary">
+              <div className="h-8 w-8 text-foreground">
                 <Logo />
               </div>
               <DialogTitle className="text-2xl font-bold">Namma Krushi</DialogTitle>
