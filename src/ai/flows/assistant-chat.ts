@@ -9,7 +9,8 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const PagesSchema = z.enum(['dashboard', 'market', 'schemes', 'profile']);
+const PagesSchema = z.enum(['dashboard', 'market', 'health', 'analytics', 'schemes', 'profile']);
+const LanguagesSchema = z.enum(['en', 'kn']);
 
 const navigateToPage = ai.defineTool(
   {
@@ -25,6 +26,22 @@ const navigateToPage = ai.defineTool(
     console.log(`(Server) Navigation request to: ${input.page}`);
   }
 );
+
+const changeLanguage = ai.defineTool(
+  {
+    name: 'changeLanguage',
+    description: 'Changes the application language.',
+    inputSchema: z.object({
+      language: LanguagesSchema.describe("The language to switch to. 'kn' for Kannada, 'en' for English."),
+    }),
+    outputSchema: z.void(),
+  },
+  async (input) => {
+    // This is a placeholder. The actual language change is handled client-side.
+    console.log(`(Server) Language change request to: ${input.language}`);
+  }
+);
+
 
 const AssistantChatInputSchema = z.object({
   query: z.string().describe("The user's voice query."),
@@ -53,19 +70,23 @@ const assistantChatFlow = ai.defineFlow(
     const llmResponse = await ai.generate({
       prompt: `User's query: ${input.query}`,
       model: 'googleai/gemini-2.0-flash',
-      tools: [navigateToPage],
+      tools: [navigateToPage, changeLanguage],
       system:
-        "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool.",
+        "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool. If the user asks to change language, use the 'changeLanguage' tool.",
     });
 
     const toolRequest = llmResponse.toolRequest;
     if (toolRequest) {
-      console.log('Tool call requested:', toolRequest.tool.name);
-      // The tool function itself doesn't need to be called here on the server
-      // as the client will handle the navigation. We just need to pass the
-      // tool request information back to the client.
+      console.log('Tool call requested:', toolRequest.tool.name, 'with input:', toolRequest.input);
+      let responseText = 'An action was performed.';
+      if (toolRequest.tool.name === 'navigateToPage') {
+          responseText = `Navigating to ${toolRequest.input.page}.`;
+      } else if (toolRequest.tool.name === 'changeLanguage') {
+          responseText = `Changing language to ${toolRequest.input.language === 'kn' ? 'Kannada' : 'English'}.`;
+      }
+
       return {
-        response: `Navigating to ${toolRequest.input.page}.`,
+        response: responseText,
         toolRequest: toolRequest,
       };
     }

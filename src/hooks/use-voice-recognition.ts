@@ -48,7 +48,7 @@ const audioRef = { current: typeof window !== 'undefined' ? new Audio() : null }
 export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const { onNoSupport } = props;
   const { toast } = useToast();
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const router = useRouter();
   const [state, setState] = useState(voiceState);
   const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
@@ -102,9 +102,14 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const handleAssistantResponse = useCallback(async (response: AssistantChatOutput) => {
     setGlobalVoiceState({ transcript: response.response });
 
-    if (response.toolRequest && response.toolRequest.tool.name === 'navigateToPage') {
-        const page = response.toolRequest.input.page;
-        router.push(`/${page}`);
+    if (response.toolRequest) {
+        if (response.toolRequest.tool.name === 'navigateToPage') {
+            const page = response.toolRequest.input.page;
+            router.push(`/${page}`);
+        } else if (response.toolRequest.tool.name === 'changeLanguage') {
+            const lang = response.toolRequest.input.language;
+            setLanguage(lang);
+        }
         timeoutRef.current = setTimeout(stopListening, 3000);
         return;
     }
@@ -124,7 +129,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       console.error("TTS error:", err);
       timeoutRef.current = setTimeout(stopListening, 4000);
     }
-  }, [language, stopListening, router]);
+  }, [language, stopListening, router, setLanguage]);
 
   const startListening = useCallback(() => {
     const SpeechRecognition = getSpeechRecognition();
