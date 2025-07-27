@@ -16,7 +16,7 @@ export function WeatherCard() {
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <Sun className="h-8 w-8 text-primary" />
+                <Sun className="h-8 w-8 text-yellow-500" />
                 <span className="text-4xl font-bold">28°C</span>
             </div>
             <p className="text-right text-muted-foreground">{t('weather.condition')}</p>
