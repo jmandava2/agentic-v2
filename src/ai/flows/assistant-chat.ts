@@ -77,7 +77,7 @@ const assistantChatFlow = ai.defineFlow(
         "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool. If the user asks to change language, use the 'changeLanguage' tool.",
     });
 
-    const toolRequest = llmResponse.toolRequest();
+    const toolRequest = llmResponse.toolRequest;
     if (toolRequest) {
       console.log('Tool call requested:', toolRequest.tool.name, 'with input:', toolRequest.input);
        const toolResponse = await toolRequest.tool.fn(toolRequest.input);
@@ -91,7 +91,7 @@ const assistantChatFlow = ai.defineFlow(
       };
     }
 
-    const textResponse = llmResponse.text();
+    const textResponse = llmResponse.text;
     return {
       response: textResponse || 'Sorry, I could not process that.',
       toolRequest: undefined,
