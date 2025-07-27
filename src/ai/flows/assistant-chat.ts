@@ -8,7 +8,6 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { generate, run, astream } from 'genkit/flow';
 
 const PagesSchema = z.enum(['dashboard', 'market', 'health', 'analytics', 'schemes', 'profile']);
 const LanguagesSchema = z.enum(['en', 'kn']);
@@ -70,7 +69,7 @@ const assistantChatFlow = ai.defineFlow(
     outputSchema: AssistantChatOutputSchema,
   },
   async (input) => {
-    const llmResponse = await generate({
+    const llmResponse = await ai.generate({
       prompt: `User's query: ${input.query}`,
       model: 'googleai/gemini-1.5-flash-latest',
       tools: [navigateToPage, changeLanguage],
@@ -81,13 +80,11 @@ const assistantChatFlow = ai.defineFlow(
     const toolRequest = llmResponse.toolRequest();
     if (toolRequest) {
       console.log('Tool call requested:', toolRequest.tool.name, 'with input:', toolRequest.input);
-       const toolResponse = await run('run-tool', async () =>
-        toolRequest.tool.fn(toolRequest.input)
-      );
+       const toolResponse = await toolRequest.tool.fn(toolRequest.input);
 
       return {
         response: toolResponse,
-        toolRequest: { // Sending the original request back to the client
+        toolRequest: {
           name: toolRequest.tool.name,
           input: toolRequest.input
         },
