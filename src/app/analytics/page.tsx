@@ -7,6 +7,7 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { useLanguage } from '@/hooks/use-language';
 import { MapPin,Maximize, BarChart, CalendarClock } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const mockAnalyticsData = {
     location: "Kolar, Karnataka",
@@ -16,9 +17,9 @@ const mockAnalyticsData = {
     create_logs_and_todos: true,
 };
 
-const InfoRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) => (
+const InfoRow = ({ icon, label, value, colorClass }: { icon: React.ReactNode; label: string; value: string | number, colorClass: string }) => (
     <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
+        <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg text-black", colorClass)}>
             {icon}
         </div>
         <div>
@@ -43,25 +44,29 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <InfoRow 
+                        <InfoRow
                             icon={<MapPin />}
                             label={t('analytics.details.location')}
                             value={mockAnalyticsData.location}
+                            colorClass="bg-blue-100"
                         />
-                        <InfoRow 
+                        <InfoRow
                             icon={<Maximize />}
                             label={t('analytics.details.farm_size')}
                             value={`${mockAnalyticsData.farm_size_acres} Acres`}
+                            colorClass="bg-green-100"
                         />
-                        <InfoRow 
+                        <InfoRow
                             icon={<BarChart />}
                             label={t('analytics.details.analysis_type')}
                             value={mockAnalyticsData.analysis_type}
+                            colorClass="bg-yellow-100"
                         />
-                        <InfoRow 
+                        <InfoRow
                             icon={<CalendarClock />}
                             label={t('analytics.details.analysis_period')}
                             value={`${mockAnalyticsData.analysis_period_months} Months`}
+                            colorClass="bg-purple-100"
                         />
                     </div>
                     <Separator />
