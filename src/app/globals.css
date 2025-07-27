@@ -29,7 +29,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
+    --radius: 0.75rem;
     --sidebar-background: 120 30% 95%;
     --sidebar-foreground: 140 3% 20%;
     --sidebar-primary: 79 91% 63%;
@@ -66,6 +66,7 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --radius: 0.75rem;
     --sidebar-background: 140 5% 12%;
     --sidebar-foreground: 120 40% 95%;
     --sidebar-primary: 79 91% 63%;
