@@ -86,13 +86,13 @@ export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsK
                 <DetailSection title={t('schemes.card.howToApplyTitle')} content={howToApply} />
             </div>
             <Separator />
-            <DialogFooter className="pt-4 gap-2 sm:justify-between">
-                 <Button onClick={handleExplain} variant="outline">
+            <DialogFooter className="pt-4 sm:justify-between gap-2">
+                 <Button onClick={handleExplain} className="w-full sm:w-auto bg-foreground text-primary hover:bg-foreground/90">
                     <Volume2 className="mr-2 h-4 w-4" />
                     {t('schemes.card.explain')}
                 </Button>
                 <DialogClose asChild>
-                    <Button asChild className="bg-foreground text-primary hover:bg-foreground/90">
+                    <Button asChild variant="outline" className="w-full sm:w-auto">
                     <a href={link} target="_blank" rel="noopener noreferrer">
                         <Globe className="mr-2 h-4 w-4" />
                         {t('schemes.card.website')}
