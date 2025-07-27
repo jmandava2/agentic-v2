@@ -8,6 +8,7 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarFooter,
 } from '@/components/ui/sidebar';
 import {
   Home,
@@ -15,12 +16,20 @@ import {
   Leaf,
   Landmark,
   User,
+  LogIn,
+  LogOut,
 } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
+import { useAuth } from '@/hooks/use-auth';
+import { LoginDialog } from '@/components/auth/LoginDialog';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export function AppSidebar() {
   const pathname = usePathname();
   const { t } = useLanguage();
+  const { isAuthenticated, user, logout } = useAuth();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
 
   const links = [
     { href: '/dashboard', label: t('sidebar.dashboard'), icon: Home },
@@ -31,6 +40,7 @@ export function AppSidebar() {
 
   return (
     <>
+      <LoginDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
       <SidebarHeader>
         <div className="flex items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
@@ -59,6 +69,38 @@ export function AppSidebar() {
           ))}
         </SidebarMenu>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            {isAuthenticated ? (
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground px-2">
+                  Signed in as: {user?.email}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={logout}
+                  className="w-full justify-start"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowLoginDialog(true)}
+                className="w-full justify-start"
+              >
+                <LogIn className="mr-2 h-4 w-4" />
+                Sign In
+              </Button>
+            )}
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarFooter>
     </>
   );
 }

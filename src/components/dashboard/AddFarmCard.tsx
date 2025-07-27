@@ -50,14 +50,30 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useLanguage } from '@/hooks/use-language';
+import { cropsApi } from '@/lib/crops-api';
+import { useAuth } from '@/hooks/use-auth';
+import { LoginDialog } from '@/components/auth/LoginDialog';
+import { useState, useEffect } from 'react';
+import { MapPin, Loader2, Mic } from 'lucide-react';
 
 const formSchema = z.object({
-  area: z.string().min(1, 'Area is required'),
-  breed: z.string().min(1, 'Breed is required'),
-  plantingDate: z.date({ required_error: 'Planting date is required' }),
-  expectedYield: z.string().min(1, 'Expected yield is required'),
-  cropStage: z.string({ required_error: 'Please select a crop stage.' }),
-  soil: z.string({ required_error: 'Please select a soil type.' }),
+  crop_name: z.string().min(1, 'Crop name is required'),
+  crop_variety: z.string().min(1, 'Variety is required'),
+  current_crop: z.string().min(1, 'Current crop is required'),
+  latitude: z.number().min(-90).max(90, 'Invalid latitude'),
+  longitude: z.number().min(-180).max(180, 'Invalid longitude'),
+  address: z.string().min(1, 'Address is required'),
+  village: z.string().min(1, 'Village is required'),
+  district: z.string().min(1, 'District is required'),
+  state: z.string().min(1, 'State is required'),
+  total_area_acres: z.string().min(1, 'Total area is required'),
+  cultivable_area_acres: z.string().min(1, 'Cultivable area is required'),
+  soil_type: z.string({ required_error: 'Please select a soil type.' }),
+  water_source: z.string({ required_error: 'Please select a water source.' }),
+  irrigation_type: z.string({ required_error: 'Please select an irrigation type.' }),
+  planting_date: z.date({ required_error: 'Planting date is required' }),
+  expected_harvest_date: z.date({ required_error: 'Expected harvest date is required' }),
+  crop_stage: z.string({ required_error: 'Please select a crop stage.' }),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -65,22 +81,134 @@ type FormData = z.infer<typeof formSchema>;
 export function AddFarmCard() {
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { isAuthenticated } = useAuth();
+  const [showLoginDialog, setShowLoginDialog] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  function onSubmit(values: FormData) {
-    console.log(values);
-    toast({
-      title: 'Crop Added (Mock)',
-      description: `New crop with breed ${values.breed} has been added.`,
-    });
-    form.reset();
+  const getCurrentLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError('Device location not available');
+      return;
+    }
+
+    setIsGettingLocation(true);
+    setLocationError(null);
+
+    // Use device's native getCurrentPosition with optimized settings
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        form.setValue('latitude', latitude);
+        form.setValue('longitude', longitude);
+        setIsGettingLocation(false);
+        
+        toast({
+          title: 'Device Location',
+          description: `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+        });
+      },
+      (error) => {
+        setIsGettingLocation(false);
+        let errorMessage = 'Device location failed';
+        
+        switch (error.code) {
+          case 1: // PERMISSION_DENIED
+            errorMessage = 'Enable location in device settings';
+            break;
+          case 2: // POSITION_UNAVAILABLE
+            errorMessage = 'Device location unavailable';
+            break;
+          case 3: // TIMEOUT
+            errorMessage = 'Device location timeout';
+            break;
+        }
+        
+        setLocationError(errorMessage);
+        toast({
+          title: 'Location Error',
+          description: errorMessage,
+          variant: 'destructive',
+        });
+      },
+      {
+        enableHighAccuracy: false, // Use device's fastest method
+        timeout: 10000, // 10 seconds
+        maximumAge: 300000, // Use 5-minute cached location
+      }
+    );
+  };
+
+  // Auto-get location when dialog opens
+  useEffect(() => {
+    const latitude = form.getValues('latitude');
+    const longitude = form.getValues('longitude');
+    
+    if (!latitude && !longitude) {
+      // Add a small delay to avoid immediate location request
+      setTimeout(() => {
+        getCurrentLocation();
+      }, 1000);
+    }
+  }, [form]);
+
+  async function onSubmit(values: FormData) {
+    if (!isAuthenticated) {
+      setShowLoginDialog(true);
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      const cropData = {
+        crop_name: values.crop_name,
+        latitude: values.latitude,
+        longitude: values.longitude,
+        address: values.address,
+        village: values.village,
+        district: values.district,
+        state: values.state,
+        total_area_acres: parseFloat(values.total_area_acres),
+        cultivable_area_acres: parseFloat(values.cultivable_area_acres),
+        soil_type: values.soil_type,
+        water_source: values.water_source,
+        irrigation_type: values.irrigation_type,
+        current_crop: values.current_crop,
+        crop_variety: values.crop_variety,
+        planting_date: values.planting_date.toISOString().split('T')[0],
+        expected_harvest_date: values.expected_harvest_date.toISOString().split('T')[0],
+        crop_stage: values.crop_stage,
+      };
+
+      await cropsApi.createCrop(cropData);
+      
+      toast({
+        title: 'Crop Added Successfully',
+        description: `${values.crop_name} (${values.crop_variety}) has been added to your farm.`,
+      });
+      form.reset();
+    } catch (error) {
+      console.error('Failed to create crop:', error);
+      toast({
+        title: 'Failed to Add Crop',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
-    <Dialog onOpenChange={(open) => !open && form.reset()}>
-      <DialogTrigger asChild>
+    <>
+      <LoginDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
+      <Dialog onOpenChange={(open) => !open && form.reset()}>
+        <DialogTrigger asChild>
         <Card className="h-full border-2 border-dashed bg-secondary/50 flex flex-col justify-center cursor-pointer hover:border-primary/80 transition-colors">
           <CardHeader className="text-center">
             <div className="mx-auto bg-background/70 rounded-full p-3 w-fit">
@@ -96,23 +224,40 @@ export function AddFarmCard() {
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="font-headline">{t('addCrop.form.title')}</DialogTitle>
-          <DialogDescription>
-            {t('addCrop.form.description')}
-          </DialogDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="font-headline">Add New Crop</DialogTitle>
+              <DialogDescription>
+                Fill in the details to add a new crop to your farm
+              </DialogDescription>
+            </div>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                toast({
+                  title: 'Voice Mode',
+                  description: 'Use the Voice Crop Creator card for voice input',
+                });
+              }}
+            >
+              <Mic className="h-4 w-4" />
+            </Button>
+          </div>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField
               control={form.control}
-              name="area"
+              name="crop_name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('addCrop.form.area.label')}</FormLabel>
+                  <FormLabel>Crop Name</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('addCrop.form.area.placeholder')} {...field} />
+                    <Input placeholder="e.g., Rice, Tomato, Wheat" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -120,12 +265,12 @@ export function AddFarmCard() {
             />
             <FormField
               control={form.control}
-              name="breed"
+              name="crop_variety"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('addCrop.form.breed.label')}</FormLabel>
+                  <FormLabel>Crop Variety</FormLabel>
                   <FormControl>
-                    <Input placeholder={t('addCrop.form.breed.placeholder')} {...field} />
+                    <Input placeholder="e.g., textiles, basmati" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,10 +278,140 @@ export function AddFarmCard() {
             />
             <FormField
               control={form.control}
-              name="plantingDate"
+              name="current_crop"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current Crop</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., cotton, rice" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="total_area_acres"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Total Area (acres)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., 5" type="number" step="0.1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="cultivable_area_acres"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Cultivable Area (acres)</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., 5" type="number" step="0.1" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <Label>Location Coordinates</Label>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={getCurrentLocation}
+                  disabled={isGettingLocation}
+                >
+                  {isGettingLocation ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Getting Location...
+                    </>
+                  ) : (
+                    <>
+                      <MapPin className="mr-2 h-4 w-4" />
+                      Get Current Location
+                    </>
+                  )}
+                </Button>
+              </div>
+              
+              {locationError && (
+                <p className="text-sm text-destructive">{locationError}</p>
+              )}
+              
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="latitude"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Latitude</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Auto-filled from GPS" 
+                          type="number" 
+                          step="0.0001" 
+                          value={field.value || ''}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          readOnly
+                          className="bg-muted"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="longitude"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Longitude</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Auto-filled from GPS" 
+                          type="number" 
+                          step="0.0001" 
+                          value={field.value || ''}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                          readOnly
+                          className="bg-muted"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            
+            <FormField
+              control={form.control}
+              name="address"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Address</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Medavakkam" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="planting_date"
               render={({ field }) => (
                 <FormItem className="flex flex-col">
-                  <FormLabel>{t('addCrop.form.plantingDate.label')}</FormLabel>
+                  <FormLabel>Planting Date</FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -150,7 +425,7 @@ export function AddFarmCard() {
                           {field.value ? (
                             format(field.value, 'PPP')
                           ) : (
-                            <span>{t('addCrop.form.plantingDate.placeholder')}</span>
+                            <span>Select planting date</span>
                           )}
                           <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                         </Button>
@@ -174,37 +449,64 @@ export function AddFarmCard() {
             />
              <FormField
               control={form.control}
-              name="expectedYield"
+              name="expected_harvest_date"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('addCrop.form.yield.label')}</FormLabel>
-                  <FormControl>
-                    <Input placeholder={t('addCrop.form.yield.placeholder')} {...field} />
-                  </FormControl>
+                <FormItem className="flex flex-col">
+                  <FormLabel>Expected Harvest Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={'outline'}
+                          className={cn(
+                            'w-full pl-3 text-left font-normal',
+                            !field.value && 'text-muted-foreground'
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, 'PPP')
+                          ) : (
+                            <span>Select harvest date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="cropStage"
+              name="crop_stage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('addCrop.form.stage.label')}</FormLabel>
+                  <FormLabel>Crop Stage</FormLabel>
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={t('addCrop.form.stage.placeholder')} />
+                        <SelectValue placeholder="Select crop stage" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="seedling">{t('addCrop.form.stage.seedling')}</SelectItem>
-                      <SelectItem value="vegetative">{t('addCrop.form.stage.vegetative')}</SelectItem>
-                      <SelectItem value="flowering">{t('addCrop.form.stage.flowering')}</SelectItem>
-                       <SelectItem value="maturity">{t('addCrop.form.stage.maturity')}</SelectItem>
+                      <SelectItem value="seedling">Seedling</SelectItem>
+                      <SelectItem value="vegetative">Vegetative</SelectItem>
+                      <SelectItem value="flowering">Flowering</SelectItem>
+                      <SelectItem value="maturity">Maturity</SelectItem>
+                      <SelectItem value="golden">Golden</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -213,46 +515,144 @@ export function AddFarmCard() {
             />
              <FormField
               control={form.control}
-              name="soil"
+              name="soil_type"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>{t('addCrop.form.soil.label')}</FormLabel>
+                  <FormLabel>Soil Type</FormLabel>
                    <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
                   >
                     <FormControl>
                       <SelectTrigger>
-                        <SelectValue placeholder={t('addCrop.form.soil.placeholder')} />
+                        <SelectValue placeholder="Select soil type" />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="alluvial">{t('addCrop.form.soil.alluvial')}</SelectItem>
-                      <SelectItem value="black">{t('addCrop.form.soil.black')}</SelectItem>
-                      <SelectItem value="red">{t('addCrop.form.soil.red')}</SelectItem>
-                      <SelectItem value="laterite">{t('addCrop.form.soil.laterite')}</SelectItem>
-                      <SelectItem value="arid">{t('addCrop.form.soil.arid')}</SelectItem>
-                      <SelectItem value="forest">{t('addCrop.form.soil.forest')}</SelectItem>
-                      <SelectItem value="peat">{t('addCrop.form.soil.peat')}</SelectItem>
-                      <SelectItem value="saline">{t('addCrop.form.soil.saline')}</SelectItem>
-                      <SelectItem value="loam">{t('addCrop.form.soil.loam')}</SelectItem>
-                      <SelectItem value="sandy">{t('addCrop.form.soil.sandy')}</SelectItem>
-                      <SelectItem value="clay">{t('addCrop.form.soil.clay')}</SelectItem>
-                      <SelectItem value="silt">{t('addCrop.form.soil.silt')}</SelectItem>
+                      <SelectItem value="alluvial">Alluvial</SelectItem>
+                      <SelectItem value="black">Black</SelectItem>
+                      <SelectItem value="red">Red</SelectItem>
+                      <SelectItem value="laterite">Laterite</SelectItem>
+                      <SelectItem value="clay fertile">Clay Fertile</SelectItem>
+                      <SelectItem value="loam">Loam</SelectItem>
+                      <SelectItem value="sandy">Sandy</SelectItem>
+                      <SelectItem value="clay">Clay</SelectItem>
+                      <SelectItem value="silt">Silt</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="village"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Village</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., kanchipuram" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="district"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>District</FormLabel>
+                    <FormControl>
+                      <Input placeholder="e.g., Bangalore" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <FormField
+              control={form.control}
+              name="state"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>State</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Karnataka" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="water_source"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Water Source</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select water source" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="ground water">Ground Water</SelectItem>
+                        <SelectItem value="river water">River Water</SelectItem>
+                        <SelectItem value="rain water">Rain Water</SelectItem>
+                        <SelectItem value="canal water">Canal Water</SelectItem>
+                        <SelectItem value="bore well">Bore Well</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="irrigation_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Irrigation Type</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select irrigation type" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="drop system">Drop System</SelectItem>
+                        <SelectItem value="drip irrigation">Drip Irrigation</SelectItem>
+                        <SelectItem value="sprinkler">Sprinkler</SelectItem>
+                        <SelectItem value="flood irrigation">Flood Irrigation</SelectItem>
+                        <SelectItem value="furrow irrigation">Furrow Irrigation</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             <DialogFooter>
-              <DialogClose asChild>
-                <Button type="submit">{t('addCrop.form.save')}</Button>
-              </DialogClose>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Adding Crop...' : 'Add Crop'}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
+    </>
   );
 }
