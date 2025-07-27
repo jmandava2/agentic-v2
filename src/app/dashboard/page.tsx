@@ -31,6 +31,8 @@ export default function DashboardPage() {
       </div>
       <h1 className="hidden font-headline text-3xl font-bold md:block">{t('dashboard.title')}</h1>
       
+      <WeatherCard />
+
       <div>
         <h2 className="font-headline text-2xl font-bold mb-4">Add New Crop</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -53,12 +55,9 @@ export default function DashboardPage() {
         </>
       )}
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Todos />
-            <Advisories />
-        </div>
-        <WeatherCard />
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Todos />
+        <Advisories />
       </div>
       
     </div>
