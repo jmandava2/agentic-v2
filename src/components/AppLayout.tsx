@@ -1,7 +1,7 @@
 
 'use client';
 
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useState, createContext } from 'react';
 import { Sidebar, SidebarInset } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/AppSidebar';
 import { AssistantBar } from '@/components/AssistantBar';
@@ -11,14 +11,29 @@ import { VoiceOverlay } from './voice/VoiceOverlay';
 import { useCamera } from '@/hooks/use-camera';
 import { AttachmentContext } from '@/hooks/use-attachment';
 import { CameraOverlay } from './camera/CameraOverlay';
+import type { Farm } from './dashboard/FarmInfoCarousel';
 
-function AttachmentProvider({ children }: { children: ReactNode }) {
+type AppContextType = {
+  farms: Farm[];
+  setFarms: React.Dispatch<React.SetStateAction<Farm[]>>;
+  activeFarmId: number | null;
+  setActiveFarmId: React.Dispatch<React.SetStateAction<number | null>>;
+};
+
+export const AppContext = createContext<AppContextType | null>(null);
+
+function AppProvider({ children }: { children: ReactNode }) {
   const [attachment, setAttachment] = useState<string | null>(null);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  const [activeFarmId, setActiveFarmId] = useState<number | null>(null);
+
 
   return (
-    <AttachmentContext.Provider value={{ attachment, setAttachment }}>
-      {children}
-    </AttachmentContext.Provider>
+    <AppContext.Provider value={{ farms, setFarms, activeFarmId, setActiveFarmId }}>
+      <AttachmentContext.Provider value={{ attachment, setAttachment }}>
+        {children}
+      </AttachmentContext.Provider>
+    </AppContext.Provider>
   );
 }
 
@@ -27,7 +42,7 @@ export function AppLayout({ children }: { children: ReactNode }) {
   const { isListening, transcript, stopListening } = useVoiceRecognition();
   const { isCameraOpen, closeCamera } = useCamera();
   return (
-    <AttachmentProvider>
+    <AppProvider>
       <Sidebar variant="sidebar" collapsible="icon">
         <AppSidebar />
       </Sidebar>
@@ -40,6 +55,6 @@ export function AppLayout({ children }: { children: ReactNode }) {
         onClose={stopListening}
       />
       <CameraOverlay isOpen={isCameraOpen} onClose={closeCamera} />
-    </AttachmentProvider>
+    </AppProvider>
   );
 }

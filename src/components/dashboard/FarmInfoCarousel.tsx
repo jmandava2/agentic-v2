@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import type { EmblaCarouselType } from 'embla-carousel-react';
 import { format } from 'date-fns';
 
@@ -17,7 +17,18 @@ import { Wheat } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useLanguage } from '@/hooks/use-language';
 import { useToast } from '@/hooks/use-toast';
+import { AppContext } from '../AppLayout';
 
+export type Farm = {
+  id: number;
+  cropNameKey: string;
+  cropIcon: React.ReactNode;
+  area: string;
+  mandiPrice: string;
+  yieldDate: string;
+  suggestions: { title: string; description: string }[];
+  history: FarmHistory[];
+};
 
 const TomatoIcon = () => (
   <svg
@@ -30,7 +41,7 @@ const TomatoIcon = () => (
   </svg>
 );
 
-const initialFarms = [
+const initialFarms: Farm[] = [
   {
     id: 1,
     cropNameKey: 'crops.sonaMasooriRice',
@@ -109,47 +120,42 @@ const initialFarms = [
 export function FarmInfoCarousel() {
   const [api, setApi] = useState<EmblaCarouselType | undefined>();
   const [current, setCurrent] = useState(0);
-  const [farms, setFarms] = useState(initialFarms);
   const { t } = useLanguage();
-  const { toast } = useToast();
+  const appContext = useContext(AppContext);
 
   useEffect(() => {
-    if (!api) return;
+    if (appContext) {
+      appContext.setFarms(initialFarms);
+      if (initialFarms.length > 0) {
+        appContext.setActiveFarmId(initialFarms[0].id);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    setCurrent(api.selectedScrollSnap());
+  useEffect(() => {
+    if (!api || !appContext) return;
+
     const onSelect = (api: EmblaCarouselType) => {
-      setCurrent(api.selectedScrollSnap());
+      const selectedIndex = api.selectedScrollSnap();
+      setCurrent(selectedIndex);
+      if (appContext.farms[selectedIndex]) {
+        appContext.setActiveFarmId(appContext.farms[selectedIndex].id);
+      }
     };
 
     api.on('select', onSelect);
+    // Set initial active farm
+    onSelect(api);
 
     return () => {
       api.off('select', onSelect);
     };
-  }, [api]);
+  }, [api, appContext]);
 
-  const handleCheckIn = (farmId: number, note: string, photo?: string) => {
-    const newHistoryEntry: FarmHistory = {
-      date: format(new Date(), 'MMM d, yyyy'),
-      event: 'Manual Check-in',
-      details: note,
-      photo: !!photo,
-    };
+  if (!appContext) return null; // Or a loading spinner
 
-    setFarms(prevFarms => 
-      prevFarms.map(farm => 
-        farm.id === farmId 
-          ? { ...farm, history: [newHistoryEntry, ...farm.history] } 
-          : farm
-      )
-    );
-
-    toast({
-      title: 'Check-in Logged',
-      description: `New entry added to the history of ${t(farms.find(f => f.id === farmId)?.cropNameKey as any)}.`,
-    });
-  };
-
+  const { farms } = appContext;
   const slideCount = farms.length + 1; // +1 for AddFarmCard
 
   return (
@@ -157,7 +163,7 @@ export function FarmInfoCarousel() {
     <Carousel setApi={setApi} className="w-full">
       <CarouselContent>
         {farms.map((farm, index) => (
-          <CarouselItem key={index}>
+          <CarouselItem key={farm.id}>
             <FarmInfoCard
               {...farm}
               cropName={t(farm.cropNameKey as any)}

@@ -9,23 +9,68 @@ import { Camera, Send, X, Loader2 } from 'lucide-react';
 import { useCamera } from '@/hooks/use-camera';
 import { useAttachment } from '@/hooks/use-attachment';
 import { useToast } from '@/hooks/use-toast';
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { cn } from '@/lib/utils';
 import { useVoiceRecognition } from '@/hooks/use-voice-recognition';
 import { useLanguage } from '@/hooks/use-language';
 import { assistantChat } from '@/ai/flows/assistant-chat';
 import { useRouter } from 'next/navigation';
+import { AppContext } from './AppLayout';
+import { format } from 'date-fns';
+import type { FarmHistory } from './dashboard/FarmInfoCard';
 
 export function AssistantBar() {
   const { attachment, setAttachment } = useAttachment();
-  const { openCamera: openCameraForAttachment } = useCamera({ onCapture: setAttachment });
+  const appContext = useContext(AppContext);
+  const { t, language } = useLanguage();
+  const { toast } = useToast();
+
+  const handleCapture = (photoDataUrl: string) => {
+    if (!appContext) return;
+    const { activeFarmId, setFarms, farms } = appContext;
+    
+    if (activeFarmId === null) {
+      toast({
+        variant: 'destructive',
+        title: 'No Active Crop',
+        description: 'Please select a crop from the dashboard carousel first.',
+      });
+      return;
+    }
+
+    const newHistoryEntry: FarmHistory = {
+      date: format(new Date(), 'MMM d, yyyy'),
+      event: 'Photo Check-in',
+      details: 'Visual inspection log captured via camera.',
+      photo: true,
+    };
+    
+    setFarms(prevFarms => 
+      prevFarms.map(farm => 
+        farm.id === activeFarmId 
+          ? { ...farm, history: [newHistoryEntry, ...farm.history] } 
+          : farm
+      )
+    );
+
+    const activeFarm = farms.find(f => f.id === activeFarmId);
+    if (activeFarm) {
+        toast({
+            title: 'Check-in Logged',
+            description: `New photo log added to the history of ${t(activeFarm.cropNameKey as any)}.`,
+        });
+    }
+
+    setAttachment(photoDataUrl);
+  };
+
+  const { openCamera: openCameraForAttachment } = useCamera({ onCapture: handleCapture });
   const { isCameraOpen } = useCamera();
 
   const { isListening } = useVoiceRecognition();
-  const { toast } = useToast();
+  
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const { t } = useLanguage();
   const router = useRouter();
 
   const handleSendMessage = async () => {
