@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -19,7 +20,6 @@ import {
   DialogClose,
   DialogFooter
 } from '@/components/ui/dialog';
-import { Separator } from '../ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/use-language';
 import { TranslationKey } from '@/lib/translations';
@@ -78,14 +78,12 @@ export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsK
             <DialogHeader>
             <DialogTitle className="font-headline text-2xl">{title}</DialogTitle>
             </DialogHeader>
-            <Separator />
             <div className="space-y-4 py-4">
                 <DetailSection title={t('schemes.card.descriptionTitle')} content={description} />
                 <DetailSection title={t('schemes.card.eligibilityTitle')} content={eligibility} />
                 <DetailSection title={t('schemes.card.benefitsTitle')} content={benefits} />
                 <DetailSection title={t('schemes.card.howToApplyTitle')} content={howToApply} />
             </div>
-            <Separator />
             <DialogFooter className="pt-4 sm:justify-between gap-2">
                  <Button onClick={handleExplain} className="w-full sm:w-auto bg-foreground text-primary hover:bg-foreground/90">
                     <Volume2 className="mr-2 h-4 w-4" />
