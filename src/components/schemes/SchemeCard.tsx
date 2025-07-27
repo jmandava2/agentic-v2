@@ -67,7 +67,7 @@ export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsK
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
              <CardFooter className="justify-end">
-                 <Button variant="outline" size="sm">
+                 <Button size="sm" className="bg-foreground text-primary hover:bg-foreground/90">
                     <span>{t('schemes.card.learnMore')}</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
