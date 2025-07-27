@@ -22,7 +22,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { useLanguage } from '@/hooks/use-language';
 import { CheckIn } from './CheckIn';
-import { Logbook } from 'lucide-react';
+import { Notebook } from 'lucide-react';
 
 export type FarmHistory = { date: string; event: string; details: string, photo?: boolean };
 
@@ -98,7 +98,7 @@ export function FarmInfoCard({
 
         <CheckIn cropName={cropName} onCheckIn={onCheckIn}>
           <Button>
-            <Logbook className="mr-2 h-4 w-4" />
+            <Notebook className="mr-2 h-4 w-4" />
             Log Check-in
           </Button>
         </CheckIn>
