@@ -82,14 +82,14 @@ export function AssistantBar() {
       const chatResponse = await assistantChat({ query: message });
 
       if (chatResponse.toolRequest) {
-          if (chatResponse.toolRequest.tool.name === 'navigateToPage') {
+          if (chatResponse.toolRequest.name === 'navigateToPage') {
               const page = chatResponse.toolRequest.input.page;
               toast({
                   title: 'Navigation',
                   description: `Navigating to ${page}...`,
               });
               router.push(`/${page}`);
-          } else if (chatResponse.toolRequest.tool.name === 'changeLanguage') {
+          } else if (chatResponse.toolRequest.name === 'changeLanguage') {
               const lang = chatResponse.toolRequest.input.language;
               setLanguage(lang);
               toast({

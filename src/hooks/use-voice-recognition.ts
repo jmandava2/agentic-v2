@@ -103,10 +103,10 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     setGlobalVoiceState({ transcript: response.response });
 
     if (response.toolRequest) {
-        if (response.toolRequest.tool.name === 'navigateToPage') {
+        if (response.toolRequest.name === 'navigateToPage') {
             const page = response.toolRequest.input.page;
             router.push(`/${page}`);
-        } else if (response.toolRequest.tool.name === 'changeLanguage') {
+        } else if (response.toolRequest.name === 'changeLanguage') {
             const lang = response.toolRequest.input.language;
             setLanguage(lang);
         }
