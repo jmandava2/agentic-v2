@@ -102,11 +102,11 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const handleAssistantResponse = useCallback(async (response: AssistantChatOutput) => {
     setGlobalVoiceState({ transcript: response.response });
 
-    if (response.toolRequest?.tool?.name === 'navigateToPage') {
-      const page = response.toolRequest.input.page;
-      router.push(`/${page}`);
-      timeoutRef.current = setTimeout(stopListening, 2000);
-      return;
+    if (response.toolRequest && response.toolRequest.tool.name === 'navigateToPage') {
+        const page = response.toolRequest.input.page;
+        router.push(`/${page}`);
+        timeoutRef.current = setTimeout(stopListening, 3000);
+        return;
     }
 
     try {
@@ -115,14 +115,14 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
         audioRef.current.src = audioResponse.media;
         audioRef.current.play();
         audioRef.current.onended = () => {
-          timeoutRef.current = setTimeout(stopListening, 1000);
+          timeoutRef.current = setTimeout(stopListening, 4000);
         };
       } else {
-        timeoutRef.current = setTimeout(stopListening, 2000);
+        timeoutRef.current = setTimeout(stopListening, 4000);
       }
     } catch (err) {
       console.error("TTS error:", err);
-      timeoutRef.current = setTimeout(stopListening, 2000);
+      timeoutRef.current = setTimeout(stopListening, 4000);
     }
   }, [language, stopListening, router]);
 
