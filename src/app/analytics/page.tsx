@@ -70,7 +70,7 @@ export default function AnalyticsPage() {
                         />
                     </div>
                     <Separator />
-                     <div className="flex items-center justify-between p-4 rounded-lg bg-secondary">
+                     <div className="flex items-center justify-between">
                         <Label htmlFor="logs-todos" className="font-semibold text-foreground">
                            {t('analytics.details.create_logs_and_todos')}
                         </Label>
