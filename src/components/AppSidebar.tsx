@@ -47,7 +47,7 @@ export function AppSidebar() {
       <LoginDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg">
             <Logo />
           </div>
           <span className="font-headline text-lg font-semibold">
