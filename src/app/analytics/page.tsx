@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useLanguage } from '@/hooks/use-language';
+
 import { 
   MapPin, 
   Maximize, 
@@ -48,9 +48,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/
 import { LineChart, Line, BarChart as RechartsBarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, ResponsiveContainer } from 'recharts';
 import { analyticsApi, type BusinessAnalysisResponse, type BusinessAnalysisRequest } from '@/lib/analytics-api';
 
-const InfoRow = ({ icon, label, value }: { icon: React.ReactNode; label: string; value: string | number }) => (
+
+const InfoRow = ({ icon, label, value, colorClass }: { icon: React.ReactNode; label: string; value: string | number, colorClass: string }) => (
     <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary text-secondary-foreground">
+        <div className={cn("flex h-10 w-10 items-center justify-center rounded-lg text-black", colorClass)}>
             {icon}
         </div>
         <div>
@@ -449,22 +450,22 @@ export default function AnalyticsPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <InfoRow 
+                        <InfoRow
                             icon={<MapPin />}
                             label="Location"
                             value="Karnataka"
                         />
-                        <InfoRow 
+                        <InfoRow
                             icon={<Maximize />}
                             label="Farm Size"
                             value={`${report.farm_size_acres} Acres`}
                         />
-                        <InfoRow 
+                        <InfoRow
                             icon={<BarChart />}
                             label="Analysis Period"
                             value={report.analysis_period}
                         />
-                        <InfoRow 
+                        <InfoRow
                             icon={<CalendarClock />}
                             label="Confidence Score"
                             value={`${(report.confidence_score * 100).toFixed(1)}%`}

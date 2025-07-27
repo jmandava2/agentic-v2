@@ -22,8 +22,9 @@ import type { FarmHistory } from './dashboard/FarmInfoCard';
 export function AssistantBar() {
   const { attachment, setAttachment } = useAttachment();
   const appContext = useContext(AppContext);
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleCapture = (photoDataUrl: string) => {
     if (!appContext) return;
@@ -71,28 +72,32 @@ export function AssistantBar() {
   
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSendMessage = async () => {
     if (!message && !attachment) return;
+    const query = message;
+    setMessage('');
+    setAttachment(null);
     setLoading(true);
     
     try {
       // For now, ignoring attachment in chat, but you could send it here
-      const chatResponse = await assistantChat({ query: message });
-
-      if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
-          const page = chatResponse.toolRequest.input.page;
-          toast({
-              title: 'Navigation',
-              description: `Navigating to ${page}...`,
-          });
-          router.push(`/${page}`);
-      } else {
-         toast({
-            title: 'Assistant',
-            description: chatResponse.response,
-          });
+      const chatResponse = await assistantChat({ query: query });
+      
+      toast({
+        title: 'Assistant',
+        description: chatResponse.response,
+      });
+      
+      // Client-side action handling
+      if (chatResponse.toolRequest) {
+          if (chatResponse.toolRequest.name === 'navigateToPage') {
+              const page = chatResponse.toolRequest.input.page;
+              router.push(`/${page}`);
+          } else if (chatResponse.toolRequest.name === 'changeLanguage') {
+              const lang = chatResponse.toolRequest.input.language;
+              setLanguage(lang);
+          }
       }
 
     } catch (error) {
@@ -103,8 +108,6 @@ export function AssistantBar() {
       });
       console.error('Assistant chat error:', error);
     } finally {
-        setMessage('');
-        setAttachment(null);
         setLoading(false);
     }
   };
@@ -118,7 +121,7 @@ export function AssistantBar() {
   return (
     <footer className="fixed bottom-16 left-0 right-0 z-20 p-2 md:bottom-0">
       <div className="relative mx-auto max-w-4xl">
-        <div className="flex w-full items-center gap-3 rounded-full border bg-card p-2 pl-4 shadow-lg">
+        <div className="flex w-full items-center gap-3 rounded-full border bg-card p-2 pl-4 shadow-xl">
           {attachment && (
             <div className="relative flex-shrink-0">
               <Image

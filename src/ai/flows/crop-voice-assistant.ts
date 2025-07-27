@@ -1,3 +1,4 @@
+
 'use server';
 
 import { ai } from '@/ai/genkit';
@@ -37,76 +38,81 @@ const cropDataExtractionFlow = ai.defineFlow(
   async (input) => {
     const { userInput, questionContext, fieldType } = input;
     
-    let systemPrompt = `You are an expert at extracting agricultural data from voice input. 
+    let systemPrompt = `You are an expert at extracting agricultural data from user input, which may be in English or Kannada. 
     
 Current question context: "${questionContext}"
 Field type being collected: ${fieldType}
-User's voice input: "${userInput}"
+User's input: "${userInput}"
 
-Extract and format the relevant information based on the field type:
+Your task is to extract the relevant piece of information from the user's input that directly answers the question.
 
-CROP_NAME: Extract crop names (Rice, Wheat, Cotton, Tomato, etc.)
-CROP_VARIETY: Extract variety names (Basmati, Sona Masoori, BT Cotton, etc.)
-CURRENT_CROP: Extract the current crop growing
-AREA: Extract numeric values for acres/hectares (convert words to numbers: "five" -> "5")
-SOIL_TYPE: Extract soil types (clay, loam, sandy, black, red, alluvial, etc.)
-WATER_SOURCE: Extract water sources (ground water, river water, rain water, bore well, etc.)
-IRRIGATION_TYPE: Extract irrigation methods (drip system, sprinkler, flood irrigation, etc.)
-LOCATION: Extract addresses, villages, districts, states
-CROP_STAGE: Extract growth stages (seedling, vegetative, flowering, maturity, golden, etc.)
-DATE: Extract and format dates to YYYY-MM-DD format
+Here are the extraction rules for each field type:
+- CROP_NAME: Extract only the name of the crop (e.g., "Rice", "Wheat", "Cotton", "Tomato", "ಭತ್ತ", "ಗೋಧಿ").
+- CROP_VARIETY: Extract the specific variety name (e.g., "Basmati", "Sona Masoori", "ಬಾಸಮತಿ").
+- CURRENT_CROP: Extract the name of the crop currently growing.
+- AREA: Extract only the numeric value for acres/hectares. Convert words to numbers (e.g., "five" -> "5", "ಐದು" -> "5"). Do not include units like 'acres'.
+- SOIL_TYPE: Extract soil types (e.g., "clay", "loam", "sandy", "black", "red", "alluvial", "ಕೆಂಪು ಮಣ್ಣು", "ಕಪ್ಪು ಮಣ್ಣು").
+- WATER_SOURCE: Extract water sources (e.g., "ground water", "river water", "rain water", "bore well", "ನದಿ ನೀರು").
+- IRRIGATION_TYPE: Extract irrigation methods (e.g., "drip system", "sprinkler", "flood irrigation", "ಹನಿ ನೀರಾವರಿ").
+- LOCATION: Extract addresses, villages, districts, states.
+- CROP_STAGE: Extract growth stages (e.g., "seedling", "vegetative", "flowering", "maturity", "golden", "ಸಸಿ").
+- DATE: Extract and format dates to YYYY-MM-DD format. Understand various date formats in both English and Kannada.
 
-Rules:
-1. Return only the clean extracted value
-2. Convert spoken numbers to digits ("five acres" -> "5")
-3. Standardize terms (e.g., "ground water" not "groundwater")
-4. For dates, convert to ISO format (YYYY-MM-DD)
-5. If input is unclear or doesn't match the field type, set needsClarification to true
+IMPORTANT RULES:
+1.  **Return only the single, clean, extracted value.** Do not add any extra words, explanations, or labels.
+2.  Convert spoken numbers to digits ("five acres" -> "5", "ಹತ್ತು ಎಕರೆ" -> "10").
+3.  Standardize common terms where possible (e.g., "ground water" not "groundwater").
+4.  For dates, always convert to YYYY-MM-DD ISO format.
+5.  If the input is unclear, ambiguous, or does not seem to answer the question for the specified field type, you MUST set 'needsClarification' to true.
+6.  If the input contains a question back to the system, it needs clarification.
 
 Examples:
-- Input: "I want to plant rice" for crop_name -> "Rice"
-- Input: "we have five acres" for area -> "5"
-- Input: "clay soil" for soil_type -> "clay"
-- Input: "July 15th 2024" for date -> "2024-07-15"`;
+- User Input: "I want to plant rice" for field_type 'crop_name' -> "Rice"
+- User Input: "we have five acres" for field_type 'area' -> "5"
+- User Input: "the soil is black soil" for field_type 'soil_type' -> "black"
+- User Input: "July 15th 2024" for field_type 'date' -> "2024-07-15"
+- User Input: "What should I enter here?" for any field_type -> set needsClarification=true`;
 
-    const llmResponse = await ai.generate({
+    const { output } = await ai.generate({
       prompt: systemPrompt,
       model: 'googleai/gemini-1.5-flash-latest',
+      output: { schema: CropDataExtractionOutputSchema },
       config: {
         temperature: 0.1, // Low temperature for consistent extraction
       },
     });
 
-    const responseText = llmResponse.text || '';
-    
-    // Parse the response to determine if clarification is needed
-    const needsClarification = responseText.toLowerCase().includes('unclear') || 
-                              responseText.toLowerCase().includes('not sure') ||
-                              responseText.toLowerCase().includes('clarification') ||
-                              responseText.length < 2;
-    
-    let extractedValue = responseText.trim();
-    let confidence = 0.9;
-    
-    // Lower confidence for ambiguous responses
-    if (needsClarification || extractedValue.includes('?')) {
-      confidence = 0.3;
+    if (!output) {
+      // Fallback or error handling
+      return {
+        extractedValue: '',
+        confidence: 0,
+        needsClarification: true,
+        clarificationQuestion: "I'm sorry, I couldn't process that. Could you try again?",
+      };
     }
     
-    // Clean up the extracted value
-    extractedValue = extractedValue.replace(/['"]/g, '').trim();
-    
-    let clarificationQuestion = undefined;
-    if (needsClarification) {
-      clarificationQuestion = generateClarificationQuestion(fieldType, userInput);
+    // If the model itself decided it needs clarification, trust it.
+    if(output.needsClarification) {
+        output.clarificationQuestion = output.clarificationQuestion || generateClarificationQuestion(fieldType, userInput);
+        return output;
+    }
+
+    // Post-processing and validation
+    let extractedValue = output.extractedValue.trim().replace(/['"]/g, '');
+    let confidence = output.confidence;
+
+    // Additional check for ambiguity
+    if (extractedValue.length < 2 || extractedValue.includes('?')) {
+        output.needsClarification = true;
+        confidence = 0.3;
     }
     
-    return {
-      extractedValue,
-      confidence,
-      needsClarification,
-      clarificationQuestion,
-    };
+    if (output.needsClarification) {
+      output.clarificationQuestion = generateClarificationQuestion(fieldType, userInput);
+    }
+    
+    return { ...output, extractedValue, confidence };
   }
 );
 
@@ -124,3 +130,5 @@ function generateClarificationQuestion(fieldType: string, userInput: string): st
       return "I didn't understand that clearly. Could you please repeat your answer?";
   }
 }
+
+    

@@ -11,9 +11,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['PT Sans', 'sans-serif'],
-        headline: ['Space Grotesk', 'sans-serif'],
-        code: ['Source Code Pro', 'monospace'],
+        body: ['Instrument Sans', 'sans-serif'],
+        headline: ['Instrument Sans', 'sans-serif'],
+        code: ['Instrument Sans', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',

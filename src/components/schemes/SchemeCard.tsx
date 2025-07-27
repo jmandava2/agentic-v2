@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -19,7 +20,6 @@ import {
   DialogClose,
   DialogFooter
 } from '@/components/ui/dialog';
-import { Separator } from '../ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/use-language';
 import { TranslationKey } from '@/lib/translations';
@@ -63,11 +63,11 @@ export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsK
         <DialogTrigger asChild>
             <Card className="flex flex-col cursor-pointer hover:border-primary/50 transition-colors">
             <CardHeader className="flex-grow">
-                <CardTitle className="font-headline">{title}</CardTitle>
+                <CardTitle className="font-headline text-lg md:text-xl">{title}</CardTitle>
                 <CardDescription>{description}</CardDescription>
             </CardHeader>
              <CardFooter className="justify-end">
-                 <Button variant="outline" size="sm">
+                 <Button size="sm" className="bg-foreground text-primary hover:bg-foreground/90">
                     <span>{t('schemes.card.learnMore')}</span>
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -78,21 +78,19 @@ export function SchemeCard({ titleKey, descriptionKey, eligibilityKey, benefitsK
             <DialogHeader>
             <DialogTitle className="font-headline text-2xl">{title}</DialogTitle>
             </DialogHeader>
-            <Separator />
             <div className="space-y-4 py-4">
                 <DetailSection title={t('schemes.card.descriptionTitle')} content={description} />
                 <DetailSection title={t('schemes.card.eligibilityTitle')} content={eligibility} />
                 <DetailSection title={t('schemes.card.benefitsTitle')} content={benefits} />
                 <DetailSection title={t('schemes.card.howToApplyTitle')} content={howToApply} />
             </div>
-            <Separator />
-            <DialogFooter className="pt-4 gap-2 sm:justify-between">
-                 <Button onClick={handleExplain} variant="outline">
+            <DialogFooter className="pt-4 sm:justify-between gap-2">
+                 <Button onClick={handleExplain} className="w-full sm:w-auto bg-foreground text-primary hover:bg-foreground/90">
                     <Volume2 className="mr-2 h-4 w-4" />
                     {t('schemes.card.explain')}
                 </Button>
                 <DialogClose asChild>
-                    <Button asChild className="bg-foreground text-primary hover:bg-foreground/90">
+                    <Button asChild variant="outline" className="w-full sm:w-auto">
                     <a href={link} target="_blank" rel="noopener noreferrer">
                         <Globe className="mr-2 h-4 w-4" />
                         {t('schemes.card.website')}

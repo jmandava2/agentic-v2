@@ -162,7 +162,7 @@ export function CameraPane() {
         </div>
       ) : (
         <div className="w-full flex items-center justify-center gap-2">
-            <Button onClick={handleCapture} className="w-full" size="lg">
+            <Button onClick={handleCapture} className="w-full bg-foreground text-primary hover:bg-foreground/90" size="lg">
                 <CameraIcon className="mr-2 h-5 w-5" />
                 Capture
             </Button>

@@ -1,16 +1,18 @@
+
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Mic, MicOff, Volume2, VolumeX, Loader2, CheckCircle } from 'lucide-react';
+import { Mic, MicOff, Volume2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 import { cropsApi } from '@/lib/crops-api';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
 import { extractCropData } from '@/ai/flows/crop-voice-assistant';
-import { cn } from '@/lib/utils';
+import { useLanguage } from '@/hooks/use-language';
+import { TranslationKey } from '@/lib/translations';
 
 interface VoiceCropData {
   crop_name?: string;
@@ -44,25 +46,26 @@ export function VoiceCropCreator() {
   
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
+  const { t, language } = useLanguage();
   const recognitionRef = useRef<SpeechRecognition | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const questions = [
-    "What crop would you like to add? For example, say 'Rice' or 'Wheat'.",
-    "What variety of this crop? For example, 'Basmati' or 'Sona Masoori'.",
-    "What is the current crop growing there? This could be the same or different.",
-    "How many total acres is your farm?",
-    "How many acres are cultivable?",
-    "What type of soil do you have? Options include clay, loam, sandy, or black soil.",
-    "What is your water source? Ground water, river water, or rain water?",
-    "What irrigation type do you use? Drip system, sprinkler, or flood irrigation?",
-    "What is your address or location?",
-    "Which village is your farm in?",
-    "Which district?",
-    "Which state?",
-    "What stage is your crop in? Seedling, vegetative, flowering, or maturity?",
-    "When did you plant this crop? Please say the date.",
-    "When do you expect to harvest? Please say the expected date."
+  const questions: TranslationKey[] = [
+    'voiceCreator.questions.crop_name',
+    'voiceCreator.questions.crop_variety',
+    'voiceCreator.questions.current_crop',
+    'voiceCreator.questions.total_area',
+    'voiceCreator.questions.cultivable_area',
+    'voiceCreator.questions.soil_type',
+    'voiceCreator.questions.water_source',
+    'voiceCreator.questions.irrigation_type',
+    'voiceCreator.questions.address',
+    'voiceCreator.questions.village',
+    'voiceCreator.questions.district',
+    'voiceCreator.questions.state',
+    'voiceCreator.questions.crop_stage',
+    'voiceCreator.questions.planting_date',
+    'voiceCreator.questions.harvest_date'
   ];
 
   const fieldNames: (keyof VoiceCropData)[] = [
@@ -85,7 +88,6 @@ export function VoiceCropCreator() {
       audioRef.current = new Audio();
     }
 
-    // Get current location
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -103,7 +105,7 @@ export function VoiceCropCreator() {
   const speak = useCallback(async (text: string) => {
     try {
       setIsSpeaking(true);
-      const audioResponse = await textToSpeech({ text, language: 'en' });
+      const audioResponse = await textToSpeech({ text, language });
       
       if (audioResponse.media && audioRef.current) {
         audioRef.current.src = audioResponse.media;
@@ -116,30 +118,31 @@ export function VoiceCropCreator() {
       console.error('TTS error:', error);
       setIsSpeaking(false);
     }
-  }, []);
+  }, [language]);
 
   const processVoiceInput = useCallback(async (input: string) => {
     setIsProcessing(true);
     
     try {
-      // Use enhanced AI to extract and format the data
       const fieldType = fieldTypes[currentStep] as any;
+      const questionText = t(questions[currentStep]);
+
       const response = await extractCropData({
         userInput: input,
-        questionContext: questions[currentStep],
+        questionContext: questionText,
         fieldType: fieldType,
       });
       
       if (response.needsClarification) {
-        await speak(response.clarificationQuestion || "Could you please repeat that?");
-        setTranscript(`Need clarification: ${input}`);
+        const clarificationQuestion = response.clarificationQuestion || t('voiceCreator.errors.repeat');
+        await speak(clarificationQuestion);
+        setTranscript(`${t('voiceCreator.clarificationNeeded')}: ${input}`);
         setIsProcessing(false);
         return;
       }
       
       const extractedValue = response.extractedValue;
       
-      // Update crop data based on current step
       const fieldName = fieldNames[currentStep];
       const newCropData = { ...cropData };
       
@@ -148,16 +151,15 @@ export function VoiceCropCreator() {
         if (!isNaN(numValue)) {
           newCropData[fieldName] = numValue;
         } else {
-          await speak("I need a number for the area. Please say how many acres, like 'five acres'.");
+          await speak(t('voiceCreator.errors.areaNumber'));
           setIsProcessing(false);
           return;
         }
       } else if (fieldName === 'planting_date' || fieldName === 'expected_harvest_date') {
-        // Validate date format
         if (extractedValue.match(/^\d{4}-\d{2}-\d{2}$/)) {
           newCropData[fieldName] = extractedValue;
         } else {
-          await speak("Please provide the date in a clear format, like 'July 15th 2024'.");
+          await speak(t('voiceCreator.errors.date_format'));
           setIsProcessing(false);
           return;
         }
@@ -166,28 +168,27 @@ export function VoiceCropCreator() {
       }
       
       setCropData(newCropData);
-      setTranscript(`✓ Recorded: ${extractedValue}`);
+      setTranscript(`${t('voiceCreator.recorded')} ${extractedValue}`);
       
-      // Confirm and move to next step
-      await speak(`Got it, ${extractedValue}.`);
+      await speak(`${t('voiceCreator.gotIt')} ${extractedValue}.`);
       
       if (currentStep < questions.length - 1) {
         setTimeout(() => {
           setCurrentStep(currentStep + 1);
-          speak(questions[currentStep + 1]);
+          speak(t(questions[currentStep + 1]));
         }, 1500);
       } else {
-        await speak("Perfect! I have all the information. Let me create your crop record now.");
+        await speak(t('voiceCreator.allInfoCollected'));
         setTimeout(() => createCrop(newCropData), 2000);
       }
       
     } catch (error) {
       console.error('Error processing voice input:', error);
-      await speak("Sorry, I had trouble processing that. Could you please try again?");
+      await speak(t('voiceCreator.errors.processing'));
     } finally {
       setIsProcessing(false);
     }
-  }, [currentStep, cropData, speak]);
+  }, [currentStep, cropData, speak, t, questions]);
 
   const startListening = useCallback(() => {
     if (!hasRecognitionSupport || isListening) return;
@@ -197,11 +198,11 @@ export function VoiceCropCreator() {
     
     recognition.continuous = false;
     recognition.interimResults = true;
-    recognition.lang = 'en-US';
+    recognition.lang = language === 'kn' ? 'kn-IN' : 'en-US';
     
     recognition.onstart = () => {
       setIsListening(true);
-      setTranscript('Listening...');
+      setTranscript(t('voiceCreator.listening'));
     };
     
     recognition.onresult = (event) => {
@@ -225,8 +226,8 @@ export function VoiceCropCreator() {
       setIsListening(false);
       if (event.error !== 'aborted') {
         toast({
-          title: 'Voice Error',
-          description: 'Could not recognize speech. Please try again.',
+          title: t('voiceCreator.errors.voiceErrorTitle'),
+          description: t('voiceCreator.errors.voiceErrorDescription'),
           variant: 'destructive',
         });
       }
@@ -238,7 +239,7 @@ export function VoiceCropCreator() {
     
     recognitionRef.current = recognition;
     recognition.start();
-  }, [hasRecognitionSupport, isListening, processVoiceInput, toast]);
+  }, [hasRecognitionSupport, isListening, processVoiceInput, toast, language, t]);
 
   const stopListening = useCallback(() => {
     if (recognitionRef.current) {
@@ -251,8 +252,8 @@ export function VoiceCropCreator() {
   const createCrop = async (data: VoiceCropData) => {
     if (!isAuthenticated) {
       toast({
-        title: 'Authentication Required',
-        description: 'Please log in to create crops.',
+        title: t('voiceCreator.errors.authRequiredTitle'),
+        description: t('voiceCreator.errors.authRequiredDescription'),
         variant: 'destructive',
       });
       return;
@@ -260,9 +261,8 @@ export function VoiceCropCreator() {
 
     setIsCreating(true);
     try {
-      // Validate required fields
       const requiredFields = {
-        crop_name: data.crop_name,
+        crop_name: data.crop_name || 'Unknown',
         latitude: data.latitude || 12.5677,
         longitude: data.longitude || 77.12367,
         address: data.address || 'Unknown',
@@ -283,14 +283,13 @@ export function VoiceCropCreator() {
 
       await cropsApi.createCrop(requiredFields);
       
-      await speak("Perfect! Your crop has been successfully created and added to your farm.");
+      await speak(t('voiceCreator.successCreate'));
       
       toast({
-        title: 'Crop Created Successfully',
-        description: `${data.crop_name} has been added to your farm.`,
+        title: t('voiceCreator.successToastTitle'),
+        description: t('voiceCreator.successToastDescription', { cropName: data.crop_name || 'Your crop' }),
       });
       
-      // Reset for next crop
       setTimeout(() => {
         setCropData({});
         setCurrentStep(0);
@@ -299,10 +298,10 @@ export function VoiceCropCreator() {
       
     } catch (error) {
       console.error('Failed to create crop:', error);
-      await speak("Sorry, there was an error creating your crop. Please try again.");
+      await speak(t('voiceCreator.errors.createError'));
       toast({
-        title: 'Failed to Create Crop',
-        description: 'Please try again or use the manual form.',
+        title: t('voiceCreator.errors.createErrorToastTitle'),
+        description: t('voiceCreator.errors.createErrorToastDescription'),
         variant: 'destructive',
       });
     } finally {
@@ -313,8 +312,8 @@ export function VoiceCropCreator() {
   const startVoiceFlow = async () => {
     if (!isAuthenticated) {
       toast({
-        title: 'Authentication Required',
-        description: 'Please log in to use voice crop creation.',
+        title: t('voiceCreator.errors.authRequiredTitle'),
+        description: t('voiceCreator.errors.authRequiredDescription'),
         variant: 'destructive',
       });
       return;
@@ -323,14 +322,14 @@ export function VoiceCropCreator() {
     setCropData({});
     setCurrentStep(0);
     setTranscript('');
-    await speak(questions[0]);
+    await speak(t(questions[0]));
   };
 
   if (!hasRecognitionSupport) {
     return (
       <Card className="border-dashed">
         <CardContent className="p-6 text-center">
-          <p className="text-muted-foreground">Voice recognition not supported in this browser.</p>
+          <p className="text-muted-foreground">{t('voiceCreator.errors.noSupport')}</p>
         </CardContent>
       </Card>
     );
@@ -340,26 +339,24 @@ export function VoiceCropCreator() {
     <Card className="border-2 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Mic className="h-5 w-5 text-primary" />
-          Voice Crop Creator
+          <Mic className="h-5 w-5 text-foreground" />
+          {t('voiceCreator.title')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {currentStep === 0 && !transcript ? (
           <div className="text-center space-y-4">
-            <p className="text-muted-foreground">
-              Create crops using voice commands. I'll guide you through each step.
-            </p>
-            <Button onClick={startVoiceFlow} size="lg" className="w-full">
+            <p className="text-muted-foreground">{t('voiceCreator.description')}</p>
+            <Button onClick={startVoiceFlow} size="lg" className="w-full bg-foreground text-primary hover:bg-foreground/90">
               <Mic className="mr-2 h-4 w-4" />
-              Start Voice Creation
+              {t('voiceCreator.start')}
             </Button>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Badge variant="outline">
-                Step {currentStep + 1} of {questions.length}
+                {t('voiceCreator.step', { current: currentStep + 1, total: questions.length })}
               </Badge>
               <div className="flex gap-2">
                 <Button
@@ -371,33 +368,33 @@ export function VoiceCropCreator() {
                   {isListening ? (
                     <>
                       <MicOff className="mr-2 h-4 w-4" />
-                      Stop
+                      {t('voiceCreator.stop')}
                     </>
                   ) : (
                     <>
                       <Mic className="mr-2 h-4 w-4" />
-                      Listen
+                      {t('voiceCreator.listen')}
                     </>
                   )}
                 </Button>
                 {isSpeaking && (
                   <Button variant="outline" size="sm" disabled>
                     <Volume2 className="mr-2 h-4 w-4" />
-                    Speaking
+                    {t('voiceCreator.speaking')}
                   </Button>
                 )}
               </div>
             </div>
 
             <div className="p-4 bg-muted rounded-lg">
-              <p className="text-sm font-medium mb-2">Current Question:</p>
-              <p className="text-sm">{questions[currentStep]}</p>
+              <p className="text-sm font-medium mb-2">{t('voiceCreator.currentQuestion')}</p>
+              <p className="text-sm">{t(questions[currentStep])}</p>
             </div>
 
             {transcript && (
               <div className="p-4 bg-primary/5 rounded-lg">
                 <p className="text-sm font-medium mb-2">
-                  {isListening ? 'Listening...' : isProcessing ? 'Processing...' : 'Recorded:'}
+                  {isListening ? t('voiceCreator.listening') : isProcessing ? t('voiceCreator.processing') : t('voiceCreator.recorded')}
                 </p>
                 <p className="text-sm">{transcript}</p>
               </div>
@@ -406,17 +403,18 @@ export function VoiceCropCreator() {
             {isCreating && (
               <div className="flex items-center justify-center p-4 bg-green-50 rounded-lg">
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                <span className="text-sm">Creating your crop...</span>
+                <span className="text-sm">{t('voiceCreator.creating')}</span>
               </div>
             )}
 
-            {Object.keys(cropData).length > 0 && (
+            {Object.keys(cropData).length > 1 && ( // Show only if there's more than lat/long
               <div className="p-4 bg-secondary/50 rounded-lg">
-                <p className="text-sm font-medium mb-2">Collected Information:</p>
+                <p className="text-sm font-medium mb-2">{t('voiceCreator.collectedInfo')}</p>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   {Object.entries(cropData).map(([key, value]) => (
+                     (key !== 'latitude' && key !== 'longitude') &&
                     <div key={key} className="flex justify-between">
-                      <span className="font-medium">{key.replace('_', ' ')}:</span>
+                      <span className="font-medium">{t(`voiceCreator.fields.${key}` as TranslationKey) || key.replace('_', ' ')}:</span>
                       <span>{String(value)}</span>
                     </div>
                   ))}
@@ -429,3 +427,5 @@ export function VoiceCropCreator() {
     </Card>
   );
 }
+
+    

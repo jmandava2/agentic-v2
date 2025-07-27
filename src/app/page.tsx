@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Leaf, Mic, Languages } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
+import { Logo } from '@/components/ui/logo';
 
 export default function LandingPage() {
   const { t } = useLanguage();
@@ -14,8 +15,8 @@ export default function LandingPage() {
       style={{ backgroundColor: 'hsl(120 50% 97%)' }}
     >
       <header className="flex items-center gap-3 mb-16">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-          <Leaf className="h-6 w-6 text-primary-foreground" />
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg">
+          <Logo />
         </div>
         <h1 className="font-headline text-2xl font-bold text-foreground">
           {t('landing.appName')}
@@ -31,7 +32,7 @@ export default function LandingPage() {
           <p className="mt-4 font-body text-xl text-muted-foreground md:text-2xl">
             {t('landing.tagline')}
           </p>
-          <Button asChild size="lg" className="mt-10 h-14 px-8 text-lg">
+          <Button asChild size="lg" className="mt-10 h-14 px-8 text-lg bg-foreground text-primary hover:bg-foreground/90">
             <Link href="/dashboard">
                 <span>{t('landing.cta')}</span>
                 <ArrowRight className="ml-2 h-5 w-5" />

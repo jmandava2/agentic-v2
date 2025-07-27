@@ -9,10 +9,11 @@ import { LoginDialog } from '@/components/auth/LoginDialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Wheat, Leaf, Calendar, TrendingUp, MapPin, RefreshCw } from 'lucide-react';
+import { Leaf, Calendar, TrendingUp, MapPin, RefreshCw } from 'lucide-react';
 import { format } from 'date-fns';
 import { AppContext } from '../AppLayout';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 export function CropsCarousel() {
   const [loading, setLoading] = useState(true);
@@ -58,11 +59,25 @@ export function CropsCarousel() {
     if (!cropName) {
       return <Leaf className="h-12 w-12 text-green-500" />;
     }
-    const name = cropName.toLowerCase();
-    if (name.includes('rice') || name.includes('wheat') || name.includes('cotton')) {
-      return <Wheat className="h-12 w-12 text-primary" />;
-    }
-    return <Leaf className="h-12 w-12 text-green-500" />;
+    const sanitizedCropName = cropName.toLowerCase().replace(/\s+/g, '-');
+    const imagePath = `/crop-images/${sanitizedCropName}.png`;
+    const fallbackImagePath = '/crop-images/default.png';
+
+    return (
+        <Image
+            src={imagePath}
+            alt={cropName}
+            width={48}
+            height={48}
+            className="rounded-full object-cover"
+            onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if(target.src.endsWith(fallbackImagePath)) return;
+                target.onerror = null;
+                target.src = fallbackImagePath;
+            }}
+        />
+    );
   };
 
   const formatDate = (dateString?: string) => {
@@ -90,7 +105,7 @@ export function CropsCarousel() {
             <CardTitle className="font-headline mt-4">Login Required</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button className="w-full" onClick={() => setShowLoginDialog(true)}>
+            <Button className="w-full bg-foreground text-primary hover:bg-foreground/90" onClick={() => setShowLoginDialog(true)}>
               Sign In to View Crops
             </Button>
           </CardContent>

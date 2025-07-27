@@ -9,7 +9,8 @@
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 
-const PagesSchema = z.enum(['dashboard', 'market-advisory', 'schemes', 'profile']);
+const PagesSchema = z.enum(['dashboard', 'market', 'health', 'analytics', 'schemes', 'profile']);
+const LanguagesSchema = z.enum(['en', 'kn']);
 
 const navigateToPage = ai.defineTool(
   {
@@ -18,13 +19,31 @@ const navigateToPage = ai.defineTool(
     inputSchema: z.object({
       page: PagesSchema.describe('The page to navigate to.'),
     }),
-    outputSchema: z.void(),
+    outputSchema: z.string(),
   },
   async (input) => {
     // This is a placeholder. The actual navigation is handled client-side.
-    console.log(`(Server) Navigation request to: ${input.page}`);
+    // The text returned here will be spoken by the assistant.
+    return `Navigating to the ${input.page} page.`;
   }
 );
+
+const changeLanguage = ai.defineTool(
+  {
+    name: 'changeLanguage',
+    description: 'Changes the application language.',
+    inputSchema: z.object({
+      language: LanguagesSchema.describe("The language to switch to. 'kn' for Kannada, 'en' for English."),
+    }),
+    outputSchema: z.string(),
+  },
+  async (input) => {
+    // This is a placeholder. The actual language change is handled client-side.
+    // The text returned here will be spoken by the assistant.
+    return `Changing language to ${input.language === 'kn' ? 'Kannada' : 'English'}.`;
+  }
+);
+
 
 const AssistantChatInputSchema = z.object({
   query: z.string().describe("The user's voice query."),
@@ -52,21 +71,25 @@ const assistantChatFlow = ai.defineFlow(
   async (input) => {
     const llmResponse = await ai.generate({
       prompt: `User's query: ${input.query}`,
-      model: 'googleai/gemini-2.0-flash',
-      tools: [navigateToPage],
+      model: 'googleai/gemini-1.5-flash-latest',
+      tools: [navigateToPage, changeLanguage],
       system:
-        "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool.",
+        "You are a helpful voice assistant for the Namma Krushi app. Keep your answers concise and conversational. If the user asks to navigate to a page, use the 'navigateToPage' tool. If the user asks to change language, use the 'changeLanguage' tool.",
     });
 
     const toolRequest = llmResponse.toolRequest;
     if (toolRequest) {
-      console.log('Tool call requested:', toolRequest.tool.name);
-      // The tool function itself doesn't need to be called here on the server
-      // as the client will handle the navigation. We just need to pass the
-      // tool request information back to the client.
+      // Execute the tool server-side to get the text response
+      const toolResponse = await toolRequest.tool.fn(toolRequest.input);
+
+      // Return both the tool's text response AND the structured tool request data
+      // so the client knows which action to perform.
       return {
-        response: `Navigating to ${toolRequest.input.page}.`,
-        toolRequest: toolRequest,
+        response: toolResponse,
+        toolRequest: {
+          name: toolRequest.tool.name,
+          input: toolRequest.input
+        },
       };
     }
 
