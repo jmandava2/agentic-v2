@@ -23,8 +23,8 @@ const navigateToPage = ai.defineTool(
   },
   async (input) => {
     // This is a placeholder. The actual navigation is handled client-side.
-    console.log(`(Server) Navigation request to: ${input.page}`);
-    return `Navigating to ${input.page}`;
+    // The text returned here will be spoken by the assistant.
+    return `Navigating to the ${input.page} page.`;
   }
 );
 
@@ -39,8 +39,8 @@ const changeLanguage = ai.defineTool(
   },
   async (input) => {
     // This is a placeholder. The actual language change is handled client-side.
-    console.log(`(Server) Language change request to: ${input.language}`);
-    return `Changing language to ${input.language === 'kn' ? 'Kannada' : 'English'}`;
+    // The text returned here will be spoken by the assistant.
+    return `Changing language to ${input.language === 'kn' ? 'Kannada' : 'English'}.`;
   }
 );
 
@@ -79,9 +79,11 @@ const assistantChatFlow = ai.defineFlow(
 
     const toolRequest = llmResponse.toolRequest;
     if (toolRequest) {
-      console.log('Tool call requested:', toolRequest.tool.name, 'with input:', toolRequest.input);
-       const toolResponse = await toolRequest.tool.fn(toolRequest.input);
+      // Execute the tool server-side to get the text response
+      const toolResponse = await toolRequest.tool.fn(toolRequest.input);
 
+      // Return both the tool's text response AND the structured tool request data
+      // so the client knows which action to perform.
       return {
         response: toolResponse,
         toolRequest: {

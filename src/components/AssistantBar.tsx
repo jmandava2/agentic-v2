@@ -24,6 +24,7 @@ export function AssistantBar() {
   const appContext = useContext(AppContext);
   const { t, language, setLanguage } = useLanguage();
   const { toast } = useToast();
+  const router = useRouter();
 
   const handleCapture = (photoDataUrl: string) => {
     if (!appContext) return;
@@ -71,37 +72,32 @@ export function AssistantBar() {
   
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   const handleSendMessage = async () => {
     if (!message && !attachment) return;
+    const query = message;
+    setMessage('');
+    setAttachment(null);
     setLoading(true);
     
     try {
       // For now, ignoring attachment in chat, but you could send it here
-      const chatResponse = await assistantChat({ query: message });
-
+      const chatResponse = await assistantChat({ query: query });
+      
+      toast({
+        title: 'Assistant',
+        description: chatResponse.response,
+      });
+      
+      // Client-side action handling
       if (chatResponse.toolRequest) {
           if (chatResponse.toolRequest.name === 'navigateToPage') {
               const page = chatResponse.toolRequest.input.page;
-              toast({
-                  title: 'Navigation',
-                  description: `Navigating to ${page}...`,
-              });
               router.push(`/${page}`);
           } else if (chatResponse.toolRequest.name === 'changeLanguage') {
               const lang = chatResponse.toolRequest.input.language;
               setLanguage(lang);
-              toast({
-                  title: 'Language Changed',
-                  description: `Language set to ${lang === 'kn' ? 'Kannada' : 'English'}.`,
-              });
           }
-      } else {
-         toast({
-            title: 'Assistant',
-            description: chatResponse.response,
-          });
       }
 
     } catch (error) {
@@ -112,8 +108,6 @@ export function AssistantBar() {
       });
       console.error('Assistant chat error:', error);
     } finally {
-        setMessage('');
-        setAttachment(null);
         setLoading(false);
     }
   };

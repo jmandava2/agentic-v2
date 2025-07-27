@@ -100,8 +100,10 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   }, []);
 
   const handleAssistantResponse = useCallback(async (response: AssistantChatOutput) => {
+    // Set the transcript for the user to see what the assistant will say
     setGlobalVoiceState({ transcript: response.response });
 
+    // Client-side action handling based on the tool request from the flow
     if (response.toolRequest) {
         if (response.toolRequest.name === 'navigateToPage') {
             const page = response.toolRequest.input.page;
@@ -110,24 +112,25 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
             const lang = response.toolRequest.input.language;
             setLanguage(lang);
         }
-        timeoutRef.current = setTimeout(stopListening, 3000);
-        return;
     }
 
+    // Speak the response from the assistant
     try {
       const audioResponse = await textToSpeech({ text: response.response, language });
       if (audioResponse.media && audioRef.current) {
         audioRef.current.src = audioResponse.media;
         audioRef.current.play();
         audioRef.current.onended = () => {
-          timeoutRef.current = setTimeout(stopListening, 4000);
+          timeoutRef.current = setTimeout(stopListening, 2000); // Shorter delay after speaking
         };
       } else {
-        timeoutRef.current = setTimeout(stopListening, 4000);
+        // If no audio, just wait a bit before closing
+        timeoutRef.current = setTimeout(stopListening, 3000);
       }
     } catch (err) {
       console.error("TTS error:", err);
-      timeoutRef.current = setTimeout(stopListening, 4000);
+      // Still close the overlay even if TTS fails
+      timeoutRef.current = setTimeout(stopListening, 3000);
     }
   }, [language, stopListening, router, setLanguage]);
 
