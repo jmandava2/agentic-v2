@@ -15,7 +15,7 @@ export default function LandingPage() {
       style={{ backgroundColor: 'hsl(120 50% 97%)' }}
     >
       <header className="flex items-center gap-3 mb-16">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+        <div className="flex h-8 w-8 items-center justify-center rounded-lg">
           <Logo />
         </div>
         <h1 className="font-headline text-2xl font-bold text-foreground">
