@@ -21,8 +21,6 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '../ui/separator';
 import { useLanguage } from '@/hooks/use-language';
-import { CheckIn } from './CheckIn';
-import { Notebook } from 'lucide-react';
 
 export type FarmHistory = { date: string; event: string; details: string, photo?: boolean };
 
@@ -34,7 +32,6 @@ type FarmInfoCardProps = {
   yieldDate: string;
   suggestions: { title: string; description: string }[];
   history: FarmHistory[];
-  onCheckIn: (note: string, photo?: string) => void;
 };
 
 const InfoChip = ({ label, value }: { label: string; value: string }) => (
@@ -52,7 +49,6 @@ export function FarmInfoCard({
   yieldDate,
   suggestions,
   history,
-  onCheckIn,
 }: FarmInfoCardProps) {
   const { t } = useLanguage();
   return (
@@ -95,13 +91,6 @@ export function FarmInfoCard({
             </ScrollArea>
           </DialogContent>
         </Dialog>
-
-        <CheckIn cropName={cropName} onCheckIn={onCheckIn}>
-          <Button>
-            <Notebook className="mr-2 h-4 w-4" />
-            Log Check-in
-          </Button>
-        </CheckIn>
         
         <Dialog>
           <DialogTrigger asChild>

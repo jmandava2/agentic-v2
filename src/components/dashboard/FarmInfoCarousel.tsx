@@ -161,7 +161,6 @@ export function FarmInfoCarousel() {
             <FarmInfoCard
               {...farm}
               cropName={t(farm.cropNameKey as any)}
-              onCheckIn={(note, photo) => handleCheckIn(farm.id, note, photo)}
             />
           </CarouselItem>
         ))}
