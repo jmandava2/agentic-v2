@@ -14,7 +14,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/hooks/use-auth';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Leaf } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { Logo } from '../ui/logo';
 
 interface LoginDialogProps {
   open: boolean;
@@ -64,7 +65,9 @@ export function LoginDialog({ open, onOpenChange }: LoginDialogProps) {
         <DialogHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <div className="flex items-center gap-2">
-              <Leaf className="h-8 w-8 text-primary" />
+              <div className="h-8 w-8 text-primary">
+                <Logo />
+              </div>
               <DialogTitle className="text-2xl font-bold">Namma Krushi</DialogTitle>
             </div>
           </div>

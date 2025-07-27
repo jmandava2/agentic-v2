@@ -13,7 +13,6 @@ import {
 import {
   Home,
   LineChart,
-  Leaf,
   Landmark,
   User,
   LogIn,
@@ -26,6 +25,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { LoginDialog } from '@/components/auth/LoginDialog';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Logo } from './ui/logo';
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -47,8 +47,8 @@ export function AppSidebar() {
       <LoginDialog open={showLoginDialog} onOpenChange={setShowLoginDialog} />
       <SidebarHeader>
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Leaf className="h-5 w-5 text-primary-foreground" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Logo />
           </div>
           <span className="font-headline text-lg font-semibold">
             {t('appName')}

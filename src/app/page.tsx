@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Leaf, Mic, Languages } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
+import { Logo } from '@/components/ui/logo';
 
 export default function LandingPage() {
   const { t } = useLanguage();
@@ -14,8 +15,8 @@ export default function LandingPage() {
       style={{ backgroundColor: 'hsl(120 50% 97%)' }}
     >
       <header className="flex items-center gap-3 mb-16">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-          <Leaf className="h-6 w-6 text-primary-foreground" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <Logo />
         </div>
         <h1 className="font-headline text-2xl font-bold text-foreground">
           {t('landing.appName')}
