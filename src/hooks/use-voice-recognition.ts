@@ -3,9 +3,11 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { assistantChat } from '@/ai/flows/assistant-chat';
+import type { AssistantChatOutput } from '@/ai/flows/assistant-chat';
 import { textToSpeech } from '@/ai/flows/text-to-speech';
 import { useToast } from './use-toast';
 import { useLanguage } from './use-language';
+import { useRouter } from 'next/navigation';
 
 type UseVoiceRecognitionProps = {
   onNoSupport?: () => void;
@@ -47,9 +49,11 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   const { onNoSupport } = props;
   const { toast } = useToast();
   const { language } = useLanguage();
+  const router = useRouter();
   const [state, setState] = useState(voiceState);
   const [hasRecognitionSupport, setHasRecognitionSupport] = useState(false);
-  
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   // Effect for setting up listeners and checking for support
   useEffect(() => {
     const SpeechRecognition = getSpeechRecognition();
@@ -68,11 +72,18 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       if (audioRef.current) {
         audioRef.current.pause();
       }
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
     };
   }, [onNoSupport]);
 
 
   const stopListening = useCallback(() => {
+    console.log('stopListening called');
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
     if (recognitionRef) {
       recognitionRef.onresult = null;
       recognitionRef.onend = null;
@@ -80,12 +91,40 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
       recognitionRef.onstart = null;
       recognitionRef.stop();
       recognitionRef = null;
+      console.log('Recognition stopped.');
     }
     if (audioRef.current) {
       audioRef.current.pause();
     }
     setGlobalVoiceState({ isListening: false, transcript: '' });
   }, []);
+
+  const handleAssistantResponse = useCallback(async (response: AssistantChatOutput) => {
+    setGlobalVoiceState({ transcript: response.response });
+
+    if (response.toolRequest?.tool?.name === 'navigateToPage') {
+      const page = response.toolRequest.input.page;
+      router.push(`/${page}`);
+      timeoutRef.current = setTimeout(stopListening, 2000);
+      return;
+    }
+
+    try {
+      const audioResponse = await textToSpeech({ text: response.response, language });
+      if (audioResponse.media && audioRef.current) {
+        audioRef.current.src = audioResponse.media;
+        audioRef.current.play();
+        audioRef.current.onended = () => {
+          timeoutRef.current = setTimeout(stopListening, 1000);
+        };
+      } else {
+        timeoutRef.current = setTimeout(stopListening, 2000);
+      }
+    } catch (err) {
+      console.error("TTS error:", err);
+      timeoutRef.current = setTimeout(stopListening, 2000);
+    }
+  }, [language, stopListening, router]);
 
   const startListening = useCallback(() => {
     const SpeechRecognition = getSpeechRecognition();
@@ -100,7 +139,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     }
     const recognition = new SpeechRecognition();
     recognition.continuous = false;
-    recognition.interimResults = true; // Enable interim results
+    recognition.interimResults = true;
     recognition.lang = language === 'kn' ? 'kn-IN' : 'en-US';
     recognitionRef = recognition;
 
@@ -110,57 +149,23 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     };
 
     recognition.onresult = async (event: SpeechRecognitionEvent) => {
-        let interimTranscript = '';
         let finalTranscript = '';
-
-        for (let i = 0; i < event.results.length; ++i) {
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 finalTranscript += event.results[i][0].transcript;
             } else {
-                interimTranscript += event.results[i][0].transcript;
+                setGlobalVoiceState({ transcript: event.results[i][0].transcript });
             }
         }
         
-        setGlobalVoiceState({ transcript: finalTranscript || interimTranscript });
-
         if (finalTranscript) {
             console.log('Final voice input received:', finalTranscript);
+            recognition.stop();
             try {
                 setGlobalVoiceState({ transcript: 'Thinking...' });
                 const chatResponse = await assistantChat({ query: finalTranscript });
-
-                if (chatResponse.toolRequest && chatResponse.toolRequest.tool.name === 'navigateToPage') {
-                  const page = chatResponse.toolRequest.input.page;
-                  setGlobalVoiceState({ transcript: `Navigating to ${page}...` });
-                  setTimeout(() => {
-                      window.location.assign(`/${page}`);
-                      stopListening();
-                  }, 1000);
-                  return;
-                }
-
-                console.log('Gemini response:', chatResponse.response);
-                // Update UI with text response immediately
-                setGlobalVoiceState({ transcript: chatResponse.response });
-
-                // Start fetching audio but don't block
-                textToSpeech({ text: chatResponse.response, language }).then(audioResponse => {
-                    if (audioResponse.media && audioRef.current) {
-                        audioRef.current.src = audioResponse.media;
-                        audioRef.current.play();
-                        audioRef.current.onended = () => {
-                            setTimeout(() => stopListening(), 2000);
-                        };
-                    } else {
-                        // If no audio, still close overlay after a delay
-                        setTimeout(() => stopListening(), 2000);
-                    }
-                }).catch(err => {
-                    console.error("TTS error:", err);
-                    // Close overlay even if TTS fails
-                    setTimeout(() => stopListening(), 2000);
-                });
-
+                console.log('Assistant response:', chatResponse);
+                await handleAssistantResponse(chatResponse);
             } catch (error) {
                 console.error('Error processing voice input:', error);
                 toast({
@@ -175,7 +180,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
 
     recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       console.error('Speech recognition error:', event.error);
-      if (event.error !== 'aborted' && event.error !== 'no-speech') {
+      if (event.error !== 'aborted' && event.error !== 'no-speech' && event.error !== 'audio-capture') {
         toast({
           variant: 'destructive',
           title: 'Voice Error',
@@ -186,13 +191,18 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
     };
 
     recognition.onend = () => {
-        // This handler is intentionally left blank. 
-        // The closing logic is now handled exclusively in onresult to prevent premature closing.
+        if (voiceState.isListening) {
+          // If it ends prematurely (e.g., silence), and we haven't received a final transcript, stop everything.
+          const currentTranscript = voiceState.transcript;
+          if (!currentTranscript || currentTranscript === 'Thinking...') {
+             stopListening();
+          }
+        }
     };
 
     recognition.start();
 
-  }, [language, stopListening, toast]);
+  }, [language, stopListening, toast, handleAssistantResponse]);
 
   const toggleListening = useCallback(() => {
     if (voiceState.isListening) {
@@ -206,7 +216,7 @@ export const useVoiceRecognition = (props: UseVoiceRecognitionProps = {}) => {
   return {
     isListening: state.isListening,
     transcript: state.transcript,
-    startListening: toggleListening,
+    startListening,
     stopListening,
     hasRecognitionSupport,
   };
