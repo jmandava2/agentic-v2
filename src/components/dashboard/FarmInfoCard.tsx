@@ -113,7 +113,7 @@ export function FarmInfoCard({
                            </div>
                             <Separator className="my-2" />
                             <p className="text-sm text-muted-foreground">{item.details}</p>
-                             {item.photo && <p className="text-xs text-primary mt-1">Photo attached</p>}
+                             {item.photo && <p className="text-xs text-foreground mt-1">Photo attached</p>}
                         </div>
                     ))}
                 </div>
