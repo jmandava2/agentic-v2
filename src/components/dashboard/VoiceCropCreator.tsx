@@ -341,7 +341,7 @@ export function VoiceCropCreator() {
     <Card className="border-2 border-primary/20">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Mic className="h-5 w-5 text-primary" />
+          <Mic className="h-5 w-5 text-foreground" />
           Voice Crop Creator
         </CardTitle>
       </CardHeader>
@@ -430,3 +430,5 @@ export function VoiceCropCreator() {
     </Card>
   );
 }
+
+    
