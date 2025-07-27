@@ -35,7 +35,7 @@ export function AppSidebar() {
 
   const links = [
     { href: '/dashboard', label: t('sidebar.dashboard'), icon: Home },
-    { href: '/market-advisory', label: t('sidebar.market'), icon: LineChart },
+    { href: '/market', label: t('sidebar.market'), icon: LineChart },
     { href: '/health', label: t('sidebar.health'), icon: HeartPulse },
     { href: '/analytics', label: t('sidebar.analytics'), icon: BarChart },
     { href: '/schemes', label: t('sidebar.schemes'), icon: Landmark },

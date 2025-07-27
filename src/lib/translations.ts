@@ -16,7 +16,7 @@ const en = {
     },
     sidebar: {
         dashboard: 'Dashboard',
-        market: 'Market Advisory',
+        market: 'Market',
         health: 'Health',
         analytics: 'Analytics',
         schemes: 'Schemes',
@@ -130,7 +130,7 @@ const en = {
         }
     },
     market: {
-        title: 'Market Advisory',
+        title: 'Market',
         chart: {
             title: 'Price Trend',
             description: 'Historical price data for {{produce}}.',
@@ -351,7 +351,7 @@ const kn = {
     },
     sidebar: {
         dashboard: 'ಡ್ಯಾಶ್‌ಬೋರ್ಡ್',
-        market: 'ಮಾರುಕಟ್ಟೆ ಸಲಹೆ',
+        market: 'ಮಾರುಕಟ್ಟೆ',
         health: 'ಆರೋಗ್ಯ',
         analytics: 'ವಿಶ್ಲೇಷಣೆ',
         schemes: 'ಯೋಜನೆಗಳು',
@@ -465,7 +465,7 @@ const kn = {
         }
     },
     market: {
-        title: 'ಮಾರುಕಟ್ಟೆ ಸಲಹೆ',
+        title: 'ಮಾರುಕಟ್ಟೆ',
         chart: {
             title: 'ಬೆಲೆ ಪ್ರವೃತ್ತಿ',
             description: '{{produce}} ಗಾಗಿ ಐತಿಹಾಸಿಕ ಬೆಲೆ ಡೇಟಾ.',
